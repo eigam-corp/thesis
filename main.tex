@@ -32,10 +32,10 @@
 \captionsetup[figure]{skip=0.3cm}
 \captionsetup[longtable]{skip=0.3cm}
 
-% Comando padronizado para fonte de tabelas/figuras (10pt, 0.3cm acima)
+% Comando padronizado para fonte de tabelas/figuras (10pt, centralizado)
 \newcommand{\fontetabela}[1]{%
-    \vspace{0.3cm}%
-    {\noindent\fontsize{10pt}{12pt}\selectfont #1}%
+    \par\vspace{0.3cm}%
+    {\centering\fontsize{10pt}{12pt}\selectfont #1\par}%
 }
 
 % Configuração da fonte Arial
@@ -82,13 +82,56 @@
     {}
 \titlespacing*{\subsection}{0pt}{18pt}{4pt}
 
-% Sumário
-\renewcommand{\contentsname}{\normalfont\fontsize{14}{16}\bfseries\uppercase{SUMÁRIO}}
-\renewcommand{\cfttoctitlefont}{\normalfont\fontsize{14}{16}\bfseries\uppercase}
-\renewcommand{\cftchapfont}{\normalfont\bfseries\fontsize{12}{14}}
-\renewcommand{\cftchappagefont}{\normalfont\fontsize{12}{14}}
-\renewcommand{\cftchapleader}{\cftdotfill{\cftdotsep}}
-\setlength{\cftbeforechapskip}{0pt}
+% Renomear "Tabela" para "Quadro" em legendas e listas
+\addto\captionsbrazil{%
+    \renewcommand{\tablename}{Quadro}%
+    \renewcommand{\listtablename}{Lista de Quadros}%
+}
+
+% Sumário - sem pontinhos, sem negrito, título será inserido manualmente
+\renewcommand{\contentsname}{}
+\setlength{\cftbeforetoctitleskip}{0pt}
+\setlength{\cftaftertoctitleskip}{4pt}
+\renewcommand{\cfttoctitlefont}{\normalfont\fontsize{1}{1}\selectfont}
+\renewcommand{\cftchapfont}{\normalfont\fontsize{12}{14}\selectfont}
+\renewcommand{\cftchappagefont}{\normalfont\fontsize{12}{14}\selectfont}
+\renewcommand{\cftsecfont}{\normalfont\fontsize{12}{14}\selectfont}
+\renewcommand{\cftsecpagefont}{\normalfont\fontsize{12}{14}\selectfont}
+\renewcommand{\cftsubsecfont}{\normalfont\fontsize{12}{14}\selectfont}
+\renewcommand{\cftsubsecpagefont}{\normalfont\fontsize{12}{14}\selectfont}
+\renewcommand{\cftchapleader}{\hfill}
+\renewcommand{\cftsecleader}{\hfill}
+\renewcommand{\cftsubsecleader}{\hfill}
+\setlength{\cftbeforechapskip}{2pt}
+\setlength{\cftbeforesecskip}{1pt}
+\setlength{\cftbeforesubsecskip}{1pt}
+
+% Listas de figuras e tabelas - títulos serão inseridos manualmente
+\renewcommand{\listfigurename}{}
+\renewcommand{\listtablename}{}
+\setlength{\cftbeforeloftitleskip}{0pt}
+\setlength{\cftafterloftitleskip}{4pt}
+\renewcommand{\cftloftitlefont}{\normalfont\fontsize{1}{1}\selectfont}
+\setlength{\cftbeforelottitleskip}{0pt}
+\setlength{\cftafterlottitleskip}{4pt}
+\renewcommand{\cftlottitlefont}{\normalfont\fontsize{1}{1}\selectfont}
+% Remover pontinhos das listas de figuras e tabelas
+\renewcommand{\cftfigleader}{\hfill}
+\renewcommand{\cfttableader}{\hfill}
+\renewcommand{\cftfigfont}{\normalfont\fontsize{12}{14}\selectfont}
+\renewcommand{\cftfigpagefont}{\normalfont\fontsize{12}{14}\selectfont}
+\renewcommand{\cfttabfont}{\normalfont\fontsize{12}{14}\selectfont}
+\renewcommand{\cfttabpagefont}{\normalfont\fontsize{12}{14}\selectfont}
+\setlength{\cftbeforefigskip}{2pt}
+\setlength{\cftbeforetabskip}{2pt}
+
+% Comando para título centralizado de listas (padrão único)
+\newcommand{\titulodelista}[1]{%
+    \begin{center}%
+        \fontsize{14pt}{14pt}\selectfont\bfseries #1%
+    \end{center}%
+    \vspace{4pt}%
+}
 
 % Paginação
 \pagestyle{fancy}
@@ -102,6 +145,7 @@
 }
 
 \counterwithout{figure}{chapter}
+\counterwithout{table}{chapter}
 
 \begin{document}
 
@@ -110,18 +154,18 @@
 % =============================================
 \begin{titlepage}
     \begin{center}
-        \fontsize{12pt}{14pt}\selectfont UNIVERSIDADE DE RIBEIRÃO PRETO\\
-        \fontsize{12pt}{14pt}\selectfont CENTRO DE CIÊNCIAS EXATAS, NATURAIS E TECNOLÓGICAS\\
-        \fontsize{12pt}{14pt}\selectfont ENGENHARIA DE SOFTWARE\\
+        \fontsize{12pt}{12pt}\selectfont UNIVERSIDADE DE RIBEIRÃO PRETO\\
+        \fontsize{12pt}{12pt}\selectfont CENTRO DE CIÊNCIAS EXATAS, NATURAIS E TECNOLÓGICAS\\
+        \fontsize{12pt}{12pt}\selectfont ENGENHARIA DE SOFTWARE\\
         \vspace{4cm}
-        \fontsize{12pt}{14pt}\selectfont MARCO ANTÔNIO LONARDON JÚNIOR\\
-        \fontsize{12pt}{14pt}\selectfont MATHEUS LIMA BONADIO\\
-        \fontsize{12pt}{14pt}\selectfont VITOR NASCIMENTO MOREIRA\\
+        \fontsize{12pt}{12pt}\selectfont MARCO ANTÔNIO LONARDON JÚNIOR\\
+        \fontsize{12pt}{12pt}\selectfont MATHEUS LIMA BONADIO\\
+        \fontsize{12pt}{12pt}\selectfont VITOR NASCIMENTO MOREIRA\\
         \vspace{4cm}
-        \fontsize{14pt}{16pt}\selectfont PLATAFORMA PREDITIVA E CONVERSACIONAL DE INTELIGÊNCIA FINANCEIRA VIA OPEN FINANCE
+        \fontsize{14pt}{14pt}\selectfont PLATAFORMA PREDITIVA E CONVERSACIONAL DE INTELIGÊNCIA FINANCEIRA VIA OPEN FINANCE
         \vfill
-        \fontsize{12pt}{14pt}\selectfont Ribeirão Preto\\
-        \fontsize{12pt}{14pt}\selectfont 2026
+        \fontsize{12pt}{12pt}\selectfont Ribeirão Preto\\
+        \fontsize{12pt}{12pt}\selectfont 2026
     \end{center}
 \end{titlepage}
 
@@ -131,22 +175,22 @@
 \newpage
 \begin{titlepage}
     \begin{center}
-        \fontsize{12pt}{14pt}\selectfont MARCO ANTÔNIO LONARDON JÚNIOR\\
-        \fontsize{12pt}{14pt}\selectfont MATHEUS LIMA BONADIO\\
-        \fontsize{12pt}{14pt}\selectfont VITOR NASCIMENTO MOREIRA\\
+        \fontsize{12pt}{12pt}\selectfont MARCO ANTÔNIO LONARDON JÚNIOR\\
+        \fontsize{12pt}{12pt}\selectfont MATHEUS LIMA BONADIO\\
+        \fontsize{12pt}{12pt}\selectfont VITOR NASCIMENTO MOREIRA\\
         \vspace{4cm}
-        \fontsize{14pt}{16pt}\selectfont PLATAFORMA PREDITIVA E CONVERSACIONAL DE INTELIGÊNCIA FINANCEIRA VIA OPEN FINANCE
+        \fontsize{14pt}{14pt}\selectfont PLATAFORMA PREDITIVA E CONVERSACIONAL DE INTELIGÊNCIA FINANCEIRA VIA OPEN FINANCE
         \vspace{4cm}
         \begin{flushright}
             \parbox{8cm}{
-                \fontsize{12pt}{14pt}\selectfont
+                \fontsize{12pt}{12pt}\selectfont
                 Trabalho de Conclusão de Curso apresentado ao Centro de Ciências Exatas, Naturais e Tecnológicas da Universidade de Ribeirão Preto como parte dos requisitos para obtenção do grau de bacharel em Engenharia de Software.\\[12pt]
                 Orientador: Prof. Dr. Pablo Rodrigo Sanches
             }
         \end{flushright}
         \vfill
-        \fontsize{12pt}{14pt}\selectfont Ribeirão Preto\\
-        \fontsize{12pt}{14pt}\selectfont 2026
+        \fontsize{12pt}{12pt}\selectfont Ribeirão Preto\\
+        \fontsize{12pt}{12pt}\selectfont 2026
     \end{center}
 \end{titlepage}
 
@@ -156,18 +200,22 @@
 \newpage
 \thispagestyle{empty}
 \begin{center}
-    \fontsize{14pt}{16pt}\selectfont\bfseries FOLHA DE APROVAÇÃO\\[24pt]
+    \fontsize{14pt}{14pt}\selectfont\bfseries FOLHA DE APROVAÇÃO\\[24pt]
 \end{center}
 
 \noindent 839462 -- MARCO ANTÔNIO LONARDON JÚNIOR\\
 840474 -- MATHEUS LIMA BONADIO\\
-839868 -- VITOR NASCIMENTO MOREIRA\\[12pt]
-\begin{center}
-    \fontsize{14pt}{16pt}\selectfont PLATAFORMA PREDITIVA E CONVERSACIONAL DE INTELIGÊNCIA FINANCEIRA VIA OPEN FINANCE\\[24pt]
-\end{center}
+839868 -- VITOR NASCIMENTO MOREIRA\\
+PLATAFORMA PREDITIVA E CONVERSACIONAL DE INTELIGÊNCIA FINANCEIRA VIA OPEN FINANCE\\[12pt]
 
-\noindent Trabalho de Conclusão de Curso apresentado ao Centro de Ciências Exatas, Naturais e Tecnológicas da Universidade de Ribeirão Preto como parte dos requisitos para obtenção do grau de bacharel em Engenharia de Software.\\[12pt]
-\noindent Orientador: Prof. Dr. Pablo Rodrigo Sanches\\[12pt]
+\begin{flushright}
+    \parbox{8cm}{
+        \fontsize{12pt}{12pt}\selectfont
+        Trabalho de Conclusão de Curso apresentado ao Centro de Ciências Exatas, Naturais e Tecnológicas da Universidade de Ribeirão Preto como parte dos requisitos para obtenção do grau de bacharel em Engenharia de Software.\\[12pt]
+        Orientador: Prof. Dr. Pablo Rodrigo Sanches
+    }
+\end{flushright}
+
 \noindent Aprovada em: \_\_\_\_/\_\_\_\_/\_\_\_\_\_\_\_\_\\[24pt]
 
 \noindent Banca Examinadora\\[24pt]
@@ -186,12 +234,17 @@ Instituição: \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\
 % =============================================
 \newpage
 \thispagestyle{empty}
-\vspace*{\fill}
-\begin{flushright}
-    \parbox{8cm}{
-        \textit{Dedicatória}
-    }
-\end{flushright}
+\begin{center}
+    \fontsize{14pt}{14pt}\selectfont\bfseries DEDICATÓRIA\\[24pt]
+\end{center}
+% \newpage
+% \thispagestyle{empty}
+% \vspace*{\fill}
+% \begin{flushright}
+%     \parbox{8cm}{
+%         \textit{Dedicatória}
+%     }
+% \end{flushright}
 
 % =============================================
 % AGRADECIMENTOS
@@ -199,7 +252,7 @@ Instituição: \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\
 \newpage
 \thispagestyle{empty}
 \begin{center}
-    \fontsize{14pt}{16pt}\selectfont\bfseries AGRADECIMENTOS\\[24pt]
+    \fontsize{14pt}{14pt}\selectfont\bfseries AGRADECIMENTOS\\[24pt]
 \end{center}
 
 % =============================================
@@ -221,12 +274,12 @@ Instituição: \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\
 \newpage
 \thispagestyle{empty}
 \begin{center}
-    \fontsize{14pt}{16pt}\selectfont\bfseries RESUMO\\[24pt]
+    \fontsize{14pt}{14pt}\selectfont\bfseries RESUMO\\[24pt]
 \end{center}
 
 \noindent LONARDON JÚNIOR, M. A.; BONADIO, M. L.; MOREIRA, V. N. Título. 2026. Número de páginas. Trabalho de Conclusão de Curso (Bacharelado em Engenharia de Software) -- Centro de Ciências Exatas, Naturais e Tecnológicas, Universidade de Ribeirão Preto, Ribeirão Preto -- SP, 2026.\\[12pt]
 
-A gestão financeira pessoal no Brasil ainda apresenta limitações quanto ao acesso a ferramentas capazes de transformar dados bancários em informações úteis para a tomada de decisão cotidiana. Embora o Banco Central do Brasil disponibilize o \textit{Open Finance}, uma ferramenta que possibilita o compartilhamento padronizado de dados financeiros entre instituições autorizadas, grande parte das soluções disponíveis concentra-se na visualização estática de informações, com baixa capacidade de interpretação contextual e antecipação de cenários. Diante disso, este trabalho propõe o desenvolvimento de uma solução de assistência financeira inteligente operada integralmente por meio do WhatsApp, sem dependência de plataforma \textit{web}, com foco em acessibilidade, praticidade e interação conversacional. A proposta integra dados financeiros obtidos via \textit{Open Finance} a técnicas de análise preditiva, aprendizado de máquina e séries temporais, com o objetivo de identificar padrões de comportamento, gerar projeções personalizadas e emitir alertas sobre possíveis riscos ou oportunidades financeiras. Complementarmente, utiliza-se um assistente conversacional baseado em \textit{Retrieval-Augmented Generation} (RAG), permitindo ao usuário consultar, em linguagem natural, seu histórico financeiro, suas projeções e recomendações associadas ao seu contexto individual. Como resultado esperado, pretende-se oferecer uma alternativa mais fluida e próxima da rotina do usuário, centralizando a experiência em um canal amplamente utilizado e reduzindo barreiras de adoção tecnológica. Espera-se, assim, ampliar a compreensão sobre a própria vida financeira, favorecer o planejamento pessoal e apoiar decisões mais conscientes por meio de uma interação simples, contínua e inteligente.\\[12pt]
+A gestão financeira pessoal no Brasil ainda apresenta limitações quanto ao acesso a ferramentas capazes de transformar dados bancários em informações úteis para a tomada de decisão cotidiana. Embora o Banco Central do Brasil disponibilize o \textit{Open Finance}, uma ferramenta que possibilita o compartilhamento padronizado de dados financeiros entre instituições autorizadas, grande parte das soluções disponíveis concentra-se na visualização estática de informações, com baixa capacidade de interpretação contextual e antecipação de cenários. Diante disso, este trabalho propõe o desenvolvimento de uma solução de assistência financeira inteligente operada integralmente por meio do WhatsApp, sem dependência de plataforma \textit{web}, com foco em acessibilidade, praticidade e interação conversacional. A proposta integra dados financeiros obtidos via \textit{Open Finance} a técnicas de análise preditiva, aprendizado de máquina e séries temporais, com o objetivo de identificar padrões de comportamento, gerar projeções personalizadas e emitir alertas sobre possíveis riscos ou oportunidades financeiras. Complementarmente, utiliza-se um assistente conversacional baseado em \textit{Retrieval-Augmented Generation} (RAG), permitindo ao usuário consultar, em linguagem natural, seu histórico financeiro, suas projeções e recomendações associadas ao seu contexto individual. Como resultado esperado, pretende-se oferecer uma alternativa mais fluida e próxima da rotina do usuário, centralizando a experiência em um canal amplamente utilizado e reduzindo barreiras de adoção tecnológica. Espera-se, assim, ampliar a compreensão sobre a própria vida financeira, favorecer o planejamento pessoal e apoiar decisões mais conscientes por meio de uma interação simples, contínua e inteligente.\\
 
 \noindent\textbf{Palavras-chave:} \textit{Open Finance}; WhatsApp; Inteligência artificial; Análise preditiva; Assistência financeira conversacional.
 
@@ -236,7 +289,7 @@ A gestão financeira pessoal no Brasil ainda apresenta limitações quanto ao ac
 \newpage
 \thispagestyle{empty}
 \begin{center}
-    \fontsize{14pt}{16pt}\selectfont\bfseries ABSTRACT\\[24pt]
+    \fontsize{14pt}{14pt}\selectfont\bfseries ABSTRACT\\[24pt]
 \end{center}
 
 \noindent LONARDON JÚNIOR, M. A.; BONADIO, M. L.; MOREIRA, V. N. Title in English. 2026. Number of pages (pages). Undergraduate Thesis (Bachelor's degree of Software Engineering) -- Center of Exact, Natural and Technological Sciences, University of Ribeirão Preto, Ribeirão Preto -- SP, 2026.\\[12pt]
@@ -246,13 +299,41 @@ Personal financial management in Brazil still faces limitations regarding access
 \noindent\textbf{Keywords:} \textit{Open Finance}; WhatsApp; Artificial intelligence; Predictive analytics; Conversational financial assistance.
 
 % =============================================
+% LISTA DE ILUSTRAÇÕES
+% =============================================
+\newpage
+\thispagestyle{empty}
+\titulodelista{LISTA DE ILUSTRAÇÕES}
+\listoffigures
+\thispagestyle{empty}
+
+% =============================================
+% LISTA DE QUADROS
+% =============================================
+\newpage
+\thispagestyle{empty}
+\titulodelista{LISTA DE QUADROS}
+\listoftables
+\thispagestyle{empty}
+
+% =============================================
+% LISTA DE TABELAS
+% =============================================
+\newpage
+\thispagestyle{empty}
+\titulodelista{LISTA DE TABELAS}
+% Nota: caso deseje separar quadros e tabelas em listas distintas,
+% será necessário criar um float personalizado com o pacote newfloat.
+% Por ora, a lista de tabelas compartilha o mesmo contador dos quadros.
+\listoftables
+\thispagestyle{empty}
+
+% =============================================
 % LISTA DE SIGLAS E ABREVIATURAS
 % =============================================
 \newpage
 \thispagestyle{empty}
-\begin{center}
-    \fontsize{14pt}{16pt}\selectfont\bfseries LISTA DE SIGLAS E ABREVIATURAS\\[24pt]
-\end{center}
+\titulodelista{LISTA DE SIGLAS E ABREVIATURAS}
 
 \begin{tabbing}
     \hspace{3cm}\=\kill
@@ -271,6 +352,8 @@ Personal financial management in Brazil still faces limitations regarding access
 % SUMÁRIO
 % =============================================
 \newpage
+\thispagestyle{empty}
+\titulodelista{SUMÁRIO}
 \tableofcontents
 \thispagestyle{empty}
 
@@ -303,8 +386,13 @@ O público-alvo do negócio é formado, principalmente, por adultos economicamen
 
 As personas consistem em perfis fictícios elaborados com base nas características, comportamentos, necessidades e dificuldades do público que se pretende atender. Sua utilização no projeto permite compreender com maior profundidade os diferentes tipos de usuários, suas expectativas em relação à solução proposta e a forma como interagem com tecnologias voltadas à organização financeira. A partir dessa construção, torna-se possível orientar decisões de desenvolvimento com maior foco na experiência do usuário, na usabilidade e na adequação das funcionalidades ao contexto real de uso. Neste trabalho, foram definidas três personas que representam perfis contrastantes, mas ambos compatíveis com o público-alvo da solução, conforme apresentado nas Figuras X, X e X.
 
-% Figura X: Persona 1
-% Fonte: elaborado pelos autores (2026)
+\begin{figure}[H]
+    \centering
+    \caption{Esquema de uma infraestrutura de \textit{Botnet}.}
+    \label{fig:botnet}
+    \includegraphics[width=1\textwidth]{images/botnet.png}
+\end{figure}
+{\setstretch{1.0}\fontetabela{\textbf{Fonte:} Elaborado pelos autores (2026).}}
 
 % Figura X: Persona 2
 % Fonte: elaborado pelos autores (2026)
@@ -371,7 +459,7 @@ Na prática, as tarefas serão organizadas em um \textit{backlog} e distribuída
 
 \section{Detalhamento das atividades}
 
-Na primeira etapa do projeto, foram desenvolvidas atividades que vão da análise de mercado à definição da proposta de desenvolvimento, as quais estão resumidas no Quadro X para melhor visualização e organização do processo.
+Na primeira etapa do projeto, foram desenvolvidas atividades que vão da análise de mercado à definição da proposta de desenvolvimento, as quais estão resumidas no Quadro 1 para melhor visualização e organização do processo.
 
 \begin{table}[H]
 \centering
@@ -388,7 +476,7 @@ Na primeira etapa do projeto, foram desenvolvidas atividades que vão da anális
 
 \section{Detalhamento dos recursos}
 
-As informações contidas no Quadro X permitem identificar, de forma organizada, os recursos disponíveis e os recursos demandados pelo projeto, envolvendo equipe, infraestrutura e \textit{softwares} fundamentais para sua execução.
+As informações contidas no Quadro 2 permitem identificar, de forma organizada, os recursos disponíveis e os recursos demandados pelo projeto, envolvendo equipe, infraestrutura e \textit{softwares} fundamentais para sua execução.
 
 \begin{table}[H]
 \centering
@@ -430,7 +518,7 @@ No processo de organização inicial do projeto, a primeira atividade consistiu 
 
 \section{Definição do problema}
 
-Considerando as dificuldades enfrentadas por muitos usuários no acompanhamento e na interpretação de suas informações financeiras no dia a dia, torna-se possível identificar, por meio do Quadro X, a definição do problema que fundamenta este projeto.
+Considerando as dificuldades enfrentadas por muitos usuários no acompanhamento e na interpretação de suas informações financeiras no dia a dia, torna-se possível identificar, por meio do Quadro 3, a definição do problema que fundamenta este projeto.
 
 \begin{table}[H]
 \centering
@@ -449,7 +537,7 @@ Considerando as dificuldades enfrentadas por muitos usuários no acompanhamento 
 
 \section{\textit{Stakeholders}}
 
-A identificação dos \textit{stakeholders} é fundamental para compreender os atores envolvidos no projeto, especialmente aqueles que mantêm interesse direto ou influência sobre a aplicação proposta. Nesse contexto, o Quadro X demonstra os \textit{stakeholders} relacionados à solução, bem como sua classificação e o grau de influência atribuído a cada um.
+A identificação dos \textit{stakeholders} é fundamental para compreender os atores envolvidos no projeto, especialmente aqueles que mantêm interesse direto ou influência sobre a aplicação proposta. Nesse contexto, o Quadro 4 demonstra os \textit{stakeholders} relacionados à solução, bem como sua classificação e o grau de influência atribuído a cada um.
 
 \begin{table}[H]
 \centering
@@ -483,10 +571,10 @@ Durante o desenvolvimento de \textit{software}, a modelagem do sistema é uma et
 
 \section{Lista de restrições}
 
-No decorrer do processo de desenvolvimento, algumas limitações foram levantadas e organizadas no Quadro X.
+No decorrer do processo de desenvolvimento, algumas limitações foram levantadas e organizadas no Quadro 5.
 
 {\small
-\begin{longtable}{|p{2cm}|p{3.5cm}|p{8cm}|}
+\begin{longtable}{|p{2.0cm}|p{3.6cm}|p{8.9cm}|}
 \caption{Lista de Restrições} \label{quad:restricoes} \\
 \hline
 \textbf{Fonte} & \textbf{Restrição} & \textbf{Lógica} \\ \hline
@@ -520,9 +608,9 @@ Os requisitos e as formas de representação do sistema possuem papel relevante 
 
 \subsection{Requisitos funcionais}
 
-O Quadro X apresenta os requisitos funcionais do projeto, isto é, as funcionalidades e ações que o sistema deverá executar para atender às necessidades identificadas durante a etapa de levantamento de requisitos. Esses requisitos descrevem os comportamentos esperados da solução e servem como base para orientar o desenvolvimento das principais operações do sistema.
+O Quadro 6 apresenta os requisitos funcionais do projeto, isto é, as funcionalidades e ações que o sistema deverá executar para atender às necessidades identificadas durante a etapa de levantamento de requisitos. Esses requisitos descrevem os comportamentos esperados da solução e servem como base para orientar o desenvolvimento das principais operações do sistema.
 
-\begin{longtable}{|l|p{3cm}|p{6.5cm}|l|}
+\begin{longtable}{|p{1.5cm}|p{3.2cm}|p{7.3cm}|p{2.1cm}|}
 \caption{Requisitos Funcionais} \label{quad:rf} \\
 \hline
 \textbf{Código} & \textbf{Requisito} & \textbf{Descrição} & \textbf{Prioridade} \\ \hline
@@ -558,9 +646,9 @@ O Quadro X apresenta os requisitos funcionais do projeto, isto é, as funcionali
 
 \subsection{Requisitos não funcionais e de qualidade}
 
-Para além das funcionalidades do sistema, é necessário considerar requisitos não funcionais e de qualidade, que estabelecem critérios relacionados ao seu comportamento operacional e aos padrões esperados de uso, como segurança, desempenho e usabilidade. O detalhamento desses requisitos é apresentado no Quadro X.
+Para além das funcionalidades do sistema, é necessário considerar requisitos não funcionais e de qualidade, que estabelecem critérios relacionados ao seu comportamento operacional e aos padrões esperados de uso, como segurança, desempenho e usabilidade. O detalhamento desses requisitos é apresentado no Quadro 7.
 
-\begin{longtable}{|l|p{3cm}|p{6.5cm}|l|}
+\begin{longtable}{|p{1.8cm}|p{3.2cm}|p{7.0cm}|p{2.1cm}|}
 \caption{Requisitos Não Funcionais e de Qualidade} \label{quad:rnf} \\
 \hline
 \textbf{Código} & \textbf{Requisito} & \textbf{Descrição} & \textbf{Prioridade} \\ \hline
@@ -659,7 +747,7 @@ A Figura X apresenta os casos de uso definidos para a solução proposta.
 \setstretch{1.0}
 
 \begin{center}
-    \fontsize{14pt}{16pt}\selectfont\bfseries REFERÊNCIAS\\[24pt]
+    \fontsize{14pt}{14pt}\selectfont\bfseries REFERÊNCIAS\\[24pt]
 \end{center}
 
 BANCO CENTRAL DO BRASIL. \textbf{Open Finance}. Brasília, 2025. Disponível em: https://www.bcb.gov.br/estabilidadefinanceira/openfinance. Acesso em: 2026.
