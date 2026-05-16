@@ -18,6 +18,25 @@
 \usepackage{booktabs}
 \usepackage{multirow}
 \usepackage{ragged2e}
+\usepackage{caption}
+
+% Configuração de legendas (captions) - fonte 10pt (small em doc 12pt), espaçamento 0.3cm
+\captionsetup{
+    font={small},
+    labelfont={bf},
+    skip=0.3cm,
+    justification=centering,
+    singlelinecheck=true
+}
+\captionsetup[table]{skip=0.3cm}
+\captionsetup[figure]{skip=0.3cm}
+\captionsetup[longtable]{skip=0.3cm}
+
+% Comando padronizado para fonte de tabelas/figuras (10pt, 0.3cm acima)
+\newcommand{\fontetabela}[1]{%
+    \vspace{0.3cm}%
+    {\noindent\fontsize{10pt}{12pt}\selectfont #1}%
+}
 
 % Configuração da fonte Arial
 \setmainfont{arial}[
@@ -99,7 +118,7 @@
         \fontsize{12pt}{14pt}\selectfont MATHEUS LIMA BONADIO\\
         \fontsize{12pt}{14pt}\selectfont VITOR NASCIMENTO MOREIRA\\
         \vspace{4cm}
-        \fontsize{14pt}{16pt}\selectfont TÍTULO DO TRABALHO DE CONCLUSÃO DE CURSO
+        \fontsize{14pt}{16pt}\selectfont PLATAFORMA PREDITIVA E CONVERSACIONAL DE INTELIGÊNCIA FINANCEIRA VIA OPEN FINANCE
         \vfill
         \fontsize{12pt}{14pt}\selectfont Ribeirão Preto\\
         \fontsize{12pt}{14pt}\selectfont 2026
@@ -116,7 +135,7 @@
         \fontsize{12pt}{14pt}\selectfont MATHEUS LIMA BONADIO\\
         \fontsize{12pt}{14pt}\selectfont VITOR NASCIMENTO MOREIRA\\
         \vspace{4cm}
-        \fontsize{14pt}{16pt}\selectfont TÍTULO DO TRABALHO DE CONCLUSÃO DE CURSO
+        \fontsize{14pt}{16pt}\selectfont PLATAFORMA PREDITIVA E CONVERSACIONAL DE INTELIGÊNCIA FINANCEIRA VIA OPEN FINANCE
         \vspace{4cm}
         \begin{flushright}
             \parbox{8cm}{
@@ -144,7 +163,7 @@
 840474 -- MATHEUS LIMA BONADIO\\
 839868 -- VITOR NASCIMENTO MOREIRA\\[12pt]
 \begin{center}
-    \fontsize{14pt}{16pt}\selectfont\bfseries Título do Trabalho de Conclusão de Curso\\[24pt]
+    \fontsize{14pt}{16pt}\selectfont PLATAFORMA PREDITIVA E CONVERSACIONAL DE INTELIGÊNCIA FINANCEIRA VIA OPEN FINANCE\\[24pt]
 \end{center}
 
 \noindent Trabalho de Conclusão de Curso apresentado ao Centro de Ciências Exatas, Naturais e Tecnológicas da Universidade de Ribeirão Preto como parte dos requisitos para obtenção do grau de bacharel em Engenharia de Software.\\[12pt]
@@ -364,8 +383,7 @@ Na primeira etapa do projeto, foram desenvolvidas atividades que vão da anális
 1 & Análise inicial e elaboração da proposta \\ \hline
 \end{tabular}
 
-\vspace{4pt}
-\noindent\footnotesize Fonte: Elaborado pelos autores (2026).
+\fontetabela{\textbf{Fonte:} Elaborado pelos autores (2026).}
 \end{table}
 
 \section{Detalhamento dos recursos}
@@ -386,8 +404,7 @@ Equipamentos & & \\ \hline
 \textit{Softwares} & & \\ \hline
 \end{tabular}
 
-\vspace{4pt}
-\noindent\footnotesize Fonte: Elaborado pelos autores (2026).
+\fontetabela{\textbf{Fonte:} Elaborado pelos autores (2026).}
 \end{table}
 
 \section{Cronograma do projeto}
@@ -427,8 +444,7 @@ Considerando as dificuldades enfrentadas por muitos usuários no acompanhamento 
 \textbf{Benefícios} & Ao desenvolver uma solução de assistência financeira inteligente operada pelo WhatsApp, integrada ao \textit{Open Finance} e apoiada por recursos de análise preditiva e interação em linguagem natural, os usuários poderão acompanhar suas finanças com mais praticidade, compreender melhor seus hábitos de consumo, receber alertas e recomendações personalizadas e tomar decisões financeiras de maneira mais consciente, rápida e acessível. \\ \hline
 \end{tabular}
 
-\vspace{4pt}
-\noindent\footnotesize Fonte: Elaborado pelos autores (2026).
+\fontetabela{\textbf{Fonte:} Elaborado pelos autores (2026).}
 \end{table}
 
 \section{\textit{Stakeholders}}
@@ -448,8 +464,7 @@ Investidores & Interno & Alta \\ \hline
 Usuário Comum & Cliente & Alta \\ \hline
 \end{tabular}
 
-\vspace{4pt}
-\noindent\footnotesize Fonte: Elaborado pelos autores (2026).
+\fontetabela{\textbf{Fonte:} Elaborado pelos autores (2026).}
 \end{table}
 
 \section{Causas raízes do problema}
@@ -480,10 +495,10 @@ No decorrer do processo de desenvolvimento, algumas limitações foram levantada
 \textbf{Fonte} & \textbf{Restrição} & \textbf{Lógica} \\ \hline
 \endhead
 \hline
-\multicolumn{3}{r}{\footnotesize\textit{Continua na próxima página}} \\
+\multicolumn{3}{r}{\fontsize{10pt}{12pt}\selectfont\textit{Continua na próxima página}} \\
 \endfoot
 \hline
-\multicolumn{3}{l}{\footnotesize Fonte: Elaborado pelos autores (2026).} \\
+\multicolumn{3}{c}{\fontsize{10pt}{12pt}\selectfont \textbf{Fonte:} Elaborado pelos autores (2026).} \\
 \endlastfoot
 Sistêmica & Integração com APIs do \textit{Open Finance} & O funcionamento da solução depende da integração com serviços e APIs do ecossistema de \textit{Open Finance}, responsáveis pelo acesso padronizado aos dados financeiros compartilhados pelo usuário. \\ \hline
 Sistêmica & Dependência da API do \textit{WhatsApp Business} & Como a solução será operada integralmente pelo WhatsApp, sua execução depende da disponibilidade e das regras da plataforma \textit{WhatsApp Business}. \\ \hline
@@ -516,10 +531,10 @@ O Quadro X apresenta os requisitos funcionais do projeto, isto é, as funcionali
 \textbf{Código} & \textbf{Requisito} & \textbf{Descrição} & \textbf{Prioridade} \\ \hline
 \endhead
 \hline
-\multicolumn{4}{r}{\footnotesize\textit{Continua na próxima página}} \\
+\multicolumn{4}{r}{\fontsize{10pt}{12pt}\selectfont\textit{Continua na próxima página}} \\
 \endfoot
 \hline
-\multicolumn{4}{l}{\footnotesize Fonte: Elaborado pelos autores (2026).} \\
+\multicolumn{4}{c}{\fontsize{10pt}{12pt}\selectfont \textbf{Fonte:} Elaborado pelos autores (2026).} \\
 \endlastfoot
 {[RF001]} & Realizar cadastro & O usuário deve ser capaz de iniciar seu cadastro na solução por meio do WhatsApp, fornecendo as informações necessárias para criação de sua conta. & Obrigatório \\ \hline
 {[RF002]} & Realizar autenticação & O usuário deve ser capaz de se autenticar de forma segura para acessar suas informações financeiras e utilizar os recursos da solução. & Obrigatório \\ \hline
@@ -554,10 +569,10 @@ Para além das funcionalidades do sistema, é necessário considerar requisitos 
 \textbf{Código} & \textbf{Requisito} & \textbf{Descrição} & \textbf{Prioridade} \\ \hline
 \endhead
 \hline
-\multicolumn{4}{r}{\footnotesize\textit{Continua na próxima página}} \\
+\multicolumn{4}{r}{\fontsize{10pt}{12pt}\selectfont\textit{Continua na próxima página}} \\
 \endfoot
 \hline
-\multicolumn{4}{l}{\footnotesize Fonte: Elaborado pelos autores (2026).} \\
+\multicolumn{4}{c}{\fontsize{10pt}{12pt}\selectfont \textbf{Fonte:} Elaborado pelos autores (2026).} \\
 \endlastfoot
 {[RNF001]} & Segurança dos dados & O sistema deve proteger os dados pessoais e financeiros do usuário contra acessos não autorizados, vazamentos e usos indevidos. & Obrigatório \\ \hline
 {[RNF002]} & Privacidade das informações & O sistema deve tratar os dados do usuário em conformidade com a LGPD, garantindo consentimento, transparência e controle sobre o uso das informações. & Obrigatório \\ \hline
