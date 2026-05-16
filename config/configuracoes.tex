@@ -1,0 +1,126 @@
+% Configuração de legendas (captions) - fonte 10pt (small em doc 12pt), espaçamento 0.3cm
+\captionsetup{
+    font={small},
+    labelfont={bf},
+    skip=0.3cm,
+    justification=centering,
+    singlelinecheck=true
+}
+\captionsetup[table]{skip=0.3cm}
+\captionsetup[figure]{skip=0.3cm}
+\captionsetup[longtable]{skip=0.3cm}
+
+% Comando padronizado para fonte de tabelas/figuras (10pt, centralizado)
+\newcommand{\fontetabela}[1]{%
+    \par\vspace{0.3cm}%
+    {\centering\fontsize{10pt}{12pt}\selectfont #1\par}%
+}
+
+% Configuração da fonte Arial
+\setmainfont{arial}[
+    Path = ./fontes/,
+    Extension = .ttf,
+    UprightFont = *,
+    BoldFont = *bd,
+    ItalicFont = ariali,
+    BoldItalicFont = arialbi
+]
+
+% Layout ABNT
+\geometry{
+    a4paper,
+    top=3cm,
+    left=3cm,
+    right=2cm,
+    bottom=2cm
+}
+
+\setstretch{1.5}
+\setlength{\parindent}{1.25cm}
+
+% Configuração de títulos
+\titleformat{\chapter}[hang]
+    {\normalfont\fontsize{14}{16}\bfseries\uppercase}
+    {\thechapter}
+    {1em}
+    {}
+\titlespacing*{\chapter}{0pt}{12pt}{12pt}
+
+\titleformat{\section}[hang]
+    {\normalfont\fontsize{12}{14}\bfseries}
+    {\thesection}
+    {1em}
+    {}
+\titlespacing*{\section}{0pt}{24pt}{6pt}
+
+\titleformat{\subsection}[hang]
+    {\normalfont\fontsize{12}{14}\bfseries}
+    {\thesubsection}
+    {1em}
+    {}
+\titlespacing*{\subsection}{0pt}{18pt}{4pt}
+
+% Renomear "Tabela" para "Quadro" em legendas e listas
+\addto\captionsbrazil{%
+    \renewcommand{\tablename}{Quadro}%
+    \renewcommand{\listtablename}{Lista de Quadros}%
+}
+
+% Sumário - sem pontinhos, sem negrito, título será inserido manualmente
+\renewcommand{\contentsname}{}
+\setlength{\cftbeforetoctitleskip}{0pt}
+\setlength{\cftaftertoctitleskip}{4pt}
+\renewcommand{\cfttoctitlefont}{\normalfont\fontsize{1}{1}\selectfont}
+\renewcommand{\cftchapfont}{\normalfont\fontsize{12}{14}\selectfont}
+\renewcommand{\cftchappagefont}{\normalfont\fontsize{12}{14}\selectfont}
+\renewcommand{\cftsecfont}{\normalfont\fontsize{12}{14}\selectfont}
+\renewcommand{\cftsecpagefont}{\normalfont\fontsize{12}{14}\selectfont}
+\renewcommand{\cftsubsecfont}{\normalfont\fontsize{12}{14}\selectfont}
+\renewcommand{\cftsubsecpagefont}{\normalfont\fontsize{12}{14}\selectfont}
+\renewcommand{\cftchapleader}{\hfill}
+\renewcommand{\cftsecleader}{\hfill}
+\renewcommand{\cftsubsecleader}{\hfill}
+\setlength{\cftbeforechapskip}{2pt}
+\setlength{\cftbeforesecskip}{1pt}
+\setlength{\cftbeforesubsecskip}{1pt}
+
+% Listas de figuras e tabelas - títulos serão inseridos manualmente
+\renewcommand{\listfigurename}{}
+\renewcommand{\listtablename}{}
+\setlength{\cftbeforeloftitleskip}{0pt}
+\setlength{\cftafterloftitleskip}{4pt}
+\renewcommand{\cftloftitlefont}{\normalfont\fontsize{1}{1}\selectfont}
+\setlength{\cftbeforelottitleskip}{0pt}
+\setlength{\cftafterlottitleskip}{4pt}
+\renewcommand{\cftlottitlefont}{\normalfont\fontsize{1}{1}\selectfont}
+% Remover pontinhos das listas de figuras e tabelas
+\renewcommand{\cftfigleader}{\hfill}
+\renewcommand{\cfttableader}{\hfill}
+\renewcommand{\cftfigfont}{\normalfont\fontsize{12}{14}\selectfont}
+\renewcommand{\cftfigpagefont}{\normalfont\fontsize{12}{14}\selectfont}
+\renewcommand{\cfttabfont}{\normalfont\fontsize{12}{14}\selectfont}
+\renewcommand{\cfttabpagefont}{\normalfont\fontsize{12}{14}\selectfont}
+\setlength{\cftbeforefigskip}{2pt}
+\setlength{\cftbeforetabskip}{2pt}
+
+% Comando para título centralizado de listas (padrão único)
+\newcommand{\titulodelista}[1]{%
+    \begin{center}%
+        \fontsize{14pt}{14pt}\selectfont\bfseries #1%
+    \end{center}%
+    \vspace{4pt}%
+}
+
+% Paginação
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\fancypagestyle{plain}{
+    \fancyhf{}
+    \fancyhead[R]{\thepage}
+    \renewcommand{\headrulewidth}{0pt}
+}
+
+\counterwithout{figure}{chapter}
+\counterwithout{table}{chapter}
