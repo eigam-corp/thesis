@@ -84,13 +84,13 @@
 % SUMÁRIO — formatação manual conforme ABNT
 % ============================================================
 \renewcommand{\contentsname}{}  % Remove o título automático "Sumário" (inserido manualmente)
-\setlength{\cftbeforetoctitleskip}{0pt}   % Sem espaço antes do título do sumário
-\setlength{\cftaftertoctitleskip}{0pt}    % Espaço mínimo após o título (quase zero)
-\renewcommand{\cfttoctitlefont}{\normalfont\fontsize{1}{1}\selectfont} % Título invisível (1pt)
+\setlength{\cftbeforetoctitleskip}{0pt}
+\setlength{\cftaftertoctitleskip}{0pt}
+\renewcommand{\cfttoctitlefont}{\normalfont\fontsize{0.1pt}{0pt}\selectfont} % Título sem altura: fonte 0.1pt, entrelinha 0pt
 
-% Fonte das entradas de capítulo no sumário
-\renewcommand{\cftchapfont}{\normalfont\fontsize{12}{12}\selectfont}
-\renewcommand{\cftchappagefont}{\normalfont\fontsize{12}{12}\selectfont}   % Número de página do capítulo
+% Fonte das entradas de capítulo no sumário (negrito, conforme imagem)
+\renewcommand{\cftchapfont}{\normalfont\fontsize{12}{12}\bfseries\selectfont}
+\renewcommand{\cftchappagefont}{\normalfont\fontsize{12}{12}\bfseries\selectfont}   % Número de página do capítulo
 
 % Fonte das entradas de seção no sumário
 \renewcommand{\cftsecfont}{\normalfont\fontsize{12}{12}\selectfont}
@@ -100,10 +100,16 @@
 \renewcommand{\cftsubsecfont}{\normalfont\fontsize{12}{12}\selectfont}
 \renewcommand{\cftsubsecpagefont}{\normalfont\fontsize{12}{12}\selectfont} % Número de página da subseção
 
-% Remove os pontinhos de condução (leader) — substitui por espaço em branco
-\renewcommand{\cftchapleader}{\hfill}
-\renewcommand{\cftsecleader}{\hfill}
-\renewcommand{\cftsubsecleader}{\hfill}
+% Pontinhos de condução (leaders) — estilo da imagem
+\renewcommand{\cftchapdotsep}{\cftdotsep}   % Ativa pontinhos para capítulos
+\renewcommand{\cftchapleader}{\cftdotfill{\cftchapdotsep}}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cftsubsecleader}{\cftdotfill{\cftdotsep}}
+
+% Espaçamento vertical entre entradas do sumário (compacto)
+\setlength{\cftbeforechapskip}{0pt}    % Antes de cada capítulo
+\setlength{\cftbeforesecskip}{0pt}     % Antes de cada seção
+\setlength{\cftbeforesubsecskip}{0pt}  % Antes de cada subseção
 
 % ============================================================
 % LISTA DE FIGURAS e LISTA DE QUADROS — formatação manual
@@ -113,17 +119,17 @@
 
 % Configurações da lista de figuras (lof = list of figures)
 \setlength{\cftbeforeloftitleskip}{0pt}
-\setlength{\cftafterloftitleskip}{4pt}
-\renewcommand{\cftloftitlefont}{\normalfont\fontsize{1}{1}\selectfont} % Título invisível
+\setlength{\cftafterloftitleskip}{0pt}
+\renewcommand{\cftloftitlefont}{\normalfont\fontsize{0.1pt}{0pt}\selectfont} % Título sem altura
 
 % Configurações da lista de tabelas/quadros (lot = list of tables)
 \setlength{\cftbeforelottitleskip}{0pt}
-\setlength{\cftafterlottitleskip}{4pt}
-\renewcommand{\cftlottitlefont}{\normalfont\fontsize{1}{1}\selectfont} % Título invisível
+\setlength{\cftafterlottitleskip}{0pt}
+\renewcommand{\cftlottitlefont}{\normalfont\fontsize{0.1pt}{0pt}\selectfont} % Título sem altura
 
-% Remove os pontinhos de condução nas listas
-\renewcommand{\cftfigleader}{\hfill}   % Lista de figuras: sem pontinhos
-\renewcommand{\cfttableader}{\hfill}   % Lista de quadros: sem pontinhos
+% Pontinhos de condução nas listas de figuras e quadros
+\renewcommand{\cftfigleader}{\cftdotfill{\cftdotsep}}   % Lista de figuras: com pontinhos
+\renewcommand{\cfttableader}{\cftdotfill{\cftdotsep}}   % Lista de quadros: com pontinhos
 
 % Fonte das entradas nas listas de figuras e quadros
 \renewcommand{\cftfigfont}{\normalfont\fontsize{12}{12}\selectfont}
@@ -131,9 +137,16 @@
 \renewcommand{\cfttabfont}{\normalfont\fontsize{12}{12}\selectfont}
 \renewcommand{\cfttabpagefont}{\normalfont\fontsize{12}{12}\selectfont}  % Número de página
 
-% Espaçamento vertical entre entradas nas listas
-\setlength{\cftbeforefigskip}{2pt}  % Antes de cada figura
-\setlength{\cftbeforetabskip}{2pt}  % Antes de cada quadro
+% Prefixo e sufixo do número nas listas (ex: "Figura 1 –")
+\renewcommand{\cftfigpresnum}{Figura }   % Texto antes do número na lista de figuras
+\setlength{\cftfignumwidth}{5.5em}       % Largura reservada para "Figura 1 --"
+
+\renewcommand{\cfttabpresnum}{Quadro }   % Texto antes do número na lista de quadros
+\setlength{\cfttabnumwidth}{5.5em}       % Largura reservada para "Quadro 1 --"
+
+% Espaçamento vertical entre entradas nas listas (compacto, igual ao sumário)
+\setlength{\cftbeforefigskip}{0pt}  % Antes de cada figura
+\setlength{\cftbeforetabskip}{0pt}  % Antes de cada quadro
 
 % ============================================================
 % COMANDO CUSTOMIZADO: \titulodelista{texto}
