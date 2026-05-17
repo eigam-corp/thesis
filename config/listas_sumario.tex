@@ -4,7 +4,7 @@
 \newpage
 \thispagestyle{empty}
 \titulodelista{LISTA DE ILUSTRAÇÕES}
-\listoffigures
+{\singlespacing\listoffigures}
 \thispagestyle{empty}
 
 % =============================================
@@ -13,7 +13,7 @@
 \newpage
 \thispagestyle{empty}
 \titulodelista{LISTA DE QUADROS}
-\listoftables
+{\singlespacing\listoftables}
 \thispagestyle{empty}
 
 % =============================================
@@ -25,7 +25,7 @@
 % Nota: caso deseje separar quadros e tabelas em listas distintas,
 % será necessário criar um float personalizado com o pacote newfloat.
 % Por ora, a lista de tabelas compartilha o mesmo contador dos quadros.
-\listoftables
+{\singlespacing\listoftables}
 \thispagestyle{empty}
 
 % =============================================
@@ -35,7 +35,7 @@
 \thispagestyle{empty}
 \titulodelista{LISTA DE SIGLAS E ABREVIATURAS}
 
-\begin{tabbing}
+{\singlespacing\begin{tabbing}
     \hspace{3cm}\=\kill
     API \> \textit{Application Programming Interface}\\[6pt]
     CA \> \textit{Certificate Authority}\\[6pt]
@@ -46,7 +46,7 @@
     SGBD \> Sistema Gerenciador de Banco de Dados\\[6pt]
     SQL \> \textit{Structured Query Language}\\[6pt]
     SWOT \> \textit{Strengths, Weaknesses, Opportunities, Threats}\\
-\end{tabbing}
+\end{tabbing}}
 
 % =============================================
 % SUMÁRIO
@@ -54,5 +54,5 @@
 \newpage
 \thispagestyle{empty}
 \titulodelista{SUMÁRIO}
-\tableofcontents
+{\singlespacing\tableofcontents}
 \thispagestyle{empty}
