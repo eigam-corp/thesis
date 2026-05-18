@@ -35,7 +35,7 @@ Na Figura \ref{fig:mer_postgres} é apresentado o modelo de entidade relacioname
 
 \section{Modelo de dados orientado a documentos}
 
-O MongoDB é empregado para armazenar dados semi-estruturados de alto volume, como transações financeiras sincronizadas via Open Finance e o histórico financeiro dos usuários. A flexibilidade do modelo de documentos permite representar estruturas variáveis conforme o tipo de transação, sem a necessidade de migrações de esquema. Para garantir a conformidade com a LGPD, campos monetários e dados sensíveis são criptografados em nível de campo por meio da \textit{Client-Side Field Level Encryption} antes de serem persistidos.
+O MongoDB é empregado para armazenar dados semi-estruturados de alto volume, como transações financeiras sincronizadas via Open Finance e o histórico de conversas dos usuários. A flexibilidade do modelo de documentos permite representar estruturas variáveis conforme o tipo de transação, sem a necessidade de migrações de esquema. Para garantir a conformidade com a LGPD, campos monetários e dados sensíveis são criptografados em nível de campo por meio de criptografia simétrica AES-256-GCM na camada de aplicação antes de serem persistidos.
 
 Na Figura \ref{fig:mongo} é apresentado o modelo de dados orientado a documentos utilizado no MongoDB.
 
@@ -46,3 +46,38 @@ Na Figura \ref{fig:mongo} é apresentado o modelo de dados orientado a documento
     \label{fig:mongo}
     \fonte{Elaborado pelos autores (2026).}
 \end{figure}
+
+O banco de dados MongoDB é organizado em duas coleções principais, descritas a seguir.
+
+\subsection{Coleção \textit{transactions}}
+
+A coleção \texttt{transactions} armazena cada transação financeira sincronizada a partir das instituições conectadas via Open Finance (Pluggy). Cada documento contém os seguintes campos:
+
+\begin{itemize}
+    \item \texttt{\_id} — identificador único do documento (ObjectId gerado pelo MongoDB);
+    \item \texttt{user\_id} — referência ao usuário proprietário da transação, indexado para consultas rápidas;
+    \item \texttt{pluggy\_transaction\_id} — identificador único da transação na API do Pluggy, com índice único para evitar duplicidades em sincronizações subsequentes;
+    \item \texttt{description\_encrypted} — descrição da transação cifrada com AES-256-GCM, codificada em base64;
+    \item \texttt{amount\_encrypted} — valor monetário da transação cifrado com AES-256-GCM, codificado em base64;
+    \item \texttt{date} — data da transação, indexada para suporte a consultas por período;
+    \item \texttt{category} — classificação da transação (ex.: alimentação, transporte), armazenada em claro por não ser um dado sensível;
+    \item \texttt{institution\_code} — código da instituição financeira de origem;
+    \item \texttt{type} — tipo da transação (\texttt{credit} ou \texttt{debit});
+    \item \texttt{iv} e \texttt{tag} — vetor de inicialização e \textit{authentication tag} utilizados pelo algoritmo AES-256-GCM para permitir a descriptografia e verificar a integridade dos dados;
+    \item \texttt{metadata} — objeto com dados não sensíveis complementares, como código de categoria do comerciante (MCC) e indicação de recorrência;
+    \item \texttt{created\_at} e \texttt{synced\_at} — datas de criação do documento e da última sincronização com o Pluggy.
+\end{itemize}
+
+\subsection{Coleção \textit{conversation\_history}}
+
+A coleção \texttt{conversation\_history} persiste o contexto das conversas entre o usuário e o assistente financeiro no WhatsApp. Seu objetivo é permitir que o sistema retome o contexto de interações anteriores em novas sessões. Os campos são:
+
+\begin{itemize}
+    \item \texttt{\_id} — identificador único do documento (ObjectId);
+    \item \texttt{user\_id} — referência ao usuário, indexado;
+    \item \texttt{session\_id} — identificador da sessão de conversa;
+    \item \texttt{messages\_encrypted} — array de mensagens da sessão serializado e cifrado integralmente com AES-256-GCM, codificado em base64;
+    \item \texttt{iv} e \texttt{tag} — vetor de inicialização e \textit{authentication tag} da criptografia;
+    \item \texttt{message\_count} — contador de mensagens da sessão, armazenado em claro como metadado operacional;
+    \item \texttt{created\_at} e \texttt{updated\_at} — datas de criação e última atualização do documento. Um índice TTL (\textit{Time-to-Live}) de 90 dias é aplicado sobre \texttt{created\_at}, garantindo a exclusão automática de históricos antigos em conformidade com o princípio de minimização de dados da LGPD.
+\end{itemize}
