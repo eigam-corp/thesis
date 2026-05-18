@@ -94,7 +94,7 @@
 
 \subsection{Requisitos não funcionais e de qualidade}
 
-Além dos requisitos funcionais, a solu\u00e7\u00e3o deve atender a requisitos n\u00e3o funcionais e de qualidade que assegurem seu funcionamento adequado em um contexto de alta sensibilidade de dados. Dado que a plataforma lida com informa\u00e7\u00f5es financeiras e pessoais de usu\u00e1rios, aspectos como seguran\u00e7a, privacidade, confiabilidade e desempenho s\u00e3o tratados como prioridades estruturais. O detalhamento desses requisitos \u00e9 apresentado no Quadro \ref{quad:rnf}.
+Além dos requisitos funcionais, a solução deve atender a requisitos não funcionais e de qualidade que assegurem seu funcionamento adequado em um contexto de alta sensibilidade de dados. Dado que a plataforma lida com informações financeiras e pessoais de usuários, aspectos como segurança, privacidade, confiabilidade e desempenho são tratados como prioridades estruturais. O detalhamento desses requisitos é apresentado no Quadro \ref{quad:rnf}.
 
 \begin{longtable}{|p{1.8cm}|p{3.2cm}|p{7.0cm}|p{2.1cm}|}
 \caption{Requisitos Não Funcionais e de Qualidade} \label{quad:rnf} \\
@@ -1338,3 +1338,64 @@ a. Erro ao deletar um \textit{embedding}:\newline
 \\ \hline
 \end{longtable}
 }
+
+
+\subsection{Diagramas de sequência}
+
+Os diagramas de sequência descrevem a ordem temporal das interações entre os atores e os componentes internos do sistema para a realização de cada fluxo funcional. Por meio deles é possível visualizar como as mensagens são trocadas entre participantes — usuário, serviços, bancos de dados e integrações externas — em resposta a um evento iniciador, evidenciando responsabilidades e dependências em tempo de execução. As Figuras \ref{fig:seq01} a \ref{fig:seq07} apresentam os sete fluxos modelados para a solução.
+
+\begin{figure}[H]
+    \centering
+    \caption{Diagrama de Sequência — Cadastro e Consentimento}
+    \includegraphics[width=\textwidth]{"images/sequencia/01 - Cadastro e Consentimento.png"}
+    \label{fig:seq01}
+    \fontetabela{\textbf{Fonte:} Elaborado pelos autores (2026).}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \caption{Diagrama de Sequência — Autenticação por Senha e Token de Privilégio}
+    \includegraphics[width=\textwidth]{"images/sequencia/02 - Autenticacao por Senha e Token de Privilegio.png"}
+    \label{fig:seq02}
+    \fontetabela{\textbf{Fonte:} Elaborado pelos autores (2026).}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \caption{Diagrama de Sequência — Processamento de Mensagem Conversacional (RAG + LLM)}
+    \includegraphics[width=\textwidth]{"images/sequencia/03 - Processamento de Mensagem Conversacional (RAG + LLM).png"}
+    \label{fig:seq03}
+    \fontetabela{\textbf{Fonte:} Elaborado pelos autores (2026).}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \caption{Diagrama de Sequência — Sincronização de Transações via Open Finance}
+    \includegraphics[width=\textwidth]{"images/sequencia/04 - Sincronizacao de Transacoes via Open Finance.png"}
+    \label{fig:seq04}
+    \fontetabela{\textbf{Fonte:} Elaborado pelos autores (2026).}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \caption{Diagrama de Sequência — Alerta Reativo (Anomalia de Gasto)}
+    \includegraphics[width=\textwidth]{"images/sequencia/05 - Alerta Reativo (Anomalia de Gasto).png"}
+    \label{fig:seq05}
+    \fontetabela{\textbf{Fonte:} Elaborado pelos autores (2026).}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \caption{Diagrama de Sequência — Resumo Periódico Semanal e Mensal}
+    \includegraphics[width=\textwidth]{"images/sequencia/06 - Resumo Periodico Semanal e Mensal.png"}
+    \label{fig:seq06}
+    \fontetabela{\textbf{Fonte:} Elaborado pelos autores (2026).}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \caption{Diagrama de Sequência — Exclusão de Dados (LGPD Art.\ 18 — Direito ao Esquecimento)}
+    \includegraphics[width=\textwidth]{"images/sequencia/07 - Exclusao de Dados (LGPD Art. 18 - Direito ao Esquecimento).png"}
+    \label{fig:seq07}
+    \fontetabela{\textbf{Fonte:} Elaborado pelos autores (2026).}
+\end{figure}
