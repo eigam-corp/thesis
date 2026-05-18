@@ -1,0 +1,100 @@
+@startuml Diagrama de Fronteira Sistemica
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+skinparam linetype ortho
+skinparam nodesep 50
+skinparam ranksep 60
+skinparam defaultFontSize 11
+
+skinparam rectangle {
+    BorderColor #333333
+    BorderThickness 2
+    FontStyle bold
+    FontSize 13
+}
+
+skinparam package {
+    BorderColor #888888
+    BorderThickness 1
+    FontSize 11
+}
+
+skinparam component {
+    BackgroundColor #F5F5F5
+    BorderColor #666666
+    FontSize 10
+}
+
+skinparam actor {
+    FontSize 11
+}
+
+' ── Atores ───────────────────────────────────────────────
+
+actor "Usuário" as USR
+
+' ── Integrações externas ──────────────────────────────────
+
+package "Meta / WhatsApp" #FDECEA {
+    component "WhatsApp\nCloud API" as WA
+}
+
+package "Open Finance (BCB)" #E8F5E9 {
+    component "Pluggy" as PLUGGY
+}
+
+package "OpenAI" #EDE7F6 {
+    component "LLM + Embeddings" as AI
+}
+
+' ── Fronteira do sistema ──────────────────────────────────
+
+rectangle "  Plataforma de Inteligência Financeira  " as SYS #FFFFFF {
+
+    package "Entrada" {
+        component "API Gateway" as GW
+    }
+
+    package "Domínio" {
+        component "Chat Service" as CS
+        component "Finance Service" as FS
+        component "Notification Service" as NS
+        component "Outbound Worker" as OW
+        component "Audit Service" as AUD
+    }
+
+    package "Dados" {
+        component "PostgreSQL" as PG
+        component "MongoDB" as MG
+        component "Redis" as RD
+        component "Kafka" as KF
+    }
+
+    GW --> KF
+    KF --> CS
+    KF --> FS
+    KF --> NS
+    KF --> OW
+    KF --> AUD
+    CS --> RD
+    CS --> PG
+    CS --> MG
+    FS --> PG
+    FS --> MG
+    NS --> RD
+    AUD --> PG
+}
+
+' ── Conexões externas ────────────────────────────────────
+
+USR --> WA : mensagem
+WA --> GW : webhook\n(TLS + HMAC)
+OW --> WA : resposta
+
+FS --> PLUGGY : sync transações
+PLUGGY --> GW : webhook item_id
+
+CS --> AI : prompt + query
+FS --> AI : embeddings
+
+@enduml

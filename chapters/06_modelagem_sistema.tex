@@ -1,88 +1,100 @@
 % =============================================
 % CAPÍTULO 6 - MODELAGEM DO SISTEMA
 % =============================================
-\chapter{MODELAGEM DO SISTEMA}
+    \chapter{MODELAGEM DO SISTEMA}
 
-Durante o desenvolvimento de \textit{software}, a modelagem do sistema é uma etapa importante, uma vez que permite estruturar os requisitos, identificar limitações e descrever as funcionalidades previstas para a solução. Assim, nesta seção, serão abordadas as restrições do sistema, os requisitos funcionais e não funcionais, bem como os diagramas de casos de uso e suas descrições correspondentes.
+    A modelagem do sistema representa uma etapa fundamental no processo de desenvolvimento de \textit{software}, pois permite estruturar os requisitos, identificar restrições e descrever com clareza as funcionalidades esperadas da solução. No contexto deste projeto — uma plataforma conversacional de inteligência financeira operada integralmente pelo WhatsApp, com integração ao \textit{Open Finance} e uso de inteligência artificial — essa etapa é especialmente relevante, dado que a solução envolve dados financeiros sensíveis, dependências de serviços externos e conformidade com a Lei Geral de Proteção de Dados (LGPD). Assim, neste capítulo são apresentadas as restrições do sistema, os requisitos funcionais e não funcionais, bem como os diagramas de casos de uso e suas respectivas descrições.
 
-\section{Lista de restrições}
+    \section{Fronteira sistêmica}
 
-No decorrer do processo de desenvolvimento, algumas limitações foram levantadas e organizadas no Quadro 5.
+    Na Figura \ref{fig:fronteira}, é ilustrada a fronteira sistêmica da solução, demonstrando visualmente a separação do ambiente interno da plataforma e as interações realizadas no seu entorno. O diagrama facilita o entendimento dos sistemas externos que se comunicam com a solução e dos componentes internos responsáveis por cada responsabilidade. Foi identificado que a aplicação interage com três grupos de serviços externos: a \textbf{WhatsApp Cloud API} (Meta), que atua como canal de entrada e saída das mensagens do usuário; a \textbf{Pluggy}, responsável pela integração com o ecossistema de \textit{Open Finance} regulado pelo Banco Central, viabilizando a sincronização de transações financeiras; e a \textbf{OpenAI}, utilizada para processamento de linguagem natural e geração de \textit{embeddings}. Internamente, a plataforma é organizada em camadas de entrada, domínio e dados, compostas por serviços como \textit{API Gateway}, \textit{Chat Service}, \textit{Finance Service}, \textit{Notification Service}, \textit{Outbound Worker} e \textit{Audit Service}, com persistência distribuída entre PostgreSQL, MongoDB, Redis e Kafka.
 
-{\small
-\begin{longtable}{|p{2.0cm}|p{3.6cm}|p{8.9cm}|}
-\caption{Lista de Restrições} \label{quad:restricoes} \\
-\hline
-\textbf{Fonte} & \textbf{Restrição} & \textbf{Lógica} \\ \hline
-\endfirsthead
-\hline
-\textbf{Fonte} & \textbf{Restrição} & \textbf{Lógica} \\ \hline
-\endhead
-\hline
-\multicolumn{3}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
-\endfoot
-\hline
-\multicolumn{3}{c}{\fontsize{10pt}{10pt}\selectfont \textbf{Fonte:} Elaborado pelos autores (2026).} \\
-\endlastfoot
-Sistêmica & Integração com APIs do \textit{Open Finance} & O funcionamento da solução depende da integração com serviços e APIs do ecossistema de \textit{Open Finance}, responsáveis pelo acesso padronizado aos dados financeiros compartilhados pelo usuário. \\ \hline
-Sistêmica & Dependência da API do \textit{WhatsApp Business} & Como a solução será operada integralmente pelo WhatsApp, sua execução depende da disponibilidade e das regras da plataforma \textit{WhatsApp Business}. \\ \hline
-Sistêmica & Segurança de informações financeiras & Por lidar com dados bancários e financeiros sensíveis, o sistema deve adotar mecanismos de proteção, autenticação e controle de acesso para evitar usos indevidos e acessos não autorizados. \\ \hline
-Sistêmica & Consentimento do usuário & O acesso aos dados financeiros depende da autorização explícita do usuário, o que limita o funcionamento da solução aos casos em que houver consentimento válido. \\ \hline
-Sistêmica & Precisão das respostas automatizadas & Como o sistema utiliza inteligência artificial e interação conversacional, é necessário limitar respostas imprecisas ou genéricas, principalmente em contextos financeiros. \\ \hline
-Sistêmica & Limitações do canal conversacional & Por funcionar dentro do WhatsApp, a solução fica restrita ao formato e aos recursos permitidos pelo canal, o que reduz possibilidades visuais em comparação com plataformas \textit{web}. \\ \hline
-Sistêmica & Utilização de serviços terceirizados & A implementação do sistema pode depender de ferramentas externas para conexão ao \textit{Open Finance}, hospedagem, banco de dados, autenticação, integração e processamento de IA. \\ \hline
-Sistêmica & Conformidade com a LGPD & O sistema deve respeitar normas de privacidade e proteção de dados pessoais, exigindo cuidados específicos no tratamento, armazenamento e compartilhamento das informações. \\ \hline
-\textit{Hardware} & Hospedagem em nuvem & A solução depende de infraestrutura em nuvem para processamento, armazenamento e disponibilidade contínua, evitando a necessidade de infraestrutura física própria. \\ \hline
-\textit{Hardware} & Disponibilidade de conexão com a \textit{internet} & Tanto o usuário quanto os serviços integrados precisam de acesso à \textit{internet} para que a solução funcione corretamente. \\ \hline
-\textit{Hardware} & Compatibilidade com dispositivos móveis & Como o sistema será utilizado pelo WhatsApp, é necessário que o usuário possua um \textit{smartphone} compatível com o aplicativo e com acesso regular ao serviço. \\ \hline
-\end{longtable}
-}
+    \begin{figure}[H]
+        \centering
+        \caption{Fronteira sistêmica da plataforma}
+        \includegraphics[width=\textwidth]{images/fronteira.png}
+        \label{fig:fronteira}
+        \fontetabela{\textbf{Fonte:} Elaborado pelos autores (2026).}
+    \end{figure}
 
-\section{Requisitos e diagramas}
+    \section{Lista de restrições}
 
-Os requisitos e as formas de representação do sistema possuem papel relevante no desenvolvimento de \textit{software}, pois contribuem para a definição clara das necessidades que deverão ser atendidas pela solução proposta. De acordo com Washizaki, em ``\textit{Guide to the Software Engineering Body of Knowledge}'' (SWEBOK), a engenharia de requisitos integra uma das áreas de conhecimento fundamentais da engenharia de \textit{software}, sendo responsável por apoiar a identificação, documentação e comunicação das necessidades do sistema. Nesse contexto, o uso de modelos e diagramas auxilia na visualização dessas informações, facilita o entendimento entre os envolvidos no projeto e contribui para uma especificação mais organizada e consistente do \textit{software} a ser desenvolvido.
+    No decorrer do processo de desenvolvimento, foram identificadas restrições que influenciam diretamente o funcionamento e o escopo da solução. Por se tratar de uma plataforma que depende da integração com o ecossistema de \textit{Open Finance}, da disponibilidade da \textit{WhatsApp Business Platform} e do cumprimento das exigências da LGPD, as restrições possuem caráter tanto sistêmico quanto de infraestrutura. Essas limitações foram organizadas no Quadro \ref{quad:restricoes}.
 
-\subsection{Requisitos funcionais}
+    {\small
+    \begin{longtable}{|p{2.0cm}|p{3.6cm}|p{8.9cm}|}
+    \caption{Lista de Restrições} \label{quad:restricoes} \\
+    \hline
+    \textbf{Fonte} & \textbf{Restrição} & \textbf{Lógica} \\ \hline
+    \endfirsthead
+    \hline
+    \textbf{Fonte} & \textbf{Restrição} & \textbf{Lógica} \\ \hline
+    \endhead
+    \hline
+    \multicolumn{3}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+    \endfoot
+    \hline
+    \multicolumn{3}{c}{\fontsize{10pt}{10pt}\selectfont \textbf{Fonte:} Elaborado pelos autores (2026).} \\
+    \endlastfoot
+    Sistêmica & Integração com APIs do \textit{Open Finance} & O funcionamento da solução depende da integração com serviços e APIs do ecossistema de \textit{Open Finance}, responsáveis pelo acesso padronizado aos dados financeiros compartilhados pelo usuário. \\ \hline
+    Sistêmica & Dependência da API do \textit{WhatsApp Business} & Como a solução será operada integralmente pelo WhatsApp, sua execução depende da disponibilidade e das regras da plataforma \textit{WhatsApp Business}. \\ \hline
+    Sistêmica & Segurança de informações financeiras & Por lidar com dados bancários e financeiros sensíveis, o sistema deve adotar mecanismos de proteção, autenticação e controle de acesso para evitar usos indevidos e acessos não autorizados. \\ \hline
+    Sistêmica & Consentimento do usuário & O acesso aos dados financeiros depende da autorização explícita do usuário, o que limita o funcionamento da solução aos casos em que houver consentimento válido. \\ \hline
+    Sistêmica & Precisão das respostas automatizadas & Como o sistema utiliza inteligência artificial e interação conversacional, é necessário limitar respostas imprecisas ou genéricas, principalmente em contextos financeiros. \\ \hline
+    Sistêmica & Limitações do canal conversacional & Por funcionar dentro do WhatsApp, a solução fica restrita ao formato e aos recursos permitidos pelo canal, o que reduz possibilidades visuais em comparação com plataformas \textit{web}. \\ \hline
+    Sistêmica & Utilização de serviços terceirizados & A implementação do sistema pode depender de ferramentas externas para conexão ao \textit{Open Finance}, hospedagem, banco de dados, autenticação, integração e processamento de IA. \\ \hline
+    Sistêmica & Conformidade com a LGPD & O sistema deve respeitar normas de privacidade e proteção de dados pessoais, exigindo cuidados específicos no tratamento, armazenamento e compartilhamento das informações. \\ \hline
+    \textit{Hardware} & Hospedagem em nuvem & A solução depende de infraestrutura em nuvem para processamento, armazenamento e disponibilidade contínua, evitando a necessidade de infraestrutura física própria. \\ \hline
+    \textit{Hardware} & Disponibilidade de conexão com a \textit{internet} & Tanto o usuário quanto os serviços integrados precisam de acesso à \textit{internet} para que a solução funcione corretamente. \\ \hline
+    \textit{Hardware} & Compatibilidade com dispositivos móveis & Como o sistema será utilizado pelo WhatsApp, é necessário que o usuário possua um \textit{smartphone} compatível com o aplicativo e com acesso regular ao serviço. \\ \hline
+    \end{longtable}
+    }
 
-O Quadro 6 apresenta os requisitos funcionais do projeto, isto é, as funcionalidades e ações que o sistema deverá executar para atender às necessidades identificadas durante a etapa de levantamento de requisitos. Esses requisitos descrevem os comportamentos esperados da solução e servem como base para orientar o desenvolvimento das principais operações do sistema.
+    \section{Requisitos e diagramas}
 
-\begin{longtable}{|p{1.5cm}|p{3.2cm}|p{7.3cm}|p{2.1cm}|}
-\caption{Requisitos Funcionais} \label{quad:rf} \\
-\hline
-\textbf{Código} & \textbf{Requisito} & \textbf{Descrição} & \textbf{Prioridade} \\ \hline
-\endfirsthead
-\hline
-\textbf{Código} & \textbf{Requisito} & \textbf{Descrição} & \textbf{Prioridade} \\ \hline
-\endhead
-\hline
-\multicolumn{4}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
-\endfoot
-\hline
-\multicolumn{4}{c}{\fontsize{10pt}{10pt}\selectfont \textbf{Fonte:} Elaborado pelos autores (2026).} \\
-\endlastfoot
-{[RF001]} & Realizar cadastro & O usuário deve ser capaz de iniciar seu cadastro na solução por meio do WhatsApp, fornecendo as informações necessárias para criação de sua conta. & Obrigatório \\ \hline
-{[RF002]} & Realizar autenticação & O usuário deve ser capaz de se autenticar de forma segura para acessar suas informações financeiras e utilizar os recursos da solução. & Obrigatório \\ \hline
-{[RF003]} & Vincular conta ao \textit{Open Finance} & O usuário deve ser capaz de autorizar e vincular suas contas bancárias por meio do \textit{Open Finance}, permitindo o compartilhamento de dados financeiros com a solução. & Obrigatório \\ \hline
-{[RF004]} & Consultar informações financeiras & O usuário deve ser capaz de consultar, por meio da conversa no WhatsApp, informações como saldo, transações, histórico financeiro e movimentações recentes. & Obrigatório \\ \hline
-{[RF005]} & Receber respostas em linguagem natural & O sistema deve ser capaz de responder às perguntas do usuário em linguagem natural, utilizando uma interface conversacional no WhatsApp. & Obrigatório \\ \hline
-{[RF006]} & Gerar análises financeiras & O sistema deve ser capaz de analisar os dados financeiros do usuário e apresentar interpretações sobre gastos, receitas e comportamento financeiro. & Obrigatório \\ \hline
-{[RF007]} & Gerar previsões financeiras & O sistema deve ser capaz de produzir previsões com base no histórico financeiro do usuário, indicando possíveis cenários futuros relacionados a gastos e saldo. & Obrigatório \\ \hline
-{[RF008]} & Emitir alertas financeiros & O sistema deve ser capaz de enviar alertas ao usuário sobre situações relevantes, como vencimentos, gastos acima do padrão ou risco de saldo insuficiente. & Obrigatório \\ \hline
-{[RF009]} & Fornecer recomendações personalizadas & O sistema deve ser capaz de gerar orientações e recomendações financeiras personalizadas com base no perfil e no histórico do usuário. & Obrigatório \\ \hline
-{[RF010]} & Definir metas financeiras & O usuário deve ser capaz de cadastrar metas financeiras, como economizar determinado valor ou controlar gastos em categorias específicas. & Desejável \\ \hline
-{[RF011]} & Acompanhar metas financeiras & O usuário deve ser capaz de consultar o andamento de suas metas financeiras por meio da conversa no WhatsApp. & Desejável \\ \hline
-{[RF012]} & Classificar transações & O sistema deve ser capaz de identificar e classificar automaticamente transações financeiras em categorias, como alimentação, transporte, lazer e contas fixas. & Obrigatório \\ \hline
-{[RF013]} & Consultar resumo financeiro & O usuário deve ser capaz de solicitar resumos financeiros periódicos, contendo uma visão consolidada de receitas, despesas e saldo. & Obrigatório \\ \hline
-{[RF014]} & Gerenciar consentimento & O usuário deve ser capaz de conceder, visualizar e revogar o consentimento de acesso aos seus dados financeiros compartilhados. & Obrigatório \\ \hline
-{[RF015]} & Gerenciar perfil & O usuário deve ser capaz de visualizar e atualizar suas informações cadastrais e preferências de uso da solução. & Desejável \\ \hline
-{[RF016]} & Registrar histórico de interações & O sistema deve ser capaz de armazenar o histórico das interações realizadas pelo usuário no assistente conversacional. & Obrigatório \\ \hline
-{[RF017]} & Encerrar vinculação bancária & O usuário deve ser capaz de desvincular suas contas bancárias da solução quando desejar. & Obrigatório \\ \hline
-{[RF018]} & Disponibilizar painel administrativo & O sistema deve fornecer uma área administrativa para acompanhamento técnico e gerenciamento geral da solução. & Desejável \\ \hline
+    A definição dos requisitos é uma das etapas centrais do desenvolvimento de \textit{software}, pois estabelece com precisão o que a solução deve ser capaz de realizar e sob quais condições deve operar. De acordo com Washizaki, em ``\textit{Guide to the Software Engineering Body of Knowledge}'' (SWEBOK), a engenharia de requisitos integra uma das áreas de conhecimento fundamentais da engenharia de \textit{software}, sendo responsável por apoiar a identificação, documentação e comunicação das necessidades do sistema. Complementarmente, o uso de diagramas de casos de uso auxilia na representação visual das interações entre os usuários e o sistema, facilitando a compreensão do escopo e a comunicação entre os envolvidos no projeto.
+
+    \subsection{Requisitos funcionais}
+
+    O Quadro \ref{quad:rf} apresenta os requisitos funcionais do projeto, isto é, as funcionalidades e comportamentos que o sistema deverá oferecer para atender às necessidades dos usuários. Esses requisitos abrangem desde o cadastro e a autenticação até a consulta de informações financeiras, a geração de análises e previsões, o envio de alertas e o gerenciamento de consentimentos, refletindo os principais fluxos de interação previstos para a solução.
+
+    \begin{longtable}{|p{1.5cm}|p{3.2cm}|p{7.3cm}|p{2.1cm}|}
+    \caption{Requisitos Funcionais} \label{quad:rf} \\
+    \hline
+    \textbf{Código} & \textbf{Requisito} & \textbf{Descrição} & \textbf{Prioridade} \\ \hline
+    \endfirsthead
+    \hline
+    \textbf{Código} & \textbf{Requisito} & \textbf{Descrição} & \textbf{Prioridade} \\ \hline
+    \endhead
+    \hline
+    \multicolumn{4}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+    \endfoot
+    \hline
+    \multicolumn{4}{c}{\fontsize{10pt}{10pt}\selectfont \textbf{Fonte:} Elaborado pelos autores (2026).} \\
+    \endlastfoot
+    {[RF001]} & Realizar cadastro & O usuário deve ser capaz de iniciar seu cadastro na solução por meio do WhatsApp, fornecendo as informações necessárias para criação de sua conta. & Obrigatório \\ \hline
+    {[RF002]} & Realizar autenticação & O usuário deve ser capaz de se autenticar de forma segura para acessar suas informações financeiras e utilizar os recursos da solução. & Obrigatório \\ \hline
+    {[RF003]} & Vincular conta ao \textit{Open Finance} & O usuário deve ser capaz de autorizar e vincular suas contas bancárias por meio do \textit{Open Finance}, permitindo o compartilhamento de dados financeiros com a solução. & Obrigatório \\ \hline
+    {[RF004]} & Consultar informações financeiras & O usuário deve ser capaz de consultar, por meio da conversa no WhatsApp, informações como saldo, transações, histórico financeiro e movimentações recentes. & Obrigatório \\ \hline
+    {[RF005]} & Receber respostas em linguagem natural & O sistema deve ser capaz de responder às perguntas do usuário em linguagem natural, utilizando uma interface conversacional no WhatsApp. & Obrigatório \\ \hline
+    {[RF006]} & Gerar análises financeiras & O sistema deve ser capaz de analisar os dados financeiros do usuário e apresentar interpretações sobre gastos, receitas e comportamento financeiro. & Obrigatório \\ \hline
+    {[RF007]} & Gerar previsões financeiras & O sistema deve ser capaz de produzir previsões com base no histórico financeiro do usuário, indicando possíveis cenários futuros relacionados a gastos e saldo. & Obrigatório \\ \hline
+    {[RF008]} & Emitir alertas financeiros & O sistema deve ser capaz de enviar alertas ao usuário sobre situações relevantes, como vencimentos, gastos acima do padrão ou risco de saldo insuficiente. & Obrigatório \\ \hline
+    {[RF009]} & Fornecer recomendações personalizadas & O sistema deve ser capaz de gerar orientações e recomendações financeiras personalizadas com base no perfil e no histórico do usuário. & Obrigatório \\ \hline
+    {[RF010]} & Definir metas financeiras & O usuário deve ser capaz de cadastrar metas financeiras, como economizar determinado valor ou controlar gastos em categorias específicas. & Desejável \\ \hline
+    {[RF011]} & Acompanhar metas financeiras & O usuário deve ser capaz de consultar o andamento de suas metas financeiras por meio da conversa no WhatsApp. & Desejável \\ \hline
+    {[RF012]} & Classificar transações & O sistema deve ser capaz de identificar e classificar automaticamente transações financeiras em categorias, como alimentação, transporte, lazer e contas fixas. & Obrigatório \\ \hline
+    {[RF013]} & Consultar resumo financeiro & O usuário deve ser capaz de solicitar resumos financeiros periódicos, contendo uma visão consolidada de receitas, despesas e saldo. & Obrigatório \\ \hline
+    {[RF014]} & Gerenciar consentimento & O usuário deve ser capaz de conceder, visualizar e revogar o consentimento de acesso aos seus dados financeiros compartilhados. & Obrigatório \\ \hline
+    {[RF015]} & Gerenciar perfil & O usuário deve ser capaz de visualizar e atualizar suas informações cadastrais e preferências de uso da solução. & Desejável \\ \hline
+    {[RF016]} & Registrar histórico de interações & O sistema deve ser capaz de armazenar o histórico das interações realizadas pelo usuário no assistente conversacional. & Obrigatório \\ \hline
+    {[RF017]} & Encerrar vinculação bancária & O usuário deve ser capaz de desvincular suas contas bancárias da solução quando desejar. & Obrigatório \\ \hline
+    {[RF018]} & Disponibilizar painel administrativo & O sistema deve fornecer uma área administrativa para acompanhamento técnico e gerenciamento geral da solução. & Desejável \\ \hline
 \end{longtable}
 
 \subsection{Requisitos não funcionais e de qualidade}
 
-Para além das funcionalidades do sistema, é necessário considerar requisitos não funcionais e de qualidade, que estabelecem critérios relacionados ao seu comportamento operacional e aos padrões esperados de uso, como segurança, desempenho e usabilidade. O detalhamento desses requisitos é apresentado no Quadro 7.
+Além dos requisitos funcionais, a solu\u00e7\u00e3o deve atender a requisitos n\u00e3o funcionais e de qualidade que assegurem seu funcionamento adequado em um contexto de alta sensibilidade de dados. Dado que a plataforma lida com informa\u00e7\u00f5es financeiras e pessoais de usu\u00e1rios, aspectos como seguran\u00e7a, privacidade, confiabilidade e desempenho s\u00e3o tratados como prioridades estruturais. O detalhamento desses requisitos \u00e9 apresentado no Quadro \ref{quad:rnf}.
 
 \begin{longtable}{|p{1.8cm}|p{3.2cm}|p{7.0cm}|p{2.1cm}|}
 \caption{Requisitos Não Funcionais e de Qualidade} \label{quad:rnf} \\
