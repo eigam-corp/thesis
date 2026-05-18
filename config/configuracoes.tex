@@ -111,6 +111,11 @@
 \setlength{\cftbeforesecskip}{0pt}     % Antes de cada seção
 \setlength{\cftbeforesubsecskip}{0pt}  % Antes de cada subseção
 
+% Remove indentação de seções e subseções no sumário
+\setlength{\cftsecindent}{0pt}
+\setlength{\cftsubsecindent}{0pt}
+\setlength{\cftsubsubsecindent}{0pt}
+
 % ============================================================
 % LISTA DE FIGURAS e LISTA DE QUADROS — formatação manual
 % ============================================================
@@ -178,3 +183,19 @@
 % (numeração contínua: Figura 1, 2, 3... em vez de Figura 1.1, 1.2...)
 \counterwithout{figure}{chapter}
 \counterwithout{table}{chapter}
+
+% ============================================================
+% FLOAT PERSONALIZADO: tabela (distinto de quadro)
+% ============================================================
+\DeclareFloatingEnvironment[
+    name=Tabela,
+    listname={Lista de Tabelas},
+    within=none
+]{tabela}
+
+\renewcommand{\cfttabelapresnum}{Tabela }
+\setlength{\cfttabelanumwidth}{5.5em}
+\renewcommand{\cfttabelafont}{\normalfont\fontsize{12}{12}\selectfont}
+\renewcommand{\cfttabelapagefont}{\normalfont\fontsize{12}{12}\selectfont}
+\renewcommand{\cfttabelaleader}{\cftdotfill{\cftdotsep}}
+\setlength{\cftbeforetabelaskip}{0pt}
