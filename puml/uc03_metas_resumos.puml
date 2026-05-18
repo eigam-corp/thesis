@@ -1,0 +1,58 @@
+@startuml UC03 - Metas Financeiras e Resumos Periodicos
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+actor "Usuário" as U
+actor "Sistema\n(Scheduler)" as SYS
+
+rectangle "Metas e Resumos Periódicos" {
+    usecase "Definir meta\nfinanceira" as UC18
+    usecase "Acompanhar progresso\nde meta" as UC19
+    usecase "Editar meta\nfinanceira" as UC20
+    usecase "Cancelar meta\nfinanceira" as UC21
+    usecase "Receber resumo\nsemanal" as UC22
+    usecase "Receber resumo\nmensal" as UC23
+    usecase "Solicitar detalhes\ndo resumo (valores R$)" as UC24
+    usecase "Visualizar gráfico\nde evolução" as UC25
+    usecase "Configurar\npreferências de notificação" as UC26
+    usecase "Desativar tipo\nde resumo" as UC27
+}
+
+U --> UC18
+U --> UC19
+U --> UC20
+U --> UC21
+U --> UC24
+U --> UC26
+U --> UC27
+
+SYS --> UC22 : cron toda segunda 06:00
+SYS --> UC23 : cron dia 1 de cada mês
+
+UC20 ..> UC18 : <<extend>>
+UC21 ..> UC18 : <<extend>>
+
+UC22 ..> UC25 : <<include>>
+UC23 ..> UC25 : <<include>>
+
+UC24 ..> UC22 : <<extend>>
+UC24 ..> UC23 : <<extend>>
+
+UC27 ..> UC26 : <<extend>>
+
+note right of UC22
+  Template message sem valores R$.
+  Usa apenas: % variação, contagens,
+  tendências (↑/↓).
+  Enviado na janela 08h-21h
+  no fuso do usuário.
+end note
+
+note right of UC24
+  Requer autenticação via
+  senha de 6 dígitos e
+  token de privilégio ativo (1h).
+  Resposta inclui valores em R$.
+end note
+@enduml

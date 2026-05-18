@@ -1,0 +1,61 @@
+@startuml UC04 - Direitos do Titular (LGPD Art. 18)
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+actor "Usuário\n(Titular)" as U
+actor "Pluggy\n(Open Finance)" as PL
+actor "Sistema\n(Audit Service)" as AUD
+
+rectangle "Direitos do Titular — LGPD Art. 18" {
+    usecase "Consultar quais dados\nsão tratados\n(Art. 18, I)" as LC01
+    usecase "Exportar dados\nportabilidade\n(Art. 18, II e V)" as LC02
+    usecase "Corrigir dados\ncadastrais\n(Art. 18, III)" as LC03
+    usecase "Revogar consentimento\nOpen Finance\n(Art. 18, IX)" as LC04
+    usecase "Solicitar exclusão\nde dados\n(Art. 18, VI)" as LC05
+    usecase "Consultar com quem\ndados são compartilhados\n(Art. 18, VII)" as LC06
+    usecase "Registrar operação\nem audit log" as LC07
+    usecase "Anonimizar\ntransações" as LC08
+    usecase "Revogar acesso\nno Pluggy" as LC09
+    usecase "Deletar embeddings\ne sessões" as LC10
+}
+
+U --> LC01
+U --> LC02
+U --> LC03
+U --> LC04
+U --> LC05
+U --> LC06
+
+LC02 ..> LC07 : <<include>>
+LC04 ..> LC07 : <<include>>
+LC05 ..> LC07 : <<include>>
+LC03 ..> LC07 : <<include>>
+
+LC05 ..> LC08 : <<include>>
+LC05 ..> LC09 : <<include>>
+LC05 ..> LC10 : <<include>>
+
+LC04 ..> LC09 : <<include>>
+LC09 --> PL
+
+LC07 --> AUD
+
+note bottom of LC05
+  Soft-delete: phone_number_hash
+  mantido para prevenir re-cadastro.
+  Audit logs mantidos 5 anos
+  por obrigação legal (Art. 16).
+end note
+
+note bottom of LC02
+  Arquivo JSON/CSV criptografado
+  disponível via link temporário (24h).
+end note
+
+note bottom of LC04
+  Para jobs de sync no BullMQ.
+  Dados já coletados mantidos
+  até solicitação de exclusão.
+end note
+@enduml

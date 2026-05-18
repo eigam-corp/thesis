@@ -1,0 +1,62 @@
+@startuml UC01 - Acesso e Consulta Financeira
+left to right direction
+skinparam packageStyle rectangle
+skinparam actorStyle awesome
+
+actor "Usuário" as U
+actor "Pluggy\n(Open Finance)" as PL
+actor "OpenAI\n(LLM)" as AI
+
+rectangle "Acesso e Consulta Financeira" {
+    usecase "Realizar cadastro\nvia WhatsApp" as UC01
+    usecase "Vincular conta\nao Open Finance" as UC02
+    usecase "Autenticar via\nsenha de 6 dígitos" as UC03
+    usecase "Consultar saldo\ne extrato" as UC04
+    usecase "Consultar histórico\nde transações" as UC05
+    usecase "Consultar resumo\nfinanceiro" as UC06
+    usecase "Receber resposta\nem linguagem natural" as UC07
+    usecase "Visualizar gráfico\nde gastos" as UC08
+    usecase "Obter token\nde privilégio (1h)" as UC09
+}
+
+U --> UC01
+U --> UC02
+U --> UC03
+U --> UC04
+U --> UC05
+U --> UC06
+
+UC04 ..> UC03 : <<include>>
+UC05 ..> UC03 : <<include>>
+UC06 ..> UC03 : <<include>>
+
+UC04 ..> UC07 : <<include>>
+UC05 ..> UC07 : <<include>>
+UC06 ..> UC07 : <<include>>
+UC06 ..> UC08 : <<extend>>
+
+UC03 ..> UC09 : <<include>>
+
+UC02 --> PL
+UC04 --> PL : sincroniza dados
+UC07 --> AI : gera resposta
+
+note right of UC09
+  Token com TTL de 1h.
+  Expirado: valores monetários
+  são mascarados (R$ •••••)
+end note
+
+note right of UC03
+  Senha de 6 dígitos definida
+  no cadastro, armazenada como
+  bcrypt (salt rounds: 12) no PostgreSQL.
+  Lockout após 5 falhas (30 min).
+end note
+
+note right of UC01
+  Onboarding inclui criação
+  da senha de 6 dígitos
+  e confirmação.
+end note
+@enduml
