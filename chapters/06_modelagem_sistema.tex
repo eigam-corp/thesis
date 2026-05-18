@@ -56,7 +56,7 @@
 
     \subsection{Requisitos funcionais}
 
-    O Quadro \ref{quad:rf} apresenta os requisitos funcionais do projeto, isto é, as funcionalidades e comportamentos que o sistema deverá oferecer para atender às necessidades dos usuários. Esses requisitos abrangem desde o cadastro e a autenticação até a consulta de informações financeiras, a geração de análises e previsões, o envio de alertas e o gerenciamento de consentimentos, refletindo os principais fluxos de interação previstos para a solução.
+    O Quadro \ref{quad:rf} apresenta os requisitos funcionais do projeto, isto é, as funcionalidades e comportamentos que o sistema deverá oferecer para atender às necessidades dos usuários. Esses requisitos abrangem desde o cadastro e a vinculação de contas bancárias até a consulta de informações financeiras, a geração de análises e previsões, o envio de alertas, o gerenciamento de metas e o gerenciamento de consentimentos, refletindo os principais fluxos de interação previstos para a solução.
 
     \begin{longtable}{|p{1.5cm}|p{3.2cm}|p{7.3cm}|p{2.1cm}|}
     \caption{Requisitos Funcionais} \label{quad:rf} \\
@@ -73,23 +73,17 @@
     \multicolumn{4}{c}{\fontsize{10pt}{10pt}\selectfont \textbf{Fonte:} Elaborado pelos autores (2026).} \\
     \endlastfoot
     {[RF001]} & Realizar cadastro & O usuário deve ser capaz de iniciar seu cadastro na solução por meio do WhatsApp, fornecendo as informações necessárias para criação de sua conta. & Obrigatório \\ \hline
-    {[RF002]} & Realizar autenticação & O usuário deve ser capaz de se autenticar de forma segura para acessar suas informações financeiras e utilizar os recursos da solução. & Obrigatório \\ \hline
-    {[RF003]} & Vincular conta ao \textit{Open Finance} & O usuário deve ser capaz de autorizar e vincular suas contas bancárias por meio do \textit{Open Finance}, permitindo o compartilhamento de dados financeiros com a solução. & Obrigatório \\ \hline
-    {[RF004]} & Consultar informações financeiras & O usuário deve ser capaz de consultar, por meio da conversa no WhatsApp, informações como saldo, transações, histórico financeiro e movimentações recentes. & Obrigatório \\ \hline
-    {[RF005]} & Receber respostas em linguagem natural & O sistema deve ser capaz de responder às perguntas do usuário em linguagem natural, utilizando uma interface conversacional no WhatsApp. & Obrigatório \\ \hline
-    {[RF006]} & Gerar análises financeiras & O sistema deve ser capaz de analisar os dados financeiros do usuário e apresentar interpretações sobre gastos, receitas e comportamento financeiro. & Obrigatório \\ \hline
-    {[RF007]} & Gerar previsões financeiras & O sistema deve ser capaz de produzir previsões com base no histórico financeiro do usuário, indicando possíveis cenários futuros relacionados a gastos e saldo. & Obrigatório \\ \hline
-    {[RF008]} & Emitir alertas financeiros & O sistema deve ser capaz de enviar alertas ao usuário sobre situações relevantes, como vencimentos, gastos acima do padrão ou risco de saldo insuficiente. & Obrigatório \\ \hline
-    {[RF009]} & Fornecer recomendações personalizadas & O sistema deve ser capaz de gerar orientações e recomendações financeiras personalizadas com base no perfil e no histórico do usuário. & Obrigatório \\ \hline
-    {[RF010]} & Definir metas financeiras & O usuário deve ser capaz de cadastrar metas financeiras, como economizar determinado valor ou controlar gastos em categorias específicas. & Desejável \\ \hline
-    {[RF011]} & Acompanhar metas financeiras & O usuário deve ser capaz de consultar o andamento de suas metas financeiras por meio da conversa no WhatsApp. & Desejável \\ \hline
-    {[RF012]} & Classificar transações & O sistema deve ser capaz de identificar e classificar automaticamente transações financeiras em categorias, como alimentação, transporte, lazer e contas fixas. & Obrigatório \\ \hline
-    {[RF013]} & Consultar resumo financeiro & O usuário deve ser capaz de solicitar resumos financeiros periódicos, contendo uma visão consolidada de receitas, despesas e saldo. & Obrigatório \\ \hline
-    {[RF014]} & Gerenciar consentimento & O usuário deve ser capaz de conceder, visualizar e revogar o consentimento de acesso aos seus dados financeiros compartilhados. & Obrigatório \\ \hline
-    {[RF015]} & Gerenciar perfil & O usuário deve ser capaz de visualizar e atualizar suas informações cadastrais e preferências de uso da solução. & Desejável \\ \hline
-    {[RF016]} & Registrar histórico de interações & O sistema deve ser capaz de armazenar o histórico das interações realizadas pelo usuário no assistente conversacional. & Obrigatório \\ \hline
-    {[RF017]} & Encerrar vinculação bancária & O usuário deve ser capaz de desvincular suas contas bancárias da solução quando desejar. & Obrigatório \\ \hline
-    {[RF018]} & Disponibilizar painel administrativo & O sistema deve fornecer uma área administrativa para acompanhamento técnico e gerenciamento geral da solução. & Desejável \\ \hline
+    {[RF002]} & Vincular conta ao \textit{Open Finance} & O usuário deve ser capaz de autorizar e vincular suas contas bancárias por meio do \textit{Open Finance}, permitindo o compartilhamento de dados financeiros com a solução. & Obrigatório \\ \hline
+    {[RF003]} & Consultar informações financeiras & O usuário deve ser capaz de consultar, por meio da conversa no WhatsApp, informações como saldo, transações, histórico financeiro, movimentações recentes e resumos financeiros periódicos com visão consolidada de receitas, despesas e saldo. & Obrigatório \\ \hline
+    {[RF004]} & Gerar análises financeiras & O sistema deve ser capaz de analisar os dados financeiros do usuário e apresentar interpretações sobre gastos, receitas e comportamento financeiro. & Obrigatório \\ \hline
+    {[RF005]} & Gerar previsões financeiras & O sistema deve ser capaz de produzir previsões com base no histórico financeiro do usuário, indicando possíveis cenários futuros relacionados a gastos e saldo. & Obrigatório \\ \hline
+    {[RF006]} & Emitir alertas financeiros & O sistema deve ser capaz de enviar alertas ao usuário sobre situações relevantes, como vencimentos, gastos acima do padrão ou risco de saldo insuficiente. & Obrigatório \\ \hline
+    {[RF007]} & Fornecer recomendações personalizadas & O sistema deve ser capaz de gerar orientações e recomendações financeiras personalizadas com base no perfil e no histórico do usuário. & Obrigatório \\ \hline
+    {[RF008]} & Definir metas financeiras & O usuário deve ser capaz de cadastrar metas financeiras, como economizar determinado valor ou controlar gastos em categorias específicas. & Desejável \\ \hline
+    {[RF009]} & Acompanhar metas financeiras & O usuário deve ser capaz de consultar o andamento de suas metas financeiras por meio da conversa no WhatsApp. & Desejável \\ \hline
+    {[RF010]} & Gerenciar consentimento & O usuário deve ser capaz de conceder, visualizar e revogar o consentimento de acesso aos seus dados financeiros compartilhados, incluindo a desvinculação de contas bancárias da solução. & Obrigatório \\ \hline
+    {[RF011]} & Gerenciar perfil & O usuário deve ser capaz de visualizar e atualizar suas informações cadastrais e preferências de uso da solução. & Desejável \\ \hline
+    {[RF012]} & Disponibilizar painel administrativo & O sistema deve fornecer uma área administrativa para acompanhamento técnico e gerenciamento geral da solução. & Desejável \\ \hline
 \end{longtable}
 
 \subsection{Requisitos não funcionais e de qualidade}
@@ -114,13 +108,13 @@ Além dos requisitos funcionais, a solução deve atender a requisitos não func
 {[RNF002]} & Privacidade das informações & O sistema deve tratar os dados do usuário em conformidade com a LGPD, garantindo consentimento, transparência e controle sobre o uso das informações. & Obrigatório \\ \hline
 {[RNF003]} & Disponibilidade do sistema & O sistema deve permanecer disponível para uso na maior parte do tempo, permitindo o acesso contínuo às funcionalidades essenciais. & Obrigatório \\ \hline
 {[RNF004]} & Desempenho nas respostas & O sistema deve fornecer respostas ao usuário em tempo adequado, de modo a manter a interação conversacional fluida e eficiente. & Obrigatório \\ \hline
-{[RNF005]} & Usabilidade & O sistema deve apresentar interações simples, claras e de fácil compreensão, adequadas ao uso por meio do WhatsApp. & Obrigatório \\ \hline
+{[RNF005]} & Usabilidade & O sistema deve apresentar interações em linguagem natural, simples, claras e de fácil compreensão, adequadas ao uso por meio de interface conversacional no WhatsApp. & Obrigatório \\ \hline
 {[RNF006]} & Confiabilidade das informações & O sistema deve apresentar dados financeiros, análises e alertas de forma consistente e confiável, reduzindo o risco de interpretações incorretas. & Obrigatório \\ \hline
 {[RNF007]} & Escalabilidade & O sistema deve ser capaz de suportar o aumento do número de usuários e interações sem comprometer seu funcionamento. & Desejável \\ \hline
 {[RNF008]} & Integração com serviços externos & O sistema deve ser compatível com APIs e serviços externos necessários para integração com \textit{Open Finance}, WhatsApp e demais recursos utilizados. & Obrigatório \\ \hline
 {[RNF009]} & Manutenibilidade & O sistema deve ser desenvolvido de forma organizada e modular, facilitando correções, ajustes e futuras evoluções. & Obrigatório \\ \hline
 {[RNF010]} & Portabilidade & O sistema deve funcionar adequadamente em diferentes dispositivos móveis que suportem o WhatsApp. & Desejável \\ \hline
-{[RNF011]} & Autenticação segura & O sistema deve utilizar mecanismos seguros de autenticação e validação de identidade para acesso às informações financeiras do usuário. & Desejável \\ \hline
+{[RNF011]} & Autenticação segura & O sistema deve utilizar mecanismos seguros de autenticação e validação de identidade para acesso às informações financeiras do usuário. & Obrigatório \\ \hline
 {[RNF012]} & Auditabilidade & O sistema deve ser capaz de registrar ações relevantes e eventos importantes para fins de monitoramento, rastreabilidade e suporte. & Desejável \\ \hline
 {[RNF013]} & Clareza na comunicação & O sistema deve apresentar mensagens e respostas em linguagem clara, objetiva e compreensível para o usuário final. & Obrigatório \\ \hline
 {[RNF014]} & Precisão das previsões e recomendações & O sistema deve buscar manter nível adequado de precisão nas previsões e recomendações geradas com base nos dados financeiros do usuário. & Obrigatório \\ \hline
