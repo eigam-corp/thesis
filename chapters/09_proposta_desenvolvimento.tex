@@ -90,8 +90,6 @@ Na abordagem escolhida para testes de software, adotaremos o \textit{Test-Driven
 
 Além dos testes unitários, serão realizados testes de integração para verificar o fluxo completo entre os serviços. Esses testes cobrem cenários como a produção e o consumo de eventos Kafka, o armazenamento e a recuperação de dados no PostgreSQL e no MongoDB, a expiração e a renovação do token de privilégio no Redis e a execução dos jobs agendados via BullMQ. Conforme recomendado por Newman (2022), contratos de eventos entre serviços produtores e consumidores devem ser testados explicitamente para evitar que mudanças em um serviço quebrem silenciosamente os demais.
 
-Para garantir a integridade das funcionalidades de segurança e conformidade com a LGPD, serão realizados testes manuais por meio de roteiros que simulam os fluxos de cadastro, autenticação via OTP, vinculação de contas Open Finance, solicitação de exportação de dados e exercício do direito de eliminação. Esses roteiros cobrem tanto o caminho feliz quanto cenários de erro, expiração de tokens e tentativas de acesso não autorizado.
-
 \section{Métricas de qualidade}
 
 Segundo Bass, Clements e Kazman (2022), atributos de qualidade são propriedades mensuráveis de um sistema que indicam quão bem ele satisfaz as necessidades de seus \textit{stakeholders}. Em sistemas distribuídos orientados a eventos, atributos como disponibilidade, desempenho e segurança devem ser projetados explicitamente na arquitetura, não apenas verificados após a implementação. As métricas de qualidade serão utilizadas para comparar e avaliar o software ao longo do seu ciclo de vida. O Quadro~\ref{qua:metricas} apresenta as métricas adotadas neste projeto.

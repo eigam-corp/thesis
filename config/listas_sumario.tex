@@ -22,7 +22,10 @@
 \newpage
 \thispagestyle{empty}
 \titulodelista{LISTA DE TABELAS}
-{\singlespacing\listtabelas}
+% Nota: caso deseje separar quadros e tabelas em listas distintas,
+% será necessário criar um float personalizado com o pacote newfloat.
+% Por ora, a lista de tabelas compartilha o mesmo contador dos quadros.
+{\singlespacing\listoftables}
 \thispagestyle{empty}
 
 % =============================================

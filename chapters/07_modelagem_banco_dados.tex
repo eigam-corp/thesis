@@ -5,7 +5,7 @@
 
 Segundo Elmasri e Navathe (2011, p. 131), "Geralmente o termo aplicação de banco de dados refere-se a um banco de dados em particular e aos programas associados que implementam as consultas e atualizações dele". Com isso em mente, a modelagem do banco de dados se trata de uma fase indispensável do desenvolvimento de um produto. Ao se pensar em como será a estrutura de um banco e seus relacionamentos, é possível trazer à tona regras de negócios e comportamentos implícitos que poderiam não ser identificados ao não se passar por esse estágio antes do desenvolvimento do produto.
 
-A plataforma adota uma estratégia de persistência poliglota, utilizando dois bancos de dados com propósitos distintos e complementares: o \textbf{PostgreSQL} para dados relacionais — como usuários, contas vinculadas, metas financeiras, consentimentos e registros de auditoria — e o \textbf{MongoDB} para dados semi-estruturados de alto volume, como transações e histórico financeiro. Essa separação permite otimizar cada banco para seu caso de uso específico, garantindo desempenho, escalabilidade e conformidade com a Lei Geral de Proteção de Dados (LGPD).
+A plataforma adota uma estratégia de persistência poliglota, utilizando dois bancos de dados com propósitos distintos e complementares: o PostgreSQL para dados relacionais — como usuários, contas vinculadas, metas financeiras, consentimentos e registros de auditoria — e o MongoDB para dados semi-estruturados de alto volume, como transações e histórico financeiro. Essa separação permite otimizar cada banco para seu caso de uso específico, garantindo desempenho, escalabilidade e conformidade com a Lei Geral de Proteção de Dados (LGPD).
 
 \section{Diagrama entidade relacionamento}
 
