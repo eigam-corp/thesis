@@ -3,18 +3,170 @@
 % =============================================
 \chapter{PROPOSTA DE DESENVOLVIMENTO}
 
+Para que o projeto seja desenvolvido de forma eficiente e atinja os padrões de qualidade e confiabilidade esperados, contamos com a utilização de diversas tecnologias e práticas de engenharia de software que apoiam o processo de desenvolvimento. A arquitetura adotada segue o padrão de microsserviços orientados a eventos, com Apache Kafka como barramento central de mensagens, permitindo o desacoplamento dos serviços, resiliência a picos de carga e escalabilidade horizontal.
+
+Segundo Newman (2022), microsserviços são uma abordagem para o desenvolvimento de sistemas onde uma única aplicação é construída como um conjunto de serviços pequenos e independentes, cada um executando em seu próprio processo e se comunicando por meio de mecanismos leves. Essa abordagem favorece a implantação independente, a resiliência e a evolução contínua do produto.
+
+O processo de desenvolvimento seguirá metodologias ágeis e práticas como o TDD (\textit{Test-Driven Development}) para garantir a confiabilidade e a qualidade das entregas ao longo do ciclo de vida do projeto.
+
 \section{Tecnologias que serão utilizadas}
 
-% A ser preenchido
+O Quadro~\ref{qua:tecnologias} apresenta as tecnologias que serão utilizadas para que o projeto seja concluído, desde sua elaboração até a implementação e operação em produção.
+
+{\small
+\begin{longtable}{|p{3.2cm}|p{2.8cm}|p{6.7cm}|p{1.5cm}|}
+\caption{Tecnologias Utilizadas} \label{qua:tecnologias} \\
+\hline
+\textbf{Nome} & \textbf{Fornecedor} & \textbf{Descrição} & \textbf{Versão} \\ \hline
+\endfirsthead
+\hline
+\textbf{Nome} & \textbf{Fornecedor} & \textbf{Descrição} & \textbf{Versão} \\ \hline
+\endhead
+\hline
+\multicolumn{4}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\endfoot
+\hline
+\multicolumn{4}{c}{\fontsize{10pt}{10pt}\selectfont \textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\endlastfoot
+Git & Open Source & Sistema de controle de versão usado para rastrear alterações no código-fonte. & 2.x \\ \hline
+GitHub & Microsoft & Plataforma de hospedagem de código-fonte, colaboração e CI/CD via GitHub Actions. & -- \\ \hline
+Node.js & OpenJS Foundation & Ambiente de execução JavaScript assíncrono e orientado a eventos, utilizado como runtime de todos os microsserviços. & 20 LTS \\ \hline
+TypeScript & Microsoft & Superset de JavaScript com tipagem estática, utilizado em todos os serviços para maior segurança e manutenibilidade. & 5.x \\ \hline
+Fastify & Open Source & Framework HTTP para Node.js de alta performance, utilizado como base dos microsserviços. & 5.x \\ \hline
+Apache Kafka & Apache / Upstash & Barramento de eventos distribuído, responsável pela comunicação assíncrona entre os microsserviços. & -- \\ \hline
+Redis & Upstash & Armazenamento de dados em memória, utilizado para cache de sessões, tokens temporários e rate limiting. & 7.x \\ \hline
+PostgreSQL & Open Source & Banco de dados relacional, utilizado para dados estruturados, audit logs e consentimentos LGPD. & 16 \\ \hline
+pgcrypto & Open Source & Extensão do PostgreSQL para criptografia de colunas sensíveis com AES-256. & built-in \\ \hline
+pgvector & Open Source & Extensão do PostgreSQL para armazenamento e busca de vetores de embeddings, utilizada no pipeline RAG. & 0.7+ \\ \hline
+MongoDB & MongoDB, Inc. & Banco de dados documental, utilizado para armazenar transações financeiras e histórico de conversas com criptografia em nível de campo. & 7.x \\ \hline
+BullMQ & Open Source & Biblioteca de filas de jobs baseada em Redis, responsável pelo agendamento de sincronizações e notificações periódicas. & 5.x \\ \hline
+KafkaJS & Open Source & Cliente Kafka nativo para Node.js, utilizado pelos consumers e producers dos microsserviços. & 2.x \\ \hline
+Chart.js + @napi-rs/canvas & Open Source & Biblioteca de renderização de gráficos server-side, responsável pela geração de imagens PNG para envio via WhatsApp. & 4.x \\ \hline
+Docker + Docker Compose & Docker, Inc. & Plataforma de conteinerização e orquestração dos serviços em ambiente de desenvolvimento e produção. & 27+ \\ \hline
+Nginx & Open Source & Reverse proxy responsável pela terminação TLS e roteamento de requisições externas para o API Gateway. & -- \\ \hline
+Let's Encrypt & ISRG & Autoridade certificadora gratuita para emissão e renovação automática de certificados SSL/TLS. & -- \\ \hline
+Helmet.js & Open Source & Conjunto de middlewares de segurança HTTP para Node.js (HSTS, X-Frame-Options, X-Content-Type-Options). & 8.x \\ \hline
+Zod & Open Source & Biblioteca de validação e parsing de schemas TypeScript, aplicada na camada de produção de eventos Kafka. & 3.x \\ \hline
+Drizzle ORM & Open Source & ORM TypeScript para PostgreSQL, utilizado nas operações relacionais com tipagem segura. & -- \\ \hline
+Mongoose & Open Source & ODM para MongoDB em Node.js, utilizado no acesso aos dados de transações e histórico. & 8.x \\ \hline
+OpenAI API & OpenAI & API de modelos de linguagem (GPT-4o-mini) e embeddings (text-embedding-3-small), utilizada no pipeline conversacional e RAG. & -- \\ \hline
+Meta Cloud API & Meta & API oficial da plataforma WhatsApp Business para recepção e envio de mensagens. & v21+ \\ \hline
+Pluggy & Pluggy & API de integração com o ecossistema Open Finance do Banco Central do Brasil. & v1 \\ \hline
+Grafana Cloud & Grafana Labs & Plataforma de monitoramento, métricas (Prometheus) e alertas operacionais. & -- \\ \hline
+\end{longtable}
+}
 
 \section{Metodologia de padrões de software}
 
-% A ser preenchido
+Os padrões de software são fundamentais para garantir a qualidade, a coerência e a manutenibilidade de sistemas complexos. Segundo Bass, Clements e Kazman (2022), decisões arquiteturais determinam as propriedades de qualidade de um sistema e devem ser tomadas de forma explícita e documentada, uma vez que influenciam diretamente aspectos como desempenho, segurança, disponibilidade e modificabilidade. O Quadro~\ref{qua:padroes} apresenta os padrões adotados neste projeto.
+
+{\small
+\begin{longtable}{|p{4.5cm}|p{10cm}|}
+\caption{Padrões de Projeto} \label{qua:padroes} \\
+\hline
+\textbf{Nome} & \textbf{Descrição} \\ \hline
+\endfirsthead
+\hline
+\textbf{Nome} & \textbf{Descrição} \\ \hline
+\endhead
+\hline
+\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\endfoot
+\hline
+\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont \textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\endlastfoot
+Metodologia Scrum & Framework ágil para gestão de projetos com foco em entregas frequentes e adaptação contínua. Baseado em ciclos de trabalho chamados \textit{sprints}, com cerimônias de planejamento, revisão e retrospectiva. \\ \hline
+Arquitetura de Microsserviços Orientada a Eventos & Os serviços do sistema (API Gateway, Chat Service, Finance Service, Notification Service, Outbound Worker, Audit Service) são desacoplados e se comunicam exclusivamente por meio de eventos no Apache Kafka. Cada serviço possui responsabilidade única e pode ser escalado, implantado e testado de forma independente. \\ \hline
+Padrão MSC (\textit{Model-Service-Controller}) & Padrão arquitetural que separa responsabilidades em três camadas: \textit{Controller} (recebe e valida a entrada), \textit{Service} (executa a lógica de negócio) e \textit{Model} (representa e persiste os dados). Aplicado dentro de cada microsserviço. \\ \hline
+REST & Estilo arquitetural para APIs internas baseado nos métodos HTTP (GET, POST, PUT, DELETE) e representações de recursos em JSON. Utilizado nas interfaces administrativas e na comunicação síncrona pontual entre serviços. \\ \hline
+RAG (\textit{Retrieval-Augmented Generation}) & Padrão de IA que combina busca semântica em base vetorial (pgvector) com geração de linguagem natural pelo LLM. O contexto financeiro relevante do usuário é recuperado e inserido no prompt, tornando as respostas personalizadas e fundamentadas nos dados reais do titular. \\ \hline
+TDD (\textit{Test-Driven Development}) & Metodologia de desenvolvimento em que os testes automatizados são escritos antes do código funcional. O ciclo envolve escrever um teste que falha, implementar o código mínimo para fazê-lo passar e refatorar. Garante cobertura de testes desde o início do desenvolvimento. \\ \hline
+\end{longtable}
+}
 
 \section{Metodologia para testes de software}
 
-% A ser preenchido
+Na abordagem escolhida para testes de software, adotaremos o \textit{Test-Driven Development} (TDD). Segundo Richardson (2019), em arquiteturas de microsserviços, testar cada serviço de forma isolada e em conjunto com os demais é essencial para detectar falhas de integração precocemente, especialmente em cenários assíncronos onde a comunicação ocorre por meio de eventos. Para isso, cada método implementado será precedido pela criação de testes unitários que validem o comportamento esperado da unidade de código.
+
+Além dos testes unitários, serão realizados testes de integração para verificar o fluxo completo entre os serviços. Esses testes cobrem cenários como a produção e o consumo de eventos Kafka, o armazenamento e a recuperação de dados no PostgreSQL e no MongoDB, a expiração e a renovação do token de privilégio no Redis e a execução dos jobs agendados via BullMQ. Conforme recomendado por Newman (2022), contratos de eventos entre serviços produtores e consumidores devem ser testados explicitamente para evitar que mudanças em um serviço quebrem silenciosamente os demais.
+
+Para garantir a integridade das funcionalidades de segurança e conformidade com a LGPD, serão realizados testes manuais por meio de roteiros que simulam os fluxos de cadastro, autenticação via OTP, vinculação de contas Open Finance, solicitação de exportação de dados e exercício do direito de eliminação. Esses roteiros cobrem tanto o caminho feliz quanto cenários de erro, expiração de tokens e tentativas de acesso não autorizado.
 
 \section{Métricas de qualidade}
 
-% A ser preenchido
+Segundo Bass, Clements e Kazman (2022), atributos de qualidade são propriedades mensuráveis de um sistema que indicam quão bem ele satisfaz as necessidades de seus \textit{stakeholders}. Em sistemas distribuídos orientados a eventos, atributos como disponibilidade, desempenho e segurança devem ser projetados explicitamente na arquitetura, não apenas verificados após a implementação. As métricas de qualidade serão utilizadas para comparar e avaliar o software ao longo do seu ciclo de vida. O Quadro~\ref{qua:metricas} apresenta as métricas adotadas neste projeto.
+
+{\small
+\begin{longtable}{|p{4cm}|p{10.5cm}|}
+\caption{Métricas de Qualidade} \label{qua:metricas} \\
+\hline
+\textbf{Fator de Qualidade} & \textbf{Objetivo} \\ \hline
+\endfirsthead
+\hline
+\textbf{Fator de Qualidade} & \textbf{Objetivo} \\ \hline
+\endhead
+\hline
+\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\endfoot
+\hline
+\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont \textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\endlastfoot
+Manutenibilidade &
+\begin{minipage}[t]{\linewidth}
+\begin{itemize}[noitemsep,topsep=2pt,leftmargin=*]
+    \item Organização do código em microsserviços com responsabilidade única e separação por camadas (MSC).
+    \item Uso de TypeScript com tipagem estrita e validação de schemas via Zod para reduzir erros em tempo de desenvolvimento.
+    \item Eventos Kafka com schemas versionados para garantir compatibilidade entre produtores e consumidores.
+\end{itemize}
+\end{minipage} \\ \hline
+Desempenho &
+\begin{minipage}[t]{\linewidth}
+\begin{itemize}[noitemsep,topsep=2pt,leftmargin=*]
+    \item Processamento assíncrono via Kafka deve garantir latência de resposta ao webhook da Meta inferior a 200ms (retorno imediato do HTTP 200).
+    \item Pipeline RAG completo (busca semântica + chamada LLM) deve ser concluído em até 30 segundos.
+    \item Geração e envio de resumos periódicos para 1.000 usuários deve ser concluído dentro da janela de envio configurada.
+\end{itemize}
+\end{minipage} \\ \hline
+Disponibilidade e Resiliência &
+\begin{minipage}[t]{\linewidth}
+\begin{itemize}[noitemsep,topsep=2pt,leftmargin=*]
+    \item Circuit breakers no Outbound Worker devem isolar falhas da Meta Cloud API sem propagar indisponibilidade para os demais serviços.
+    \item Retry policies com backoff exponencial em todas as integrações externas (Pluggy, Meta, OpenAI).
+    \item Dead letter queues para mensagens que falham repetidamente, permitindo reprocessamento manual.
+    \item Healthchecks em todos os containers Docker com restart automático em caso de falha.
+\end{itemize}
+\end{minipage} \\ \hline
+Segurança e Conformidade LGPD &
+\begin{minipage}[t]{\linewidth}
+\begin{itemize}[noitemsep,topsep=2pt,leftmargin=*]
+    \item Dados financeiros e PII criptografados em repouso (AES-256-GCM) e em trânsito (TLS 1.2+).
+    \item Token de privilégio com TTL de 1 hora para acesso a valores monetários, com mascaramento automático após expiração.
+    \item Audit log imutável com hash SHA-256 encadeado registrando toda operação sobre dados pessoais.
+    \item Suporte completo aos direitos do titular previstos no Art. 18 da LGPD (acesso, portabilidade, eliminação, revogação de consentimento).
+\end{itemize}
+\end{minipage} \\ \hline
+Portabilidade &
+\begin{minipage}[t]{\linewidth}
+\begin{itemize}[noitemsep,topsep=2pt,leftmargin=*]
+    \item Todos os serviços são conteinerizados via Docker, garantindo comportamento idêntico em ambiente de desenvolvimento e produção.
+    \item Configuração externalizada via variáveis de ambiente, sem dependência de configurações fixas no código.
+\end{itemize}
+\end{minipage} \\ \hline
+Usabilidade &
+\begin{minipage}[t]{\linewidth}
+\begin{itemize}[noitemsep,topsep=2pt,leftmargin=*]
+    \item Interação exclusivamente via WhatsApp, canal já familiar ao usuário, sem necessidade de instalação de aplicativo adicional.
+    \item Respostas do assistente devem ser claras, objetivas e acompanhadas de representações visuais (gráficos em PNG) quando relevante.
+    \item Comandos de gerenciamento de dados e consentimentos devem ser executáveis em linguagem natural dentro do próprio chat.
+\end{itemize}
+\end{minipage} \\ \hline
+Observabilidade &
+\begin{minipage}[t]{\linewidth}
+\begin{itemize}[noitemsep,topsep=2pt,leftmargin=*]
+    \item Métricas de cada microsserviço coletadas via Prometheus e visualizadas no Grafana Cloud.
+    \item Logs estruturados em JSON com correlação por \texttt{event\_id} para rastreabilidade de fluxos assíncronos entre serviços.
+    \item Alertas automáticos para taxa de erro acima do limiar configurado, latência elevada e falhas em jobs agendados.
+\end{itemize}
+\end{minipage} \\ \hline
+\end{longtable}
+}
