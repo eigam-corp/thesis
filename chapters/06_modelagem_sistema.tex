@@ -1,54 +1,278 @@
 % =============================================
 % CAPÍTULO 6 - MODELAGEM DO SISTEMA
 % =============================================
-    \chapter{MODELAGEM DO SISTEMA}
+\chapter{MODELAGEM DO SISTEMA}
 
-    A modelagem do sistema representa uma etapa fundamental no processo de desenvolvimento de \textit{software}, pois permite estruturar os requisitos, identificar restrições e descrever com clareza as funcionalidades esperadas da solução. No contexto deste projeto — uma plataforma conversacional de inteligência financeira operada integralmente pelo WhatsApp, com integração ao \textit{Open Finance} e uso de inteligência artificial — essa etapa é especialmente relevante, dado que a solução envolve dados financeiros sensíveis, dependências de serviços externos e conformidade com a Lei Geral de Proteção de Dados (LGPD). Assim, neste capítulo são apresentadas as restrições do sistema, os requisitos funcionais e não funcionais, bem como os diagramas de casos de uso e suas respectivas descrições.
+A modelagem do sistema representa uma etapa fundamental no processo de desenvolvimento de \textit{software}, pois permite estruturar os requisitos, identificar restrições e representar de forma clara as responsabilidades, interações e funcionalidades esperadas da solução. No contexto deste projeto, essa etapa assume especial relevância em razão da integração com dados financeiros sensíveis, da utilização de serviços externos, da comunicação por plataformas de mensageria e dos requisitos relacionados à segurança, privacidade e conformidade com a Lei Geral de Proteção de Dados (LGPD).
 
-    \section{Fronteira sistêmica}
+O EIGAM é concebido como uma solução de assistência financeira inteligente, preditiva e conversacional, integrada ao ecossistema de \textit{Open Finance} e capaz de interagir com os usuários por meio de diferentes plataformas de mensageria. O \textit{WhatsApp} será utilizado como canal inicial de comunicação, entretanto, a arquitetura busca manter o núcleo funcional da aplicação desacoplado do provedor de mensageria, possibilitando a integração futura com outros canais sem alterações significativas nas regras de negócio.
 
-    Na Figura \ref{fig:fronteira}, é ilustrada a fronteira sistêmica da solução, demonstrando visualmente a separação do ambiente interno da plataforma e as interações realizadas no seu entorno. O diagrama facilita o entendimento dos sistemas externos que se comunicam com a solução e dos componentes internos responsáveis por cada responsabilidade. Foi identificado que a aplicação interage com três grupos de serviços externos: a WhatsApp Cloud API (Meta), que atua como canal de entrada e saída das mensagens do usuário; a Pluggy, responsável pela integração com o ecossistema de \textit{Open Finance} regulado pelo Banco Central, viabilizando a sincronização de transações financeiras; e a OpenAI, utilizada para processamento de linguagem natural e geração de \textit{embeddings}. Internamente, a plataforma é organizada em camadas de entrada, domínio e dados, compostas por serviços como \textit{API Gateway}, \textit{Chat Service}, \textit{Finance Service}, \textit{Notification Service}, \textit{Outbound Worker} e \textit{Audit Service}, com persistência distribuída entre PostgreSQL, MongoDB, Redis e Kafka.
+Neste capítulo são apresentadas a fronteira sistêmica, as restrições da solução, a arquitetura da camada de inteligência artificial, os requisitos funcionais e não funcionais, os diagramas de casos de uso e suas respectivas descrições. Esses elementos permitem delimitar o escopo do sistema, estabelecer as responsabilidades dos componentes internos e dos serviços externos envolvidos em seu funcionamento e explicitar como os mecanismos conversacionais e preditivos são distribuídos entre os serviços da aplicação.
 
-    \begin{figure}[H]
-        \centering
-        \caption{Fronteira sistêmica da plataforma}
-        \label{fig:fronteira}
-        \includegraphics[width=\textwidth]{images/fronteira.png}
-        \fontetabela{\textbf{Fonte:} Elaborado pelos autores (2026).}
-    \end{figure}
 
-    \section{Lista de restrições}
+\section{Fronteira sistêmica}
 
-    No decorrer do processo de desenvolvimento, foram identificadas restrições que influenciam diretamente o funcionamento e o escopo da solução. Por se tratar de uma plataforma que depende da integração com o ecossistema de \textit{Open Finance}, da disponibilidade da \textit{WhatsApp Business Platform} e do cumprimento das exigências da LGPD, as restrições possuem caráter tanto sistêmico quanto de infraestrutura. Essas limitações foram organizadas no Quadro \ref{quad:restricoes}.
+A Figura \ref{fig:fronteira} apresenta a fronteira sistêmica do EIGAM, evidenciando a separação entre os componentes pertencentes à solução e os serviços externos necessários ao seu funcionamento. Essa representação permite identificar as responsabilidades internas da aplicação, bem como os pontos de integração com sistemas de terceiros.
 
-    {\small
-    \begin{longtable}{|p{2.0cm}|p{3.6cm}|p{8.9cm}|}
-    \caption{Lista de Restrições} \label{quad:restricoes} \\
-    \hline
-    \textbf{Fonte} & \textbf{Restrição} & \textbf{Lógica} \\ \hline
-    \endfirsthead
-    \hline
-    \textbf{Fonte} & \textbf{Restrição} & \textbf{Lógica} \\ \hline
-    \endhead
-    \hline
-    \multicolumn{3}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
-    \endfoot
-    \hline
-    \multicolumn{3}{c}{\fontsize{10pt}{10pt}\selectfont \textbf{Fonte:} Elaborado pelos autores (2026).} \\
-    \endlastfoot
-    Sistêmica & Integração com APIs do \textit{Open Finance} & O funcionamento da solução depende da integração com serviços e APIs do ecossistema de \textit{Open Finance}, responsáveis pelo acesso padronizado aos dados financeiros compartilhados pelo usuário. \\ \hline
-    Sistêmica & Dependência da API do \textit{WhatsApp Business} & Como a solução será operada integralmente pelo WhatsApp, sua execução depende da disponibilidade e das regras da plataforma \textit{WhatsApp Business}. \\ \hline
-    Sistêmica & Segurança de informações financeiras & Por lidar com dados bancários e financeiros sensíveis, o sistema deve adotar mecanismos de proteção, autenticação e controle de acesso para evitar usos indevidos e acessos não autorizados. \\ \hline
-    Sistêmica & Consentimento do usuário & O acesso aos dados financeiros depende da autorização explícita do usuário, o que limita o funcionamento da solução aos casos em que houver consentimento válido. \\ \hline
-    Sistêmica & Precisão das respostas automatizadas & Como o sistema utiliza inteligência artificial e interação conversacional, é necessário limitar respostas imprecisas ou genéricas, principalmente em contextos financeiros. \\ \hline
-    Sistêmica & Limitações do canal conversacional & Por funcionar dentro do WhatsApp, a solução fica restrita ao formato e aos recursos permitidos pelo canal, o que reduz possibilidades visuais em comparação com plataformas \textit{web}. \\ \hline
-    Sistêmica & Utilização de serviços terceirizados & A implementação do sistema pode depender de ferramentas externas para conexão ao \textit{Open Finance}, hospedagem, banco de dados, autenticação, integração e processamento de IA. \\ \hline
-    Sistêmica & Conformidade com a LGPD & O sistema deve respeitar normas de privacidade e proteção de dados pessoais, exigindo cuidados específicos no tratamento, armazenamento e compartilhamento das informações. \\ \hline
-    \textit{Hardware} & Hospedagem em nuvem & A solução depende de infraestrutura em nuvem para processamento, armazenamento e disponibilidade contínua, evitando a necessidade de infraestrutura física própria. \\ \hline
-    \textit{Hardware} & Disponibilidade de conexão com a \textit{internet} & Tanto o usuário quanto os serviços integrados precisam de acesso à \textit{internet} para que a solução funcione corretamente. \\ \hline
-    \textit{Hardware} & Compatibilidade com dispositivos móveis & Como o sistema será utilizado pelo WhatsApp, é necessário que o usuário possua um \textit{smartphone} compatível com o aplicativo e com acesso regular ao serviço. \\ \hline
-    \end{longtable}
-    }
+Externamente, a solução se comunica com três grupos principais de serviços. O primeiro corresponde às plataformas de mensageria utilizadas como canais de comunicação com o usuário. Na implementação inicial, essa integração será realizada por meio da \textit{WhatsApp Cloud API}, fornecida pela \textit{Meta}. Entretanto, o acesso aos canais de comunicação será intermediado por uma camada de abstração, permitindo que novas plataformas de mensageria sejam incorporadas por meio de adaptadores específicos sem alterar o núcleo funcional da solução.
+
+O segundo serviço externo é a \textit{Pluggy}, utilizada como intermediária na integração com o ecossistema de \textit{Open Finance}. Por meio dessa integração, mediante consentimento do titular, a solução poderá acessar e sincronizar informações financeiras provenientes das instituições vinculadas pelo usuário. O terceiro grupo corresponde aos serviços de inteligência artificial, utilizados para tarefas relacionadas ao processamento de linguagem natural, geração de respostas conversacionais e produção de \textit{embeddings} empregados nos mecanismos de recuperação de contexto.
+
+Internamente, a arquitetura é organizada de modo a separar as responsabilidades relacionadas à comunicação, às regras de negócio, ao processamento assíncrono e ao gerenciamento dos dados. Entre os principais componentes encontram-se o \textit{API Gateway}, responsável pelo direcionamento das requisições; a camada de integração com os canais de mensageria; o \textit{Chat Service}, responsável pela orquestração das interações conversacionais; o \textit{Finance Service}, responsável pelo processamento das informações financeiras; o \textit{Notification Service}, responsável pela geração e gerenciamento de notificações; o \textit{Outbound Worker}, responsável pelo processamento assíncrono das mensagens de saída; e o \textit{Audit Service}, responsável pelo registro de operações relevantes para rastreabilidade e auditoria.
+
+O armazenamento e o gerenciamento das informações são distribuídos de acordo com as características de cada tipo de dado. O \textit{PostgreSQL} é utilizado para informações estruturadas e relacionais, enquanto o \textit{MongoDB} atende dados de natureza documental. O \textit{Redis} é empregado principalmente no gerenciamento de \textit{cache} e sessões temporárias, enquanto o \textit{Kafka} atua como mecanismo de mensageria assíncrona entre os serviços. Essa separação busca proporcionar maior organização, escalabilidade e desacoplamento entre os diferentes componentes da aplicação.
+
+Dessa forma, a fronteira sistêmica evidencia que as regras de negócio e os mecanismos de inteligência financeira permanecem independentes dos provedores externos utilizados. Essa característica é especialmente importante para a camada de mensageria, pois permite que o \textit{WhatsApp} seja utilizado como canal inicial sem constituir uma dependência estrutural permanente da solução.
+
+\begin{figure}[H]
+    \centering
+    \caption{Fronteira sistêmica da plataforma}
+    \label{fig:fronteira}
+    \includegraphics[width=\textwidth]{images/fronteira.png}
+    \fontetabela{\textbf{Fonte:} Elaborado pelos autores (2026).}
+\end{figure}
+
+\section{Lista de restrições}
+
+Durante a definição e a modelagem do EIGAM, foram identificadas restrições que condicionam seu funcionamento, sua arquitetura e sua capacidade de integração. Por se tratar de uma solução que depende de serviços externos, do compartilhamento autorizado de dados financeiros, de plataformas de mensageria e de mecanismos de inteligência artificial, parte dessas limitações decorre de fatores que não estão sob controle direto da aplicação.
+
+Além disso, o tratamento de dados pessoais e informações financeiras exige a observância de requisitos regulatórios e de segurança, enquanto a adoção de uma arquitetura multicanal impõe a necessidade de considerar diferenças técnicas entre os provedores de mensageria. As principais restrições identificadas são apresentadas no Quadro \ref{quad:restricoes}.
+
+{\small
+\begin{longtable}{|p{2.3cm}|p{4.0cm}|p{8.2cm}|}
+\caption{Lista de Restrições} \label{quad:restricoes} \\
+
+\hline
+\textbf{Origem} & \textbf{Restrição} & \textbf{Descrição} \\ \hline
+\endfirsthead
+
+\hline
+\textbf{Origem} & \textbf{Restrição} & \textbf{Descrição} \\ \hline
+\endhead
+
+\hline
+\multicolumn{3}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\endfoot
+
+\hline
+\multicolumn{3}{c}{\fontsize{10pt}{10pt}\selectfont \textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\endlastfoot
+
+
+Externa &
+Integração com o \textit{Open Finance} &
+O acesso às informações financeiras depende da disponibilidade e das condições de funcionamento dos serviços utilizados para integração com o ecossistema de \textit{Open Finance}. No projeto, essa comunicação é intermediada pela Pluggy, cuja indisponibilidade ou alteração em suas APIs pode afetar operações de vinculação e sincronização de dados.
+\\ \hline
+
+
+Externa &
+Dependência de plataformas de mensageria &
+A comunicação com o usuário depende de APIs e serviços fornecidos por plataformas externas de mensageria. O \textit{WhatsApp} será utilizado como canal inicial, porém alterações em políticas, preços, limites de utilização ou disponibilidade do provedor podem afetar o funcionamento desse canal.
+\\ \hline
+
+
+Técnica &
+Interoperabilidade entre canais de mensageria &
+As plataformas de mensageria possuem diferentes formatos de mensagens, recursos interativos, limites e mecanismos de autenticação. Dessa forma, a integração de novos canais deve respeitar uma interface padronizada de comunicação com o núcleo do EIGAM e adaptar as funcionalidades às capacidades disponíveis em cada plataforma.
+\\ \hline
+
+
+Técnica &
+Limitações dos canais conversacionais &
+Determinados recursos visuais ou interativos disponíveis em aplicações \textit{web} podem não estar presentes em todas as plataformas de mensageria. A apresentação das informações deve, portanto, considerar os recursos suportados pelo canal utilizado sem comprometer o acesso às funcionalidades essenciais da solução.
+\\ \hline
+
+
+Regulatória &
+Consentimento para acesso aos dados financeiros &
+O acesso e a sincronização das informações compartilhadas por meio do \textit{Open Finance} dependem da existência de consentimento válido do titular. A revogação ou expiração desse consentimento impede novas sincronizações dos dados associados à respectiva instituição.
+\\ \hline
+
+
+Regulatória &
+Conformidade com a LGPD &
+O tratamento de dados pessoais deve observar os princípios, direitos e obrigações previstos na Lei Geral de Proteção de Dados, incluindo finalidade, necessidade, transparência, segurança e atendimento às solicitações do titular.
+\\ \hline
+
+
+Técnica &
+Proteção das informações financeiras &
+Por processar dados pessoais e informações financeiras de caráter confidencial, o sistema deve restringir sua exposição e adotar mecanismos de autenticação, autorização, controle de acesso, proteção das sessões e registro de operações relevantes.
+\\ \hline
+
+
+Técnica &
+Disponibilidade e qualidade dos dados financeiros &
+As análises realizadas pelo EIGAM dependem da disponibilidade, atualização e qualidade das informações recebidas das instituições financeiras. Dados incompletos, atrasados ou períodos históricos insuficientes podem limitar a precisão de determinadas análises, projeções e recomendações.
+\\ \hline
+
+
+Técnica &
+Limitações dos modelos de inteligência artificial &
+Os mecanismos de inteligência artificial utilizados possuem natureza probabilística e podem produzir respostas incompletas ou inadequadas. Dessa forma, o sistema deve limitar seu uso aos contextos previstos, utilizar dados financeiros validados como fonte de informação e adotar mecanismos que reduzam o risco de geração de interpretações incorretas.
+\\ \hline
+
+
+Externa &
+Dependência de serviços terceirizados &
+Partes da solução dependem de serviços externos para inteligência artificial, integração financeira, mensageria, hospedagem, monitoramento e demais recursos. Alterações de disponibilidade, limites de uso, preços ou interfaces desses fornecedores podem impactar a operação da plataforma.
+\\ \hline
+
+
+Infraestrutura &
+Disponibilidade da infraestrutura em nuvem &
+A solução depende de infraestrutura computacional disponível para processamento, armazenamento e execução contínua dos serviços. Falhas ou indisponibilidade do provedor de infraestrutura podem comprometer temporariamente funcionalidades da aplicação.
+\\ \hline
+
+
+Infraestrutura &
+Disponibilidade de conexão com a \textit{internet} &
+A comunicação entre o usuário, as plataformas de mensageria, os serviços do EIGAM e os provedores externos depende de conectividade com a \textit{internet}. A indisponibilidade da conexão pode impedir ou atrasar consultas, sincronizações e notificações.
+\\ \hline
+
+\end{longtable}
+}
+
+
+% =============================================
+% ARQUITETURA DA CAMADA DE INTELIGÊNCIA ARTIFICIAL
+% =============================================
+\section{Arquitetura da camada de inteligência artificial}
+
+A inteligência artificial constitui uma camada transversal da arquitetura do EIGAM e não um serviço isolado responsável por todas as decisões da aplicação. As responsabilidades relacionadas à interpretação de linguagem natural, recuperação de contexto, análise preditiva, detecção de comportamentos atípicos e geração de mensagens proativas são distribuídas entre os serviços que possuem o contexto necessário para executá-las. Essa organização busca reduzir o acoplamento, facilitar a evolução independente dos mecanismos analíticos e evitar que o modelo de linguagem seja utilizado como fonte primária de verdade para dados financeiros.
+
+Os valores monetários, saldos, transações, agregações e resultados numéricos utilizados nas respostas devem ser obtidos a partir de dados estruturados ou de cálculos executados pelos serviços internos. O modelo de linguagem é empregado principalmente para interpretar a intenção do usuário, organizar o contexto recuperado e apresentar os resultados em linguagem natural. Dessa forma, decisões que exigem comportamento determinístico, como autenticação, mascaramento de valores, controle de acesso e execução de comandos relacionados aos direitos do titular, permanecem sob responsabilidade da aplicação.
+
+\subsection{Distribuição das responsabilidades de inteligência artificial}
+
+A camada cognitiva do EIGAM é distribuída principalmente entre o \textit{Chat Service}, o \textit{Finance Service} e o \textit{Notification Service}. Cada serviço utiliza técnicas de inteligência artificial apenas nas atividades compatíveis com sua responsabilidade de domínio, conforme apresentado no Quadro \ref{quad:ia_responsabilidades}.
+
+{\small
+\begin{longtable}{|p{3.3cm}|p{11.0cm}|}
+\caption{Distribuição das responsabilidades de inteligência artificial}
+\label{quad:ia_responsabilidades} \\
+\hline
+\textbf{Serviço} & \textbf{Responsabilidades relacionadas à IA} \\ \hline
+\endfirsthead
+\hline
+\textbf{Serviço} & \textbf{Responsabilidades relacionadas à IA} \\ \hline
+\endhead
+\hline
+\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\endfoot
+\hline
+\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont \textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\endlastfoot
+
+\textit{Chat Service} &
+Classificação da intenção da mensagem recebida, orquestração do fluxo de \textit{Retrieval-Augmented Generation} (RAG), composição do contexto e geração da resposta conversacional por meio de modelo de linguagem. Também coordena a aplicação das regras de apresentação e dos controles de segurança antes do envio da resposta ao usuário.
+\\ \hline
+
+\textit{Finance Service} &
+Processamento e classificação das transações, execução dos modelos de previsão financeira, detecção de anomalias e mudanças de comportamento, cálculo de indicadores e geração das representações vetoriais utilizadas pelo mecanismo de RAG. A classificação de transações pode combinar informações estruturadas, como códigos de categoria, com interpretação semântica quando necessário.
+\\ \hline
+
+\textit{Notification Service} &
+Avaliação das condições que justificam o envio de alertas, preparação de resumos periódicos e geração do conteúdo textual utilizado nas comunicações proativas. As regras que determinam se um alerta deve ou não ser disparado permanecem separadas da geração textual realizada pelo modelo de linguagem.
+\\ \hline
+
+\end{longtable}
+}
+
+Essa distribuição permite que o \textit{Chat Service} concentre a interpretação da interação, o \textit{Finance Service} permaneça responsável pelos cálculos e análises sobre os dados financeiros e o \textit{Notification Service} trate a comunicação proativa. Assim, uma resposta conversacional pode utilizar resultados produzidos por diferentes serviços sem transferir ao modelo de linguagem a responsabilidade por calcular ou inferir valores financeiros que já podem ser obtidos de maneira determinística.
+
+\subsection{Classificação e roteamento de intenções}
+
+A classificação de intenção constitui a primeira etapa do processamento das mensagens em linguagem natural. Seu objetivo é identificar qual funcionalidade do EIGAM deve tratar a solicitação antes que dados financeiros sejam consultados ou modelos adicionais sejam acionados. O projeto prevê um conjunto de intenções previamente definidas para representar os principais fluxos da aplicação, incluindo consultas de gastos, consultas de saldo, projeções financeiras, avaliação de capacidade de compra, gerenciamento de metas e comandos relacionados aos dados pessoais do usuário.
+
+Além da classe identificada, o classificador retorna um nível de confiança utilizado no roteamento da solicitação. Como configuração inicial, mensagens classificadas com confiança igual ou superior a 0,85 podem seguir diretamente para a funcionalidade correspondente. Resultados entre 0,65 e 0,85 podem ser processados quando o contexto for suficiente ou resultar em uma solicitação de esclarecimento. Abaixo de 0,65, o sistema deve solicitar uma confirmação explícita ao usuário antes de prosseguir. Esses valores constituem parâmetros iniciais de projeto e deverão ser calibrados posteriormente por meio dos testes e dos dados obtidos durante a validação da aplicação.
+
+Comandos relacionados aos direitos do titular, como solicitações de consulta, exportação, revogação ou exclusão de dados, recebem tratamento adicional. Nesses casos, o sistema utiliza regras determinísticas de identificação, independentes do modelo de linguagem, de modo que a execução de operações com impacto sobre os dados pessoais não dependa exclusivamente de uma classificação probabilística. Após a identificação, as operações continuam sujeitas às etapas de autenticação e confirmação definidas nos respectivos casos de uso.
+
+\subsection{Recuperação de contexto com RAG}
+
+Para permitir que o assistente conversacional utilize informações relacionadas ao histórico financeiro do usuário sem depender exclusivamente da janela de contexto do modelo de linguagem, o EIGAM emprega uma arquitetura baseada em \textit{Retrieval-Augmented Generation} (RAG). Nesse mecanismo, informações financeiras previamente processadas são convertidas em representações textuais controladas, vetorizadas e indexadas para recuperação semântica durante as consultas.
+
+O processo de ingestão parte dos dados financeiros normalizados pela aplicação. As transações são transformadas em unidades semânticas por meio de \textit{templates} internos, evitando que instruções livres fornecidas pelo usuário sejam armazenadas diretamente como conteúdo de recuperação. Em seguida, são gerados \textit{embeddings}, armazenados no PostgreSQL por meio da extensão \textit{pgvector} e indexados para busca por similaridade, utilizando índice HNSW.
+
+Quando uma consulta exige contexto histórico, o sistema gera a representação vetorial da pergunta e recupera inicialmente os elementos semanticamente mais próximos. Como estratégia inicial, podem ser selecionados até oito candidatos, posteriormente reordenados para que os cinco elementos mais relevantes sejam utilizados na composição do contexto. Além da recuperação vetorial, o processo pode ser enriquecido com consultas estruturadas ao banco de dados, permitindo combinar contexto qualitativo com valores financeiros obtidos de forma determinística.
+
+O mecanismo também estabelece um limite mínimo de similaridade para impedir que conteúdos pouco relacionados sejam fornecidos ao modelo. Como parâmetro inicial, resultados com similaridade inferior a 0,75 não são utilizados como contexto semântico. Nesses casos, quando possível, a aplicação recorre às informações estruturadas disponíveis por meio de consultas ao banco de dados. Os valores de quantidade de documentos recuperados e similaridade mínima deverão ser avaliados e ajustados durante os testes de qualidade do mecanismo de recuperação.
+
+A utilização de \textit{templates} internos e de dados financeiros normalizados na construção do índice reduz a superfície de exposição a tentativas de manipulação do conteúdo vetorial. Ainda assim, os dados recuperados são tratados como contexto da resposta, e não como instruções capazes de alterar as regras definidas para o comportamento do assistente.
+
+\subsection{Análise preditiva e detecção de anomalias}
+
+A camada preditiva do EIGAM não depende exclusivamente de modelos generativos. Para tarefas numéricas e de séries temporais, são utilizados métodos estatísticos e algoritmos específicos, mantendo a geração textual separada do cálculo dos resultados. Essa abordagem permite utilizar técnicas diferentes de acordo com a quantidade e a qualidade do histórico disponível para cada usuário.
+
+Para a previsão de gastos, o projeto adota inicialmente uma estratégia em duas camadas. Usuários que ainda não possuem histórico suficiente para identificação confiável de sazonalidades podem utilizar uma linha de base baseada em média móvel exponencialmente ponderada (EWMA), considerando o histórico disponível e uma janela máxima de referência de aproximadamente doze semanas. Quando existe histórico suficiente, pode ser empregado o Prophet para modelar tendências e padrões sazonais, incluindo comportamentos semanais e mensais, além de produzir intervalos de confiança para as projeções realizadas.
+
+A detecção de gastos atípicos também utiliza mecanismos complementares. O primeiro compara uma transação com o comportamento histórico de períodos equivalentes por meio de um Z-score sazonal, considerando preferencialmente observações do mesmo dia da semana. Como configuração inicial, valores absolutos de Z-score superiores a 2,5 podem ser classificados como alerta e valores superiores a 5 como ocorrência crítica. Esses limiares serão tratados como parâmetros configuráveis e deverão ser calibrados durante a validação do modelo.
+
+Além da identificação de pontos isolados, a solução pode utilizar o algoritmo PELT (\textit{Pruned Exact Linear Time}) para detectar mudanças estruturais persistentes no comportamento financeiro do usuário. Para usuários submetidos à modelagem pelo Prophet, outra camada de verificação consiste na comparação das observações reais com o intervalo esperado pelo modelo, permitindo identificar valores que apresentem desvio elevado em relação aos resíduos históricos.
+
+O uso combinado dessas estratégias tem como objetivo diferenciar oscilações ocasionais de alterações relevantes no padrão financeiro. Sempre que não houver histórico suficiente para determinada análise, o sistema deve evitar apresentar conclusões com nível de confiança inadequado e informar ao usuário que são necessários mais dados antes da geração daquela previsão ou classificação.
+
+\subsection{Mecanismos de controle e confiabilidade}
+
+Por operar em um domínio que envolve informações financeiras, o EIGAM adota mecanismos de controle adicionais sobre as respostas produzidas pelos modelos de linguagem. Esses controles, também denominados \textit{guardrails}, atuam antes da entrega da resposta ao usuário e buscam reduzir riscos relacionados à exposição indevida de valores, geração de informações sem origem verificável, solicitações fora do escopo e tentativas de manipulação das instruções do sistema.
+
+O Quadro \ref{quad:guardrails_ia} apresenta os principais controles previstos para a camada conversacional.
+
+{\small
+\begin{longtable}{|p{3.7cm}|p{5.2cm}|p{5.4cm}|}
+\caption{Mecanismos de controle da camada conversacional}
+\label{quad:guardrails_ia} \\
+\hline
+\textbf{Controle} & \textbf{Verificação} & \textbf{Ação prevista} \\ \hline
+\endfirsthead
+\hline
+\textbf{Controle} & \textbf{Verificação} & \textbf{Ação prevista} \\ \hline
+\endhead
+\hline
+\multicolumn{3}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\endfoot
+\hline
+\multicolumn{3}{c}{\fontsize{10pt}{10pt}\selectfont \textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\endlastfoot
+
+Exposição de valores não autorizados &
+Verifica se a sessão possui autorização válida para exibição de valores monetários. &
+Aplica mascaramento determinístico no servidor antes do envio da mensagem e solicita nova autenticação quando necessário.
+\\ \hline
+
+Geração de valores sem origem verificável &
+Compara valores monetários presentes na resposta com os dados estruturados e com o contexto disponibilizado ao modelo. &
+Descarta ou regenera a resposta com instruções reforçadas; quando necessário, utiliza resposta baseada apenas nos dados estruturados.
+\\ \hline
+
+Conteúdo fora do escopo &
+Identifica solicitações que extrapolam as funcionalidades previstas, especialmente aconselhamento especializado não contemplado pela proposta. &
+Informa a limitação ao usuário e evita produzir orientação que não esteja respaldada pelo escopo funcional do sistema.
+\\ \hline
+
+Comprimento inadequado da resposta &
+Verifica se o conteúdo excede os limites definidos para manter a comunicação adequada ao canal de mensageria. &
+Resume, trunca de forma controlada ou solicita nova geração mais objetiva. O limite pode variar conforme o canal utilizado.
+\\ \hline
+
+Exposição de instruções internas &
+Busca indícios de reprodução de instruções internas, mensagens de sistema ou conteúdo destinado exclusivamente à orquestração do modelo. &
+Regenera a resposta e, em caso de reincidência, utiliza uma resposta de contingência sem conteúdo gerado pelo modelo.
+\\ \hline
+
+Tentativas de \textit{prompt injection} &
+Identifica padrões destinados a substituir, ignorar ou revelar instruções internas da aplicação. &
+Desconsidera as instruções maliciosas, preserva as regras do sistema e pode recusar a solicitação quando ela exigir comportamento incompatível com as políticas definidas.
+\\ \hline
+
+\end{longtable}
+}
+
+O mascaramento de valores financeiros é executado de maneira determinística pela aplicação e não pelo modelo de linguagem. Da mesma forma, o modelo não recebe autoridade para validar autenticação, alterar consentimentos, executar exclusões ou decidir unilateralmente quais dados podem ser apresentados. A separação entre geração textual e regras de autorização busca garantir que falhas de interpretação do modelo não resultem diretamente em exposição indevida de informações ou execução de operações sensíveis.
+
+A confiabilidade dessa camada deverá ser avaliada por meio de testes específicos, incluindo precisão da classificação de intenções, qualidade da recuperação de contexto, consistência das informações numéricas, taxa de respostas sem suporte nos dados fornecidos, robustez diante de entradas adversariais e desempenho dos modelos preditivos. Os critérios e métricas utilizados para essa validação são detalhados nas etapas de testes e avaliação de qualidade do projeto.
+
 
     \section{Requisitos e diagramas}
 
