@@ -1,0 +1,24 @@
+\newpage
+\begin{center}
+    \setstretch{1}
+    \MakeUppercase{\authorOne}\\
+    \MakeUppercase{\authorTwo}\\
+    \MakeUppercase{\authorThree}\\
+    \ifdefempty{\workSubtitle}{\MakeUppercase{\workTitle}}{\MakeUppercase{\workTitle: \workSubtitle}}
+\end{center}
+\vspace{\baselineskip}
+
+\begin{flushright}
+    \parbox{8cm}{
+        \setstretch{1}
+        \workNature
+    }
+\end{flushright}
+\vspace{\baselineskip}
+
+\noindent Aprovação: \_\_\_\_/\_\_\_\_/\_\_\_\_\_\_\_\_\par
+
+\examinerfield{\advisorName}{\advisorInstitution}{Orientador}
+\ifdefempty{\coadvisorName}{}{\examinerfield{\coadvisorName}{\coadvisorInstitution}{Coorientador}}
+\examinerfield{\examinerOneName}{\examinerOneInstitution}{Examinador}
+\examinerfield{\examinerTwoName}{\examinerTwoInstitution}{Examinador}

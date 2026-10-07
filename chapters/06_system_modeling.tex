@@ -1,14 +1,10 @@
-% =============================================
-% CAPÍTULO 6 - MODELAGEM DO SISTEMA
-% =============================================
-\chapter{MODELAGEM DO SISTEMA}
+\chapter{Modelagem do sistema}
 
 A modelagem do sistema representa uma etapa fundamental no processo de desenvolvimento de \textit{software}, pois permite estruturar os requisitos, identificar restrições e representar de forma clara as responsabilidades, interações e funcionalidades esperadas da solução. No contexto deste projeto, essa etapa assume especial relevância em razão da integração com dados financeiros sensíveis, da utilização de serviços externos, da comunicação por plataformas de mensageria e dos requisitos relacionados à segurança, privacidade e conformidade com a Lei Geral de Proteção de Dados (LGPD).
 
 O EIGAM é concebido como uma solução de assistência financeira inteligente, preditiva e conversacional, integrada ao ecossistema de \textit{Open Finance} e capaz de interagir com os usuários por meio de diferentes plataformas de mensageria. O \textit{WhatsApp} será utilizado como canal inicial de comunicação, entretanto, a arquitetura busca manter o núcleo funcional da aplicação desacoplado do provedor de mensageria, possibilitando a integração futura com outros canais sem alterações significativas nas regras de negócio.
 
 Neste capítulo são apresentadas a fronteira sistêmica, as restrições da solução, a arquitetura da camada de inteligência artificial, os requisitos funcionais e não funcionais, os diagramas de casos de uso e suas respectivas descrições. Esses elementos permitem delimitar o escopo do sistema, estabelecer as responsabilidades dos componentes internos e dos serviços externos envolvidos em seu funcionamento e explicitar como os mecanismos conversacionais e preditivos são distribuídos entre os serviços da aplicação.
-
 
 \section{Fronteira sistêmica}
 
@@ -24,23 +20,24 @@ O armazenamento e o gerenciamento das informações são distribuídos de acordo
 
 Dessa forma, a fronteira sistêmica evidencia que as regras de negócio e os mecanismos de inteligência financeira permanecem independentes dos provedores externos utilizados. Essa característica é especialmente importante para a camada de mensageria, pois permite que o \textit{WhatsApp} seja utilizado como canal inicial sem constituir uma dependência estrutural permanente da solução.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \caption{Fronteira sistêmica da plataforma}
     \label{fig:fronteira}
     \includegraphics[width=\textwidth]{images/fronteira.png}
-    \fontetabela{\textbf{Fonte:} Elaborado pelos autores (2026).}
+    \authorssource
 \end{figure}
 
 \section{Lista de restrições}
 
 Durante a definição e a modelagem do EIGAM, foram identificadas restrições que condicionam seu funcionamento, sua arquitetura e sua capacidade de integração. Por se tratar de uma solução que depende de serviços externos, do compartilhamento autorizado de dados financeiros, de plataformas de mensageria e de mecanismos de inteligência artificial, parte dessas limitações decorre de fatores que não estão sob controle direto da aplicação.
 
-Além disso, o tratamento de dados pessoais e informações financeiras exige a observância de requisitos regulatórios e de segurança, enquanto a adoção de uma arquitetura multicanal impõe a necessidade de considerar diferenças técnicas entre os provedores de mensageria. As principais restrições identificadas são apresentadas no Quadro \ref{quad:restricoes}.
+Além disso, o tratamento de dados pessoais e informações financeiras exige a observância de requisitos regulatórios e de segurança, enquanto a adoção de uma arquitetura multicanal impõe a necessidade de considerar diferenças técnicas entre os provedores de mensageria. As principais restrições identificadas são apresentadas no Quadro \ref{frame:restricoes}.
 
 {\small
-\begin{longtable}{|p{2.3cm}|p{4.0cm}|p{8.2cm}|}
-\caption{Lista de Restrições} \label{quad:restricoes} \\
+\begin{longtable}{|L{2.3cm}|L{4.0cm}|L{8.2cm}|}
+\caption{Lista de Restrições} \label{frame:restricoes} \\
+\continuesmark
 
 \hline
 \textbf{Origem} & \textbf{Restrição} & \textbf{Descrição} \\ \hline
@@ -50,80 +47,64 @@ Além disso, o tratamento de dados pessoais e informações financeiras exige a 
 \textbf{Origem} & \textbf{Restrição} & \textbf{Descrição} \\ \hline
 \endhead
 
-\hline
-\multicolumn{3}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
 \endfoot
-
-\hline
-\multicolumn{3}{c}{\fontsize{10pt}{10pt}\selectfont \textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{3} \\
 \endlastfoot
-
 
 Externa &
 Integração com o \textit{Open Finance} &
 O acesso às informações financeiras depende da disponibilidade e das condições de funcionamento dos serviços utilizados para integração com o ecossistema de \textit{Open Finance}. No projeto, essa comunicação é intermediada pela Pluggy, cuja indisponibilidade ou alteração em suas APIs pode afetar operações de vinculação e sincronização de dados.
 \\ \hline
 
-
 Externa &
 Dependência de plataformas de mensageria &
 A comunicação com o usuário depende de APIs e serviços fornecidos por plataformas externas de mensageria. O \textit{WhatsApp} será utilizado como canal inicial, porém alterações em políticas, preços, limites de utilização ou disponibilidade do provedor podem afetar o funcionamento desse canal.
 \\ \hline
-
 
 Técnica &
 Interoperabilidade entre canais de mensageria &
 As plataformas de mensageria possuem diferentes formatos de mensagens, recursos interativos, limites e mecanismos de autenticação. Dessa forma, a integração de novos canais deve respeitar uma interface padronizada de comunicação com o núcleo do EIGAM e adaptar as funcionalidades às capacidades disponíveis em cada plataforma.
 \\ \hline
 
-
 Técnica &
 Limitações dos canais conversacionais &
 Determinados recursos visuais ou interativos disponíveis em aplicações \textit{web} podem não estar presentes em todas as plataformas de mensageria. A apresentação das informações deve, portanto, considerar os recursos suportados pelo canal utilizado sem comprometer o acesso às funcionalidades essenciais da solução.
 \\ \hline
-
 
 Regulatória &
 Consentimento para acesso aos dados financeiros &
 O acesso e a sincronização das informações compartilhadas por meio do \textit{Open Finance} dependem da existência de consentimento válido do titular. A revogação ou expiração desse consentimento impede novas sincronizações dos dados associados à respectiva instituição.
 \\ \hline
 
-
 Regulatória &
 Conformidade com a LGPD &
 O tratamento de dados pessoais deve observar os princípios, direitos e obrigações previstos na Lei Geral de Proteção de Dados, incluindo finalidade, necessidade, transparência, segurança e atendimento às solicitações do titular.
 \\ \hline
-
 
 Técnica &
 Proteção das informações financeiras &
 Por processar dados pessoais e informações financeiras de caráter confidencial, o sistema deve restringir sua exposição e adotar mecanismos de autenticação, autorização, controle de acesso, proteção das sessões e registro de operações relevantes.
 \\ \hline
 
-
 Técnica &
 Disponibilidade e qualidade dos dados financeiros &
 As análises realizadas pelo EIGAM dependem da disponibilidade, atualização e qualidade das informações recebidas das instituições financeiras. Dados incompletos, atrasados ou períodos históricos insuficientes podem limitar a precisão de determinadas análises, projeções e recomendações.
 \\ \hline
-
 
 Técnica &
 Limitações dos modelos de inteligência artificial &
 Os mecanismos de inteligência artificial utilizados possuem natureza probabilística e podem produzir respostas incompletas ou inadequadas. Dessa forma, o sistema deve limitar seu uso aos contextos previstos, utilizar dados financeiros validados como fonte de informação e adotar mecanismos que reduzam o risco de geração de interpretações incorretas.
 \\ \hline
 
-
 Externa &
 Dependência de serviços terceirizados &
 Partes da solução dependem de serviços externos para inteligência artificial, integração financeira, mensageria, hospedagem, monitoramento e demais recursos. Alterações de disponibilidade, limites de uso, preços ou interfaces desses fornecedores podem impactar a operação da plataforma.
 \\ \hline
 
-
 Infraestrutura &
 Disponibilidade da infraestrutura em nuvem &
 A solução depende de infraestrutura computacional disponível para processamento, armazenamento e execução contínua dos serviços. Falhas ou indisponibilidade do provedor de infraestrutura podem comprometer temporariamente funcionalidades da aplicação.
 \\ \hline
-
 
 Infraestrutura &
 Disponibilidade de conexão com a \textit{internet} &
@@ -133,35 +114,29 @@ A comunicação entre o usuário, as plataformas de mensageria, os serviços do 
 \end{longtable}
 }
 
-
-% =============================================
-% ARQUITETURA DA CAMADA DE INTELIGÊNCIA ARTIFICIAL
-% =============================================
 \section{Arquitetura da camada de inteligência artificial}
 
 A inteligência artificial constitui uma camada transversal da arquitetura do EIGAM e não um serviço isolado responsável por todas as decisões da aplicação. As responsabilidades relacionadas à interpretação de linguagem natural, recuperação de contexto, análise preditiva, detecção de comportamentos atípicos e geração de mensagens proativas são distribuídas entre os serviços que possuem o contexto necessário para executá-las. Essa organização busca reduzir o acoplamento, facilitar a evolução independente dos mecanismos analíticos e evitar que o modelo de linguagem seja utilizado como fonte primária de verdade para dados financeiros.
 
 Os valores monetários, saldos, transações, agregações e resultados numéricos utilizados nas respostas devem ser obtidos a partir de dados estruturados ou de cálculos executados pelos serviços internos. O modelo de linguagem é empregado principalmente para interpretar a intenção do usuário, organizar o contexto recuperado e apresentar os resultados em linguagem natural. Dessa forma, decisões que exigem comportamento determinístico, como autenticação, mascaramento de valores, controle de acesso e execução de comandos relacionados aos direitos do titular, permanecem sob responsabilidade da aplicação.
 
-\subsection{Distribuição das responsabilidades de inteligência artificial}
+\subsection{Distribuição das Responsabilidades de Inteligência Artificial}
 
-A camada cognitiva do EIGAM é distribuída principalmente entre o \textit{Chat Service}, o \textit{Finance Service} e o \textit{Notification Service}. Cada serviço utiliza técnicas de inteligência artificial apenas nas atividades compatíveis com sua responsabilidade de domínio, conforme apresentado no Quadro \ref{quad:ia_responsabilidades}.
+A camada cognitiva do EIGAM é distribuída principalmente entre o \textit{Chat Service}, o \textit{Finance Service} e o \textit{Notification Service}. Cada serviço utiliza técnicas de inteligência artificial apenas nas atividades compatíveis com sua responsabilidade de domínio, conforme apresentado no Quadro \ref{frame:ia_responsabilidades}.
 
 {\small
-\begin{longtable}{|p{3.3cm}|p{11.0cm}|}
+\begin{longtable}{|L{3.3cm}|L{11.0cm}|}
 \caption{Distribuição das responsabilidades de inteligência artificial}
-\label{quad:ia_responsabilidades} \\
+\label{frame:ia_responsabilidades} \\
+\continuesmark
 \hline
 \textbf{Serviço} & \textbf{Responsabilidades relacionadas à IA} \\ \hline
 \endfirsthead
 \hline
 \textbf{Serviço} & \textbf{Responsabilidades relacionadas à IA} \\ \hline
 \endhead
-\hline
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont \textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
 
 \textit{Chat Service} &
@@ -181,7 +156,7 @@ Avaliação das condições que justificam o envio de alertas, preparação de r
 
 Essa distribuição permite que o \textit{Chat Service} concentre a interpretação da interação, o \textit{Finance Service} permaneça responsável pelos cálculos e análises sobre os dados financeiros e o \textit{Notification Service} trate a comunicação proativa. Assim, uma resposta conversacional pode utilizar resultados produzidos por diferentes serviços sem transferir ao modelo de linguagem a responsabilidade por calcular ou inferir valores financeiros que já podem ser obtidos de maneira determinística.
 
-\subsection{Classificação e roteamento de intenções}
+\subsection{Classificação e Roteamento de Intenções}
 
 A classificação de intenção constitui a primeira etapa do processamento das mensagens em linguagem natural. Seu objetivo é identificar qual funcionalidade do EIGAM deve tratar a solicitação antes que dados financeiros sejam consultados ou modelos adicionais sejam acionados. O projeto prevê um conjunto de intenções previamente definidas para representar os principais fluxos da aplicação, incluindo consultas de gastos, consultas de saldo, projeções financeiras, avaliação de capacidade de compra, gerenciamento de metas e comandos relacionados aos dados pessoais do usuário.
 
@@ -189,7 +164,7 @@ Além da classe identificada, o classificador retorna um nível de confiança ut
 
 Comandos relacionados aos direitos do titular, como solicitações de consulta, exportação, revogação ou exclusão de dados, recebem tratamento adicional. Nesses casos, o sistema utiliza regras determinísticas de identificação, independentes do modelo de linguagem, de modo que a execução de operações com impacto sobre os dados pessoais não dependa exclusivamente de uma classificação probabilística. Após a identificação, as operações continuam sujeitas às etapas de autenticação e confirmação definidas nos respectivos casos de uso.
 
-\subsection{Recuperação de contexto com RAG}
+\subsection{Recuperação de Contexto com RAG}
 
 Para permitir que o assistente conversacional utilize informações relacionadas ao histórico financeiro do usuário sem depender exclusivamente da janela de contexto do modelo de linguagem, o EIGAM emprega uma arquitetura baseada em \textit{Retrieval-Augmented Generation} (RAG). Nesse mecanismo, informações financeiras previamente processadas são convertidas em representações textuais controladas, vetorizadas e indexadas para recuperação semântica durante as consultas.
 
@@ -201,7 +176,7 @@ O mecanismo também estabelece um limite mínimo de similaridade para impedir qu
 
 A utilização de \textit{templates} internos e de dados financeiros normalizados na construção do índice reduz a superfície de exposição a tentativas de manipulação do conteúdo vetorial. Ainda assim, os dados recuperados são tratados como contexto da resposta, e não como instruções capazes de alterar as regras definidas para o comportamento do assistente.
 
-\subsection{Análise preditiva e detecção de anomalias}
+\subsection{Análise Preditiva e Detecção de Anomalias}
 
 A camada preditiva do EIGAM não depende exclusivamente de modelos generativos. Para tarefas numéricas e de séries temporais, são utilizados métodos estatísticos e algoritmos específicos, mantendo a geração textual separada do cálculo dos resultados. Essa abordagem permite utilizar técnicas diferentes de acordo com a quantidade e a qualidade do histórico disponível para cada usuário.
 
@@ -213,27 +188,25 @@ Além da identificação de pontos isolados, a solução pode utilizar o algorit
 
 O uso combinado dessas estratégias tem como objetivo diferenciar oscilações ocasionais de alterações relevantes no padrão financeiro. Sempre que não houver histórico suficiente para determinada análise, o sistema deve evitar apresentar conclusões com nível de confiança inadequado e informar ao usuário que são necessários mais dados antes da geração daquela previsão ou classificação.
 
-\subsection{Mecanismos de controle e confiabilidade}
+\subsection{Mecanismos de Controle e Confiabilidade}
 
 Por operar em um domínio que envolve informações financeiras, o EIGAM adota mecanismos de controle adicionais sobre as respostas produzidas pelos modelos de linguagem. Esses controles, também denominados \textit{guardrails}, atuam antes da entrega da resposta ao usuário e buscam reduzir riscos relacionados à exposição indevida de valores, geração de informações sem origem verificável, solicitações fora do escopo e tentativas de manipulação das instruções do sistema.
 
-O Quadro \ref{quad:guardrails_ia} apresenta os principais controles previstos para a camada conversacional.
+O Quadro \ref{frame:guardrails_ia} apresenta os principais controles previstos para a camada conversacional.
 
 {\small
-\begin{longtable}{|p{3.7cm}|p{5.2cm}|p{5.4cm}|}
+\begin{longtable}{|L{3.7cm}|L{5.2cm}|L{5.4cm}|}
 \caption{Mecanismos de controle da camada conversacional}
-\label{quad:guardrails_ia} \\
+\label{frame:guardrails_ia} \\
+\continuesmark
 \hline
 \textbf{Controle} & \textbf{Verificação} & \textbf{Ação prevista} \\ \hline
 \endfirsthead
 \hline
 \textbf{Controle} & \textbf{Verificação} & \textbf{Ação prevista} \\ \hline
 \endhead
-\hline
-\multicolumn{3}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
 \endfoot
-\hline
-\multicolumn{3}{c}{\fontsize{10pt}{10pt}\selectfont \textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{3} \\
 \endlastfoot
 
 Exposição de valores não autorizados &
@@ -273,60 +246,55 @@ O mascaramento de valores financeiros é executado de maneira determinística pe
 
 A confiabilidade dessa camada deverá ser avaliada por meio de testes específicos, incluindo precisão da classificação de intenções, qualidade da recuperação de contexto, consistência das informações numéricas, taxa de respostas sem suporte nos dados fornecidos, robustez diante de entradas adversariais e desempenho dos modelos preditivos. Os critérios e métricas utilizados para essa validação são detalhados nas etapas de testes e avaliação de qualidade do projeto.
 
+\section{Requisitos e diagramas}
 
-    \section{Requisitos e diagramas}
+A definição dos requisitos é uma das etapas centrais do desenvolvimento de \textit{software}, pois estabelece com precisão o que a solução deve ser capaz de realizar e sob quais condições deve operar. De acordo com Washizaki, em ``\textit{Guide to the Software Engineering Body of Knowledge}'' (SWEBOK), a engenharia de requisitos integra uma das áreas de conhecimento fundamentais da engenharia de \textit{software}, sendo responsável por apoiar a identificação, documentação e comunicação das necessidades do sistema. Complementarmente, o uso de diagramas de casos de uso auxilia na representação visual das interações entre os usuários e o sistema, facilitando a compreensão do escopo e a comunicação entre os envolvidos no projeto.
 
-    A definição dos requisitos é uma das etapas centrais do desenvolvimento de \textit{software}, pois estabelece com precisão o que a solução deve ser capaz de realizar e sob quais condições deve operar. De acordo com Washizaki, em ``\textit{Guide to the Software Engineering Body of Knowledge}'' (SWEBOK), a engenharia de requisitos integra uma das áreas de conhecimento fundamentais da engenharia de \textit{software}, sendo responsável por apoiar a identificação, documentação e comunicação das necessidades do sistema. Complementarmente, o uso de diagramas de casos de uso auxilia na representação visual das interações entre os usuários e o sistema, facilitando a compreensão do escopo e a comunicação entre os envolvidos no projeto.
+\subsection{Requisitos Funcionais}
 
-    \subsection{Requisitos funcionais}
+O Quadro \ref{frame:rf} apresenta os requisitos funcionais do projeto, isto é, as funcionalidades e comportamentos que o sistema deverá oferecer para atender às necessidades dos usuários. Esses requisitos abrangem desde o cadastro e a vinculação de contas bancárias até a consulta de informações financeiras, a geração de análises e previsões, o envio de alertas, o gerenciamento de metas e o gerenciamento de consentimentos, refletindo os principais fluxos de interação previstos para a solução.
 
-    O Quadro \ref{quad:rf} apresenta os requisitos funcionais do projeto, isto é, as funcionalidades e comportamentos que o sistema deverá oferecer para atender às necessidades dos usuários. Esses requisitos abrangem desde o cadastro e a vinculação de contas bancárias até a consulta de informações financeiras, a geração de análises e previsões, o envio de alertas, o gerenciamento de metas e o gerenciamento de consentimentos, refletindo os principais fluxos de interação previstos para a solução.
-
-    \begin{longtable}{|p{1.5cm}|p{3.2cm}|p{7.3cm}|p{2.1cm}|}
-    \caption{Requisitos Funcionais} \label{quad:rf} \\
-    \hline
-    \textbf{Código} & \textbf{Requisito} & \textbf{Descrição} & \textbf{Prioridade} \\ \hline
-    \endfirsthead
-    \hline
-    \textbf{Código} & \textbf{Requisito} & \textbf{Descrição} & \textbf{Prioridade} \\ \hline
-    \endhead
-    \hline
-    \multicolumn{4}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
-    \endfoot
-    \hline
-    \multicolumn{4}{c}{\fontsize{10pt}{10pt}\selectfont \textbf{Fonte:} Elaborado pelos autores (2026).} \\
-    \endlastfoot
-    {[RF001]} & Realizar cadastro & O usuário deve ser capaz de iniciar seu cadastro na solução por meio do WhatsApp, fornecendo as informações necessárias para criação de sua conta. & Obrigatório \\ \hline
-    {[RF002]} & Vincular conta ao \textit{Open Finance} & O usuário deve ser capaz de autorizar e vincular suas contas bancárias por meio do \textit{Open Finance}, permitindo o compartilhamento de dados financeiros com a solução. & Obrigatório \\ \hline
-    {[RF003]} & Consultar informações financeiras & O usuário deve ser capaz de consultar, por meio da conversa no WhatsApp, informações como saldo, transações, histórico financeiro, movimentações recentes e resumos financeiros periódicos com visão consolidada de receitas, despesas e saldo. & Obrigatório \\ \hline
-    {[RF004]} & Gerar análises financeiras & O sistema deve ser capaz de analisar os dados financeiros do usuário e apresentar interpretações sobre gastos, receitas e comportamento financeiro. & Obrigatório \\ \hline
-    {[RF005]} & Gerar previsões financeiras & O sistema deve ser capaz de produzir previsões com base no histórico financeiro do usuário, indicando possíveis cenários futuros relacionados a gastos e saldo. & Obrigatório \\ \hline
-    {[RF006]} & Emitir alertas financeiros & O sistema deve ser capaz de enviar alertas ao usuário sobre situações relevantes, como vencimentos, gastos acima do padrão ou risco de saldo insuficiente. & Obrigatório \\ \hline
-    {[RF007]} & Fornecer recomendações personalizadas & O sistema deve ser capaz de gerar orientações e recomendações financeiras personalizadas com base no perfil e no histórico do usuário. & Obrigatório \\ \hline
-    {[RF008]} & Definir metas financeiras & O usuário deve ser capaz de cadastrar metas financeiras, como economizar determinado valor ou controlar gastos em categorias específicas. & Desejável \\ \hline
-    {[RF009]} & Acompanhar metas financeiras & O usuário deve ser capaz de consultar o andamento de suas metas financeiras por meio da conversa no WhatsApp. & Desejável \\ \hline
-    {[RF010]} & Gerenciar consentimento & O usuário deve ser capaz de conceder, visualizar e revogar o consentimento de acesso aos seus dados financeiros compartilhados, incluindo a desvinculação de contas bancárias da solução. & Obrigatório \\ \hline
-    {[RF011]} & Gerenciar perfil & O usuário deve ser capaz de visualizar e atualizar suas informações cadastrais e preferências de uso da solução. & Desejável \\ \hline
-    {[RF012]} & Disponibilizar painel administrativo & O sistema deve fornecer uma área administrativa para acompanhamento técnico e gerenciamento geral da solução. & Desejável \\ \hline
-\end{longtable}
-
-\subsection{Requisitos não funcionais e de qualidade}
-
-Além dos requisitos funcionais, a solução deve atender a requisitos não funcionais e de qualidade que assegurem seu funcionamento adequado em um contexto de alta sensibilidade de dados. Dado que a plataforma lida com informações financeiras e pessoais de usuários, aspectos como segurança, privacidade, confiabilidade e desempenho são tratados como prioridades estruturais. O detalhamento desses requisitos é apresentado no Quadro \ref{quad:rnf}.
-
-\begin{longtable}{|p{1.8cm}|p{3.2cm}|p{7.0cm}|p{2.1cm}|}
-\caption{Requisitos Não Funcionais e de Qualidade} \label{quad:rnf} \\
+\begin{longtable}{|L{1.5cm}|L{3.2cm}|L{7.3cm}|L{2.1cm}|}
+\caption{Requisitos Funcionais} \label{frame:rf} \\
+\continuesmark
 \hline
 \textbf{Código} & \textbf{Requisito} & \textbf{Descrição} & \textbf{Prioridade} \\ \hline
 \endfirsthead
 \hline
 \textbf{Código} & \textbf{Requisito} & \textbf{Descrição} & \textbf{Prioridade} \\ \hline
 \endhead
-\hline
-\multicolumn{4}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
 \endfoot
+\sourcerow{4} \\
+\endlastfoot
+{[RF001]} & Realizar cadastro & O usuário deve ser capaz de iniciar seu cadastro na solução por meio do WhatsApp, fornecendo as informações necessárias para criação de sua conta. & Obrigatório \\ \hline
+{[RF002]} & Vincular conta ao \textit{Open Finance} & O usuário deve ser capaz de autorizar e vincular suas contas bancárias por meio do \textit{Open Finance}, permitindo o compartilhamento de dados financeiros com a solução. & Obrigatório \\ \hline
+{[RF003]} & Consultar informações financeiras & O usuário deve ser capaz de consultar, por meio da conversa no WhatsApp, informações como saldo, transações, histórico financeiro, movimentações recentes e resumos financeiros periódicos com visão consolidada de receitas, despesas e saldo. & Obrigatório \\ \hline
+{[RF004]} & Gerar análises financeiras & O sistema deve ser capaz de analisar os dados financeiros do usuário e apresentar interpretações sobre gastos, receitas e comportamento financeiro. & Obrigatório \\ \hline
+{[RF005]} & Gerar previsões financeiras & O sistema deve ser capaz de produzir previsões com base no histórico financeiro do usuário, indicando possíveis cenários futuros relacionados a gastos e saldo. & Obrigatório \\ \hline
+{[RF006]} & Emitir alertas financeiros & O sistema deve ser capaz de enviar alertas ao usuário sobre situações relevantes, como vencimentos, gastos acima do padrão ou risco de saldo insuficiente. & Obrigatório \\ \hline
+{[RF007]} & Fornecer recomendações personalizadas & O sistema deve ser capaz de gerar orientações e recomendações financeiras personalizadas com base no perfil e no histórico do usuário. & Obrigatório \\ \hline
+{[RF008]} & Definir metas financeiras & O usuário deve ser capaz de cadastrar metas financeiras, como economizar determinado valor ou controlar gastos em categorias específicas. & Desejável \\ \hline
+{[RF009]} & Acompanhar metas financeiras & O usuário deve ser capaz de consultar o andamento de suas metas financeiras por meio da conversa no WhatsApp. & Desejável \\ \hline
+{[RF010]} & Gerenciar consentimento & O usuário deve ser capaz de conceder, visualizar e revogar o consentimento de acesso aos seus dados financeiros compartilhados, incluindo a desvinculação de contas bancárias da solução. & Obrigatório \\ \hline
+{[RF011]} & Gerenciar perfil & O usuário deve ser capaz de visualizar e atualizar suas informações cadastrais e preferências de uso da solução. & Desejável \\ \hline
+{[RF012]} & Disponibilizar painel administrativo & O sistema deve fornecer uma área administrativa para acompanhamento técnico e gerenciamento geral da solução. & Desejável \\ \hline
+\end{longtable}
+
+\subsection{Requisitos Não Funcionais e de Qualidade}
+
+Além dos requisitos funcionais, a solução deve atender a requisitos não funcionais e de qualidade que assegurem seu funcionamento adequado em um contexto de alta sensibilidade de dados. Dado que a plataforma lida com informações financeiras e pessoais de usuários, aspectos como segurança, privacidade, confiabilidade e desempenho são tratados como prioridades estruturais. O detalhamento desses requisitos é apresentado no Quadro \ref{frame:rnf}.
+
+\begin{longtable}{|L{1.8cm}|L{3.2cm}|L{7.0cm}|L{2.1cm}|}
+\caption{Requisitos Não Funcionais e de Qualidade} \label{frame:rnf} \\
+\continuesmark
 \hline
-\multicolumn{4}{c}{\fontsize{10pt}{10pt}\selectfont \textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\textbf{Código} & \textbf{Requisito} & \textbf{Descrição} & \textbf{Prioridade} \\ \hline
+\endfirsthead
+\hline
+\textbf{Código} & \textbf{Requisito} & \textbf{Descrição} & \textbf{Prioridade} \\ \hline
+\endhead
+\endfoot
+\sourcerow{4} \\
 \endlastfoot
 {[RNF001]} & Segurança dos dados & O sistema deve proteger os dados pessoais e financeiros do usuário contra acessos não autorizados, vazamentos e usos indevidos. & Obrigatório \\ \hline
 {[RNF002]} & Privacidade das informações & O sistema deve tratar os dados do usuário em conformidade com a LGPD, garantindo consentimento, transparência e controle sobre o uso das informações. & Obrigatório \\ \hline
@@ -348,45 +316,45 @@ Além dos requisitos funcionais, a solução deve atender a requisitos não func
 {[RNF018]} & Atualização de dados & O sistema deve manter as informações financeiras do usuário sincronizadas com frequência adequada, de acordo com a disponibilidade das integrações. & Obrigatório \\ \hline
 \end{longtable}
 
-\subsection{Diagrama de casos de uso}
+\subsection{Diagrama de Casos de Uso}
 
-Os diagramas de caso de uso são utilizados para representar, de forma visual, as interações entre os atores externos e o sistema, evidenciando as funcionalidades oferecidas e os objetivos que podem ser alcançados por meio dessas interações (OBJECT MANAGEMENT GROUP, 2017). Dessa forma, esses diagramas auxiliam na compreensão do escopo do sistema e na comunicação dos requisitos levantados durante o projeto.
+Os diagramas de caso de uso são utilizados para representar, de forma visual, as interações entre os atores externos e o sistema, evidenciando as funcionalidades oferecidas e os objetivos que podem ser alcançados por meio dessas interações (Object Management Group, 2017). Dessa forma, esses diagramas auxiliam na compreensão do escopo do sistema e na comunicação dos requisitos levantados durante o projeto.
 
 A solução foi modelada em quatro grupos funcionais de casos de uso: acesso e consulta financeira, análise preditiva e alertas, metas financeiras e resumos periódicos, e direitos do titular conforme a LGPD (Art.\ 18). As Figuras \ref{fig:uc01}, \ref{fig:uc02}, \ref{fig:uc03} e \ref{fig:uc04} apresentam os diagramas correspondentes a cada grupo.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
-    \caption{Diagrama de Casos de Uso — Acesso e Consulta Financeira.}
+    \caption{Diagrama de Casos de Uso — Acesso e Consulta Financeira}
     \label{fig:uc01}
     \includegraphics[width=1\textwidth]{"images/uml/UC01 - Acesso e Consulta Financeira.png"}
-    \fontetabela{\textbf{Fonte:} Elaborado pelos autores (2026).}
+    \authorssource
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
-    \caption{Diagrama de Casos de Uso — Análise Preditiva e Alertas.}
+    \caption{Diagrama de Casos de Uso — Análise Preditiva e Alertas}
     \label{fig:uc02}
     \includegraphics[width=1\textwidth]{"images/uml/UC02 - Analise Preditiva e Alertas.png"}
-    \fontetabela{\textbf{Fonte:} Elaborado pelos autores (2026).}
+    \authorssource
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
-    \caption{Diagrama de Casos de Uso — Metas Financeiras e Resumos Periódicos.}
+    \caption{Diagrama de Casos de Uso — Metas Financeiras e Resumos Periódicos}
     \label{fig:uc03}
     \includegraphics[width=1\textwidth]{"images/uml/UC03 - Metas Financeiras e Resumos Periodicos.png"}
-    \fontetabela{\textbf{Fonte:} Elaborado pelos autores (2026).}
+    \authorssource
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
-    \caption{Diagrama de Casos de Uso — Direitos do Titular (LGPD Art.\ 18).}
+    \caption{Diagrama de Casos de Uso — Direitos do Titular (LGPD Art.\ 18)}
     \label{fig:uc04}
     \includegraphics[width=1\textwidth]{"images/uml/UC04 - Direitos do Titular (LGPD Art. 18).png"}
-    \fontetabela{\textbf{Fonte:} Elaborado pelos autores (2026).}
+    \authorssource
 \end{figure}
 
-\subsection{Descrição de casos de uso}
+\subsection{Descrição de Casos de Uso}
 
 A seguir são apresentadas as descrições textuais dos casos de uso identificados nos diagramas, organizadas conforme os quatro grupos funcionais da solução.
 
@@ -394,21 +362,21 @@ A seguir são apresentadas as descrições textuais dos casos de uso identificad
 
 \vspace{4pt}
 
-Os quadros \ref{quad:uc001} a \ref{quad:uc009} descrevem os casos de uso relativos ao acesso e à consulta financeira, abrangendo o cadastro do usuário, a vinculação de contas bancárias via \textit{Open Finance}, a autenticação por senha de 6 dígitos e as operações de consulta de saldo, extrato e resumo financeiro.
+Os quadros \ref{frame:uc001} a \ref{frame:uc009} descrevem os casos de uso relativos ao acesso e à consulta financeira, abrangendo o cadastro do usuário, a vinculação de contas bancárias via \textit{Open Finance}, a autenticação por senha de 6 dígitos e as operações de consulta de saldo, extrato e resumo financeiro.
 
 \vspace{4pt}
 
-% ---- UC001 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[UC001] Realizar cadastro via WhatsApp} \label{quad:uc001} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[UC001] Realizar cadastro via WhatsApp} \label{frame:uc001} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [UC001] Realizar cadastro via WhatsApp \\ \hline
 \textbf{Ator(es)} & Usuário \\ \hline
 \textbf{Motivação} & Permitir que um novo usuário crie sua conta na solução por meio de uma conversa no WhatsApp, definindo suas credenciais de acesso. \\ \hline
@@ -431,17 +399,17 @@ a. As senhas digitadas não coincidem:\newline
 
 \vspace{4pt}
 
-% ---- UC002 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[UC002] Vincular conta ao \textit{Open Finance}} \label{quad:uc002} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[UC002] Vincular conta ao \textit{Open Finance}} \label{frame:uc002} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [UC002] Vincular conta ao \textit{Open Finance} \\ \hline
 \textbf{Ator(es)} & Usuário, Pluggy (\textit{Open Finance}) \\ \hline
 \textbf{Motivação} & Permitir ao usuário autorizar o acesso a seus dados bancários via \textit{Open Finance} por meio da integração com o Pluggy, habilitando a sincronização de transações. \\ \hline
@@ -463,17 +431,17 @@ a. O usuário não conclui a autorização no Pluggy:\newline
 
 \vspace{4pt}
 
-% ---- UC003 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[UC003] Autenticar via senha de 6 dígitos} \label{quad:uc003} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[UC003] Autenticar via senha de 6 dígitos} \label{frame:uc003} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [UC003] Autenticar via senha de 6 dígitos \\ \hline
 \textbf{Ator(es)} & Usuário \\ \hline
 \textbf{Motivação} & Garantir autenticação segura do titular antes de acessar dados financeiros sensíveis, emitindo token de privilégio com validade de 1 hora (inclui [UC009]). \\ \hline
@@ -494,17 +462,17 @@ a. A senha informada está incorreta:\newline
 
 \vspace{4pt}
 
-% ---- UC004 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[UC004] Consultar saldo e extrato} \label{quad:uc004} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[UC004] Consultar saldo e extrato} \label{frame:uc004} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [UC004] Consultar saldo e extrato \\ \hline
 \textbf{Ator(es)} & Usuário, Pluggy (\textit{Open Finance}) \\ \hline
 \textbf{Motivação} & Permitir ao usuário consultar o saldo atual e o extrato bancário de forma conversacional pelo WhatsApp, com dados sincronizados em tempo real (inclui [UC003] e [UC007]). \\ \hline
@@ -528,17 +496,17 @@ b. O Pluggy está indisponível:\newline
 
 \vspace{4pt}
 
-% ---- UC005 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[UC005] Consultar histórico de transações} \label{quad:uc005} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[UC005] Consultar histórico de transações} \label{frame:uc005} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [UC005] Consultar histórico de transações \\ \hline
 \textbf{Ator(es)} & Usuário, Pluggy (\textit{Open Finance}) \\ \hline
 \textbf{Motivação} & Permitir ao usuário acessar o histórico de suas transações financeiras de forma conversacional no WhatsApp (inclui [UC003] e [UC007]). \\ \hline
@@ -561,17 +529,17 @@ b. O Pluggy está indisponível:\newline
 
 \vspace{4pt}
 
-% ---- UC006 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[UC006] Consultar resumo financeiro} \label{quad:uc006} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[UC006] Consultar resumo financeiro} \label{frame:uc006} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [UC006] Consultar resumo financeiro \\ \hline
 \textbf{Ator(es)} & Usuário, Pluggy (\textit{Open Finance}) \\ \hline
 \textbf{Motivação} & Permitir ao usuário obter um resumo consolidado de suas finanças, com possibilidade de visualização gráfica dos gastos por categoria (inclui [UC003] e [UC007]; estende [UC008]). \\ \hline
@@ -595,17 +563,17 @@ b. O Pluggy está indisponível:\newline
 
 \vspace{4pt}
 
-% ---- UC007 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[UC007] Receber resposta em linguagem natural} \label{quad:uc007} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[UC007] Receber resposta em linguagem natural} \label{frame:uc007} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [UC007] Receber resposta em linguagem natural \\ \hline
 \textbf{Ator(es)} & Sistema, OpenAI (LLM) \\ \hline
 \textbf{Motivação} & Gerar respostas compreensíveis ao usuário com base nos dados financeiros processados, utilizando o modelo de linguagem da OpenAI (incluso em [UC004], [UC005] e [UC006]). \\ \hline
@@ -625,17 +593,17 @@ a. A API da OpenAI está indisponível:\newline
 
 \vspace{4pt}
 
-% ---- UC008 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[UC008] Visualizar gráfico de gastos} \label{quad:uc008} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[UC008] Visualizar gráfico de gastos} \label{frame:uc008} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [UC008] Visualizar gráfico de gastos \\ \hline
 \textbf{Ator(es)} & Sistema \\ \hline
 \textbf{Motivação} & Complementar o resumo financeiro com representação visual dos gastos por categoria, facilitando a análise do perfil de despesas do usuário (estendido de [UC006]). \\ \hline
@@ -654,17 +622,17 @@ a. Não há dados de transações disponíveis no período:\newline
 
 \vspace{4pt}
 
-% ---- UC009 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[UC009] Obter token de privilégio (1h)} \label{quad:uc009} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[UC009] Obter token de privilégio (1h)} \label{frame:uc009} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [UC009] Obter token de privilégio (1h) \\ \hline
 \textbf{Ator(es)} & Sistema \\ \hline
 \textbf{Motivação} & Emitir um token temporário que autoriza acesso a dados financeiros sensíveis pelo período de 1 hora, garantindo que valores monetários fiquem acessíveis apenas após autenticação recente (incluso em [UC003]). \\ \hline
@@ -687,21 +655,21 @@ a. Erro na geração do token:\newline
 
 \vspace{4pt}
 
-Os quadros \ref{quad:uc010} a \ref{quad:uc017} descrevem os casos de uso relativos à análise preditiva e aos alertas automáticos, abrangendo a sincronização de transações, a classificação por categoria, a detecção de recorrências e o envio de alertas sobre gastos atípicos, saldo baixo, vencimentos e progresso de metas.
+Os quadros \ref{frame:uc010} a \ref{frame:uc017} descrevem os casos de uso relativos à análise preditiva e aos alertas automáticos, abrangendo a sincronização de transações, a classificação por categoria, a detecção de recorrências e o envio de alertas sobre gastos atípicos, saldo baixo, vencimentos e progresso de metas.
 
 \vspace{4pt}
 
-% ---- UC010 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[UC010] Receber alerta de gasto atípico} \label{quad:uc010} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[UC010] Receber alerta de gasto atípico} \label{frame:uc010} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [UC010] Receber alerta de gasto atípico \\ \hline
 \textbf{Ator(es)} & Usuário, Sistema (\textit{Scheduler}) \\ \hline
 \textbf{Motivação} & Notificar o usuário quando um gasto apresentar desvio estatístico superior a 2 desvios-padrão em relação ao padrão histórico da categoria (inclui [UC016]). \\ \hline
@@ -720,17 +688,17 @@ a. O usuário não possui histórico suficiente para cálculo estatístico:\newl
 
 \vspace{4pt}
 
-% ---- UC011 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[UC011] Receber alerta de saldo baixo} \label{quad:uc011} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[UC011] Receber alerta de saldo baixo} \label{frame:uc011} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [UC011] Receber alerta de saldo baixo \\ \hline
 \textbf{Ator(es)} & Usuário, Sistema (\textit{Scheduler}) \\ \hline
 \textbf{Motivação} & Notificar o usuário quando a projeção de saldo indicar risco de saldo negativo dentro dos próximos 7 dias (inclui [UC016]). \\ \hline
@@ -749,17 +717,17 @@ a. O saldo projetado permanece positivo:\newline
 
 \vspace{4pt}
 
-% ---- UC012 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[UC012] Receber alerta de vencimento} \label{quad:uc012} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[UC012] Receber alerta de vencimento} \label{frame:uc012} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [UC012] Receber alerta de vencimento \\ \hline
 \textbf{Ator(es)} & Usuário, Sistema (\textit{Scheduler}) \\ \hline
 \textbf{Motivação} & Notificar o usuário sobre vencimentos de contas ou compromissos identificados com base em transações recorrentes detectadas automaticamente pelo sistema. \\ \hline
@@ -777,17 +745,17 @@ a. Não há vencimentos identificados no período:\newline
 
 \vspace{4pt}
 
-% ---- UC013 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[UC013] Consultar projeção de gastos futuros} \label{quad:uc013} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[UC013] Consultar projeção de gastos futuros} \label{frame:uc013} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [UC013] Consultar projeção de gastos futuros \\ \hline
 \textbf{Ator(es)} & Usuário \\ \hline
 \textbf{Motivação} & Permitir ao usuário obter uma estimativa de seus gastos futuros com base no histórico financeiro e nas transações recorrentes identificadas (inclui [UC016]). \\ \hline
@@ -807,17 +775,17 @@ a. Histórico insuficiente para gerar projeção:\newline
 
 \vspace{4pt}
 
-% ---- UC014 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[UC014] Detectar transações recorrentes} \label{quad:uc014} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[UC014] Detectar transações recorrentes} \label{frame:uc014} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [UC014] Detectar transações recorrentes \\ \hline
 \textbf{Ator(es)} & Sistema \\ \hline
 \textbf{Motivação} & Identificar automaticamente padrões de transações que se repetem periodicamente, auxiliando nos alertas de vencimento e nas projeções financeiras (incluso em [UC016]). \\ \hline
@@ -836,17 +804,17 @@ a. Nenhum padrão recorrente encontrado:\newline
 
 \vspace{4pt}
 
-% ---- UC015 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[UC015] Classificar transações por categoria} \label{quad:uc015} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[UC015] Classificar transações por categoria} \label{frame:uc015} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [UC015] Classificar transações por categoria \\ \hline
 \textbf{Ator(es)} & Sistema \\ \hline
 \textbf{Motivação} & Categorizar automaticamente transações financeiras com base em códigos MCC e, para casos ambíguos, com auxílio do modelo de linguagem (LLM), viabilizando análises e alertas por categoria (incluso em [UC016]). \\ \hline
@@ -867,17 +835,17 @@ a. Código MCC não encontrado e LLM indisponível:\newline
 
 \vspace{4pt}
 
-% ---- UC016 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[UC016] Sincronizar transações automaticamente} \label{quad:uc016} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[UC016] Sincronizar transações automaticamente} \label{frame:uc016} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [UC016] Sincronizar transações automaticamente \\ \hline
 \textbf{Ator(es)} & Sistema (\textit{Scheduler}), Pluggy (\textit{Open Finance}) \\ \hline
 \textbf{Motivação} & Manter os dados financeiros dos usuários atualizados buscando transações no Pluggy a cada 6 horas, para usuários com consentimento ativo (inclui [UC014] e [UC015]). \\ \hline
@@ -900,17 +868,17 @@ b. O usuário não possui consentimento ativo:\newline
 
 \vspace{4pt}
 
-% ---- UC017 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[UC017] Receber alerta de progresso de meta} \label{quad:uc017} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[UC017] Receber alerta de progresso de meta} \label{frame:uc017} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [UC017] Receber alerta de progresso de meta \\ \hline
 \textbf{Ator(es)} & Usuário, Sistema (\textit{Scheduler}) \\ \hline
 \textbf{Motivação} & Notificar o usuário quando o progresso de uma meta financeira atingir marcos relevantes (ex.: 50\%, 100\%) ou quando o prazo de conclusão estiver próximo. \\ \hline
@@ -932,21 +900,21 @@ a. O usuário não possui metas ativas:\newline
 
 \vspace{4pt}
 
-Os quadros \ref{quad:uc018} a \ref{quad:uc027} descrevem os casos de uso relativos ao gerenciamento de metas financeiras e ao envio de resumos periódicos automáticos, abrangendo a definição, edição, cancelamento e acompanhamento de metas, além dos resumos semanal e mensal com gráficos de evolução.
+Os quadros \ref{frame:uc018} a \ref{frame:uc027} descrevem os casos de uso relativos ao gerenciamento de metas financeiras e ao envio de resumos periódicos automáticos, abrangendo a definição, edição, cancelamento e acompanhamento de metas, além dos resumos semanal e mensal com gráficos de evolução.
 
 \vspace{4pt}
 
-% ---- UC018 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[UC018] Definir meta financeira} \label{quad:uc018} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[UC018] Definir meta financeira} \label{frame:uc018} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [UC018] Definir meta financeira \\ \hline
 \textbf{Ator(es)} & Usuário \\ \hline
 \textbf{Motivação} & Permitir ao usuário cadastrar uma meta financeira (economizar determinado valor ou limitar gastos em uma categoria) para acompanhamento contínuo pela solução. \\ \hline
@@ -967,17 +935,17 @@ a. Dados inválidos (valor negativo ou prazo no passado):\newline
 
 \vspace{4pt}
 
-% ---- UC019 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[UC019] Acompanhar progresso de meta} \label{quad:uc019} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[UC019] Acompanhar progresso de meta} \label{frame:uc019} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [UC019] Acompanhar progresso de meta \\ \hline
 \textbf{Ator(es)} & Usuário \\ \hline
 \textbf{Motivação} & Permitir ao usuário consultar o andamento de suas metas financeiras ativas via WhatsApp, com valores atualizados com base nas transações sincronizadas. \\ \hline
@@ -997,17 +965,17 @@ a. O usuário não possui metas ativas:\newline
 
 \vspace{4pt}
 
-% ---- UC020 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[UC020] Editar meta financeira} \label{quad:uc020} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[UC020] Editar meta financeira} \label{frame:uc020} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [UC020] Editar meta financeira \\ \hline
 \textbf{Ator(es)} & Usuário \\ \hline
 \textbf{Motivação} & Permitir ao usuário ajustar os parâmetros de uma meta financeira já cadastrada (valor-alvo, prazo ou categoria), estendendo as funcionalidades de [UC018]. \\ \hline
@@ -1029,17 +997,17 @@ b. Meta não encontrada:\newline
 
 \vspace{4pt}
 
-% ---- UC021 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[UC021] Cancelar meta financeira} \label{quad:uc021} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[UC021] Cancelar meta financeira} \label{frame:uc021} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [UC021] Cancelar meta financeira \\ \hline
 \textbf{Ator(es)} & Usuário \\ \hline
 \textbf{Motivação} & Permitir ao usuário cancelar uma meta financeira ativa quando não desejar mais acompanhá-la, estendendo as funcionalidades de [UC018]. \\ \hline
@@ -1061,17 +1029,17 @@ b. Meta não encontrada:\newline
 
 \vspace{4pt}
 
-% ---- UC022 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[UC022] Receber resumo semanal} \label{quad:uc022} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[UC022] Receber resumo semanal} \label{frame:uc022} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [UC022] Receber resumo semanal \\ \hline
 \textbf{Ator(es)} & Sistema (\textit{Scheduler}) \\ \hline
 \textbf{Motivação} & Enviar ao usuário um resumo financeiro semanal toda segunda-feira às 06:00, sem expor valores monetários absolutos — apenas variações percentuais, contagens e tendências (inclui [UC025]). \\ \hline
@@ -1093,17 +1061,17 @@ b. Não há movimentações no período:\newline
 
 \vspace{4pt}
 
-% ---- UC023 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[UC023] Receber resumo mensal} \label{quad:uc023} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[UC023] Receber resumo mensal} \label{frame:uc023} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [UC023] Receber resumo mensal \\ \hline
 \textbf{Ator(es)} & Sistema (\textit{Scheduler}) \\ \hline
 \textbf{Motivação} & Enviar ao usuário um resumo financeiro mensal no primeiro dia de cada mês, consolidando receitas, despesas e tendências do mês anterior (inclui [UC025]). \\ \hline
@@ -1125,17 +1093,17 @@ b. Não há movimentações no período:\newline
 
 \vspace{4pt}
 
-% ---- UC024 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[UC024] Solicitar detalhes do resumo (valores R\$)} \label{quad:uc024} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[UC024] Solicitar detalhes do resumo (valores R\$)} \label{frame:uc024} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [UC024] Solicitar detalhes do resumo (valores R\$) \\ \hline
 \textbf{Ator(es)} & Usuário \\ \hline
 \textbf{Motivação} & Permitir ao usuário solicitar os valores monetários absolutos de um resumo recebido, após autenticação via senha de 6 dígitos (estende [UC022] e [UC023]; inclui [UC003]). \\ \hline
@@ -1157,17 +1125,17 @@ b. O token de privilégio ainda está ativo:\newline
 
 \vspace{4pt}
 
-% ---- UC025 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[UC025] Visualizar gráfico de evolução} \label{quad:uc025} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[UC025] Visualizar gráfico de evolução} \label{frame:uc025} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [UC025] Visualizar gráfico de evolução \\ \hline
 \textbf{Ator(es)} & Sistema \\ \hline
 \textbf{Motivação} & Gerar e enviar ao usuário um gráfico de evolução financeira que acompanha os resumos semanal e mensal, exibindo tendências de receitas e despesas (incluso em [UC022] e [UC023]). \\ \hline
@@ -1186,17 +1154,17 @@ a. Dados insuficientes para geração do gráfico:\newline
 
 \vspace{4pt}
 
-% ---- UC026 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[UC026] Configurar preferências de notificação} \label{quad:uc026} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[UC026] Configurar preferências de notificação} \label{frame:uc026} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [UC026] Configurar preferências de notificação \\ \hline
 \textbf{Ator(es)} & Usuário \\ \hline
 \textbf{Motivação} & Permitir ao usuário personalizar quais tipos de notificações e resumos automáticos deseja receber do sistema, ajustando a experiência de uso conforme suas preferências. \\ \hline
@@ -1217,17 +1185,17 @@ a. Configuração inválida informada:\newline
 
 \vspace{4pt}
 
-% ---- UC027 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[UC027] Desativar tipo de resumo} \label{quad:uc027} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[UC027] Desativar tipo de resumo} \label{frame:uc027} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [UC027] Desativar tipo de resumo \\ \hline
 \textbf{Ator(es)} & Usuário \\ \hline
 \textbf{Motivação} & Permitir ao usuário desativar o envio de determinado tipo de resumo automático (semanal ou mensal) sem alterar as demais preferências de notificação (estende [UC026]). \\ \hline
@@ -1250,21 +1218,21 @@ a. O usuário cancela a operação:\newline
 
 \vspace{4pt}
 
-Os quadros \ref{quad:lc001} a \ref{quad:lc010} descrevem os casos de uso relativos aos direitos do titular previstos no Art.\ 18 da LGPD, abrangendo consulta, exportação, correção, revogação e exclusão de dados pessoais, bem como os casos de uso de suporte internos ao sistema (registro em \textit{audit log}, anonimização, revogação no Pluggy e exclusão de \textit{embeddings}).
+Os quadros \ref{frame:lc001} a \ref{frame:lc010} descrevem os casos de uso relativos aos direitos do titular previstos no Art.\ 18 da LGPD, abrangendo consulta, exportação, correção, revogação e exclusão de dados pessoais, bem como os casos de uso de suporte internos ao sistema (registro em \textit{audit log}, anonimização, revogação no Pluggy e exclusão de \textit{embeddings}).
 
 \vspace{4pt}
 
-% ---- LC001 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[LC001] Consultar quais dados são tratados (Art.\ 18, I)} \label{quad:lc001} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[LC001] Consultar quais dados são tratados (Art.\ 18, I)} \label{frame:lc001} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [LC001] Consultar quais dados são tratados (Art.\ 18, I) \\ \hline
 \textbf{Ator(es)} & Usuário (Titular) \\ \hline
 \textbf{Motivação} & Permitir ao titular consultar quais categorias de dados pessoais e financeiros são coletados, armazenados e processados pela solução, em conformidade com o Art.\ 18, I da LGPD. \\ \hline
@@ -1281,17 +1249,17 @@ Não se aplica.
 
 \vspace{4pt}
 
-% ---- LC002 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[LC002] Exportar dados — portabilidade (Art.\ 18, II e V)} \label{quad:lc002} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[LC002] Exportar dados — portabilidade (Art.\ 18, II e V)} \label{frame:lc002} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [LC002] Exportar dados — portabilidade (Art.\ 18, II e V) \\ \hline
 \textbf{Ator(es)} & Usuário (Titular), Sistema (\textit{Audit Service}) \\ \hline
 \textbf{Motivação} & Garantir ao titular o direito de exportar seus dados pessoais e financeiros em formato estruturado (JSON/CSV), conforme Art.\ 18, II e V da LGPD, com registro de auditoria (inclui [LC007]). \\ \hline
@@ -1312,17 +1280,17 @@ a. Erro na geração do arquivo de exportação:\newline
 
 \vspace{4pt}
 
-% ---- LC003 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[LC003] Corrigir dados cadastrais (Art.\ 18, III)} \label{quad:lc003} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[LC003] Corrigir dados cadastrais (Art.\ 18, III)} \label{frame:lc003} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [LC003] Corrigir dados cadastrais (Art.\ 18, III) \\ \hline
 \textbf{Ator(es)} & Usuário (Titular), Sistema (\textit{Audit Service}) \\ \hline
 \textbf{Motivação} & Permitir ao titular corrigir informações cadastrais imprecisas ou desatualizadas, em conformidade com o Art.\ 18, III da LGPD, com registro de auditoria (inclui [LC007]). \\ \hline
@@ -1343,17 +1311,17 @@ a. Dados inválidos informados:\newline
 
 \vspace{4pt}
 
-% ---- LC004 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[LC004] Revogar consentimento \textit{Open Finance} (Art.\ 18, IX)} \label{quad:lc004} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[LC004] Revogar consentimento \textit{Open Finance} (Art.\ 18, IX)} \label{frame:lc004} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [LC004] Revogar consentimento \textit{Open Finance} (Art.\ 18, IX) \\ \hline
 \textbf{Ator(es)} & Usuário (Titular), Pluggy (\textit{Open Finance}), Sistema (\textit{Audit Service}) \\ \hline
 \textbf{Motivação} & Permitir ao titular revogar o consentimento de compartilhamento de dados bancários via \textit{Open Finance}, encerrando os \textit{jobs} de sincronização ativos, conforme Art.\ 18, IX da LGPD (inclui [LC007] e [LC009]). \\ \hline
@@ -1378,17 +1346,17 @@ b. Erro ao revogar acesso no Pluggy:\newline
 
 \vspace{4pt}
 
-% ---- LC005 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[LC005] Solicitar exclusão de dados (Art.\ 18, VI)} \label{quad:lc005} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[LC005] Solicitar exclusão de dados (Art.\ 18, VI)} \label{frame:lc005} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [LC005] Solicitar exclusão de dados (Art.\ 18, VI) \\ \hline
 \textbf{Ator(es)} & Usuário (Titular), Pluggy (\textit{Open Finance}), Sistema (\textit{Audit Service}) \\ \hline
 \textbf{Motivação} & Garantir ao titular o direito de solicitar a exclusão de seus dados pessoais, aplicando \textit{soft-delete} com manutenção do \textit{hash} do telefone para prevenção de re-cadastro e preservação de \textit{logs} por 5 anos conforme Art.\ 16 da LGPD (inclui [LC007], [LC008], [LC009] e [LC010]). \\ \hline
@@ -1412,17 +1380,17 @@ a. O usuário cancela a operação:\newline
 
 \vspace{4pt}
 
-% ---- LC006 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[LC006] Consultar com quem dados são compartilhados (Art.\ 18, VII)} \label{quad:lc006} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[LC006] Consultar com quem dados são compartilhados (Art.\ 18, VII)} \label{frame:lc006} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [LC006] Consultar com quem dados são compartilhados (Art.\ 18, VII) \\ \hline
 \textbf{Ator(es)} & Usuário (Titular) \\ \hline
 \textbf{Motivação} & Permitir ao titular consultar com quais entidades e serviços seus dados são compartilhados pela solução, em conformidade com o Art.\ 18, VII da LGPD. \\ \hline
@@ -1439,17 +1407,17 @@ Não se aplica.
 
 \vspace{4pt}
 
-% ---- LC007 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[LC007] Registrar operação em \textit{audit log}} \label{quad:lc007} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[LC007] Registrar operação em \textit{audit log}} \label{frame:lc007} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [LC007] Registrar operação em \textit{audit log} \\ \hline
 \textbf{Ator(es)} & Sistema (\textit{Audit Service}) \\ \hline
 \textbf{Motivação} & Garantir rastreabilidade de todas as operações relacionadas aos direitos do titular, registrando-as no serviço de auditoria para fins de conformidade (incluso em [LC002], [LC003], [LC004] e [LC005]). Os registros são mantidos por 5 anos conforme Art.\ 16 da LGPD. \\ \hline
@@ -1469,17 +1437,17 @@ a. O serviço de \textit{audit log} está indisponível:\newline
 
 \vspace{4pt}
 
-% ---- LC008 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[LC008] Anonimizar transações} \label{quad:lc008} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[LC008] Anonimizar transações} \label{frame:lc008} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [LC008] Anonimizar transações \\ \hline
 \textbf{Ator(es)} & Sistema \\ \hline
 \textbf{Motivação} & Remover informações de identificação pessoal das transações financeiras durante o processo de exclusão de dados, preservando dados estatísticos de forma anônima (incluso em [LC005]). \\ \hline
@@ -1498,17 +1466,17 @@ a. Erro ao anonimizar um registro:\newline
 
 \vspace{4pt}
 
-% ---- LC009 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[LC009] Revogar acesso no Pluggy} \label{quad:lc009} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[LC009] Revogar acesso no Pluggy} \label{frame:lc009} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [LC009] Revogar acesso no Pluggy \\ \hline
 \textbf{Ator(es)} & Sistema, Pluggy (\textit{Open Finance}) \\ \hline
 \textbf{Motivação} & Encerrar o acesso da solução aos dados bancários do usuário junto ao provedor Pluggy, desabilitando o consentimento ativo de \textit{Open Finance} (incluso em [LC004] e [LC005]). \\ \hline
@@ -1529,17 +1497,17 @@ a. O Pluggy está indisponível:\newline
 
 \vspace{4pt}
 
-% ---- LC010 ----
 {\small
-\begin{longtable}{|p{3.5cm}|p{11.0cm}|}
-\caption{[LC010] Deletar \textit{embeddings} e sessões} \label{quad:lc010} \\
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[LC010] Deletar \textit{embeddings} e sessões} \label{frame:lc010} \\
+\continuesmark
+\hline
 \endfirsthead
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
+\hline
+\endhead
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont\textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
-\hline
 \textbf{Caso de uso} & [LC010] Deletar \textit{embeddings} e sessões \\ \hline
 \textbf{Ator(es)} & Sistema \\ \hline
 \textbf{Motivação} & Remover todos os dados de sessão e \textit{embeddings} vetoriais associados ao usuário durante o processo de exclusão, garantindo a eliminação completa dos dados processados pela IA (incluso em [LC005]). \\ \hline

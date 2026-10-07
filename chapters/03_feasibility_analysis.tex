@@ -1,16 +1,9 @@
-% =============================================
-% CAPÍTULO 3 - ANÁLISE DE VIABILIDADE
-% =============================================
-\chapter{ANÁLISE DE VIABILIDADE}
+\chapter{Análise de viabilidade}
 
 Para que uma solução tecnológica apresente potencial real de implantação, não basta considerar apenas sua execução técnica, sendo igualmente necessário avaliar sua aceitação pelo público, seus custos operacionais, sua capacidade de crescimento e as condições regulatórias envolvidas em sua operação. No caso deste projeto, a análise de viabilidade busca verificar se uma solução de assistência financeira inteligente, preditiva e conversacional apresenta aderência às necessidades do público-alvo e condições para ser desenvolvida e mantida de maneira economicamente sustentável.
 
 O EIGAM utilizará inicialmente o \textit{WhatsApp} como principal canal de interação com o usuário. Entretanto, sua arquitetura será estruturada de forma desacoplada da plataforma de mensageria, possibilitando a incorporação futura de outros canais de comunicação sem alterações significativas no núcleo da aplicação. Além disso, a solução depende da integração com serviços externos, como provedores de inteligência artificial e de acesso ao ecossistema de \textit{Open Finance}. Dessa forma, a análise considera tanto a aceitação da proposta quanto os custos, riscos e requisitos envolvidos em sua implantação e posterior expansão.
 
-
-% =============================================
-% ANÁLISE DE DEMANDA
-% =============================================
 \section{Análise de demanda}
 
 De acordo com Iunes (1995), a demanda pode ser definida como a relação direta entre a quantidade de determinado bem ou serviço que os consumidores desejam obter e o seu poder aquisitivo em um dado período. Dessa forma, a análise de demanda permite compreender necessidades, comportamentos e expectativas do público, contribuindo para avaliar a aderência de uma proposta ao mercado em que pretende atuar.
@@ -23,94 +16,90 @@ Inicialmente, foi possível constatar que o \textit{WhatsApp} faz parte do cotid
 
 Em relação aos hábitos financeiros, o gráfico da Figura \ref{fig:pq_frequencia} demonstra que a consulta ao saldo bancário é frequente: 22 respondentes (52,4\%) afirmaram realizá-la diariamente e 11 (26,2\%) de duas a três vezes por semana. Os resultados indicam que o acompanhamento das finanças já constitui uma atividade recorrente para parcela significativa da amostra, ainda que dependa predominantemente da iniciativa do próprio usuário.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \caption{Frequência de consulta ao saldo bancário pelos respondentes}
     \includegraphics[width=0.8\textwidth]{images/pesquisa/frequenciaconsulta.png}
     \label{fig:pq_frequencia}
-    \fontetabela{\textbf{Fonte:} Elaborado pelos autores (2026).}
+    \authorssource
 \end{figure}
 
 O gráfico da Figura \ref{fig:pq_contas} revelou que 7 participantes possuem apenas uma conta bancária ativa, enquanto 17 possuem duas contas, 12 possuem três e 6 mantêm quatro ou mais contas. Dessa forma, 35 dos 42 respondentes, correspondentes a aproximadamente 83,3\% da amostra, possuem duas ou mais contas bancárias ativas.
 
 Esse resultado reforça a relevância de mecanismos capazes de consolidar informações financeiras distribuídas entre diferentes instituições, reduzindo a necessidade de consultas individualizadas e favorecendo uma visão mais abrangente da situação financeira do usuário. Nesse contexto, o ecossistema de \textit{Open Finance} constitui um elemento importante para viabilizar a integração dessas informações.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \caption{Número de contas bancárias ativas dos respondentes}
     \includegraphics[width=0.8\textwidth]{images/pesquisa/numerocontas.png}
     \label{fig:pq_contas}
-    \fontetabela{\textbf{Fonte:} Elaborado pelos autores (2026).}
+    \authorssource
 \end{figure}
 
 O gráfico da Figura \ref{fig:pq_openfinance} demonstrou também baixa familiaridade com o \textit{Open Finance}. Entre os participantes, 21 (50\%) declararam não conhecer o ecossistema, 17 afirmaram conhecê-lo, mas nunca o utilizaram, e apenas 4 (9,5\%) já haviam realizado o compartilhamento de dados entre instituições.
 
 Esse resultado evidencia que, embora o \textit{Open Finance} disponibilize recursos capazes de favorecer a integração de informações financeiras, seu funcionamento e seus benefícios ainda podem não ser plenamente conhecidos por parte dos potenciais usuários. Dessa forma, a experiência oferecida pelo EIGAM também poderá contribuir para apresentar de maneira contextualizada as possibilidades proporcionadas pelo compartilhamento autorizado de dados financeiros.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \caption{Familiaridade dos respondentes com o Open Finance}
     \includegraphics[width=0.8\textwidth]{images/pesquisa/conhecimentoopenfinance.png}
     \label{fig:pq_openfinance}
-    \fontetabela{\textbf{Fonte:} Elaborado pelos autores (2026).}
+    \authorssource
 \end{figure}
 
 Em seguida, o gráfico da Figura \ref{fig:pq_funcionalidades} demonstrou interesse relevante pelas funcionalidades propostas. Entre as opções apresentadas, 32 participantes manifestaram interesse em resumos automáticos de gastos, 29 em alertas de vencimento de contas, 26 em previsão de saldo para os próximos dias, 23 em recomendações personalizadas e 21 em mecanismos de detecção de gastos atípicos.
 
 A predominância de funcionalidades relacionadas à automação, previsão e geração de alertas fornece indícios de aderência à proposta de um sistema que não se limite à consulta de informações financeiras, mas que também seja capaz de analisá-las e atuar de maneira proativa no acompanhamento da vida financeira do usuário.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \caption{Funcionalidades de maior interesse para os respondentes}
     \includegraphics[width=0.8\textwidth]{images/pesquisa/interessefuncionalidade.png}
     \label{fig:pq_funcionalidades}
-    \fontetabela{\textbf{Fonte:} Elaborado pelos autores (2026).}
+    \authorssource
 \end{figure}
 
 Por meio do gráfico da Figura \ref{fig:pq_confianca}, foi avaliado o nível de confiança dos participantes em um assistente conversacional baseado em inteligência artificial para tratar informações financeiras. As notas 4 e 5 somadas representam 47,6\% das respostas, correspondentes a 20 participantes, enquanto 26,2\% atribuíram notas 1 ou 2.
 
 Os resultados demonstram que uma parcela relevante dos respondentes apresenta predisposição favorável ao uso desse tipo de tecnologia, embora também evidenciem a necessidade de mecanismos que contribuam para a construção de confiança, especialmente relacionados à transparência, à segurança e à confiabilidade das informações apresentadas.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \caption{Nível de confiança dos respondentes em assistente conversacional com IA}
     \includegraphics[width=0.8\textwidth]{images/pesquisa/confianca.png}
     \label{fig:pq_confianca}
-    \fontetabela{\textbf{Fonte:} Elaborado pelos autores (2026).}
+    \authorssource
 \end{figure}
 
 O gráfico da Figura \ref{fig:pq_privacidade} indicou elevado nível de preocupação com a privacidade dos dados financeiros. Entre os respondentes, 15 (35,7\%) atribuíram nota máxima e 14 (33,3\%) atribuíram nota 4, totalizando aproximadamente 69\% dos participantes com nível elevado de preocupação.
 
 Esse resultado reforça a necessidade de que o EIGAM incorpore mecanismos de autenticação, controle de acesso, proteção dos dados e gerenciamento de consentimentos, além de apresentar ao usuário de maneira transparente como suas informações financeiras são utilizadas.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \caption{Nível de preocupação dos respondentes com a privacidade de dados financeiros}
     \includegraphics[width=0.8\textwidth]{images/pesquisa/nivelpreocupacao.png}
     \label{fig:pq_privacidade}
-    \fontetabela{\textbf{Fonte:} Elaborado pelos autores (2026).}
+    \authorssource
 \end{figure}
 
 Finalmente, o gráfico da Figura \ref{fig:pq_pagamento} avaliou a disposição dos participantes em pagar por um plano premium. Apenas 7 respondentes (16,7\%) afirmaram que não pagariam pelo serviço, enquanto 12 (28,6\%) indicaram disposição de pagar até R\$~10,00, 15 (35,7\%) entre R\$~11,00 e R\$~20,00, 6 (14,3\%) entre R\$~21,00 e R\$~30,00 e 2 (4,8\%) acima de R\$~30,00 mensais.
 
 Os resultados indicam a existência de disposição de pagamento em parcela relevante da amostra, embora também demonstrem sensibilidade ao preço. Dessa forma, os dados obtidos não são utilizados isoladamente para determinar o valor comercial do produto, mas constituem uma das referências consideradas na definição do modelo de monetização apresentado na Seção \ref{sec:preco}.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
     \caption{Disposição dos respondentes para pagar por plano premium}
     \includegraphics[width=0.8\textwidth]{images/pesquisa/pagarplano.png}
     \label{fig:pq_pagamento}
-    \fontetabela{\textbf{Fonte:} Elaborado pelos autores (2026).}
+    \authorssource
 \end{figure}
 
 De maneira geral, os resultados obtidos fornecem indícios favoráveis à proposta apresentada. A elevada presença de participantes com múltiplas contas bancárias reforça o problema de fragmentação das informações financeiras; o interesse por resumos, previsões e alertas demonstra aderência às funcionalidades preditivas e proativas propostas; e a ampla utilização do \textit{WhatsApp} na amostra sustenta sua escolha como canal inicial de interação.
 
 Ao mesmo tempo, os resultados relacionados à confiança e à privacidade evidenciam aspectos que deverão receber atenção especial durante o desenvolvimento e a validação da solução. Ressalta-se que, devido ao tamanho e às características da amostra utilizada, os resultados obtidos representam indícios relacionados ao grupo pesquisado e não devem ser interpretados como uma generalização do comportamento de toda a população.
 
-
-% =============================================
-% ANÁLISE DE VIABILIDADE
-% =============================================
 \section{Análise de viabilidade}
 
 A viabilidade do projeto foi analisada sob três perspectivas complementares: técnico-operacional, econômica e regulatória. A perspectiva técnico-operacional considera os recursos necessários à implementação, integração e manutenção da solução; a perspectiva econômica considera os custos associados à infraestrutura e aos serviços externos em diferentes estágios de utilização; e a perspectiva regulatória considera aspectos relacionados ao tratamento de dados pessoais e financeiros e à utilização de plataformas externas.
@@ -119,22 +108,19 @@ Uma característica relevante para essa análise é a adoção de uma arquitetur
 
 Essa decisão reduz a dependência tecnológica e comercial de um único fornecedor e permite que novos canais sejam posteriormente incorporados por meio de integrações específicas, preservando o núcleo funcional do EIGAM.
 
-
-% =============================================
-% VIABILIDADE OPERACIONAL E ECONÔMICA
-% =============================================
-\subsection{Viabilidade operacional e econômica}
+\subsection{Viabilidade Operacional e Econômica}
 
 Durante a etapa de desenvolvimento e validação inicial, a estratégia consiste em utilizar uma infraestrutura enxuta, explorando planos gratuitos (\textit{free tiers}), ambientes de teste e componentes executados em um único servidor virtual privado (VPS) sempre que tecnicamente adequado. Essa abordagem busca reduzir os custos iniciais sem impedir que os componentes sejam posteriormente distribuídos ou redimensionados conforme o crescimento da utilização.
 
 No MVP (\textit{Minimum Viable Product}), o \textit{WhatsApp} será utilizado como primeiro canal de mensageria. A integração de canais adicionais não compõe necessariamente o custo operacional imediato dessa fase, uma vez que a arquitetura será preparada para incorporá-los posteriormente. Dessa forma, a adoção de uma arquitetura multicanal representa inicialmente uma decisão de organização e desenvolvimento do software, e não a necessidade de contratação simultânea de diferentes serviços de mensageria.
 
-O Quadro~\ref{quad:infra_dev} apresenta a estimativa dos principais recursos utilizados durante a fase inicial. Os valores possuem caráter aproximado e podem variar conforme alterações comerciais dos fornecedores, consumo efetivo dos serviços, variação cambial e condições disponíveis no momento da implantação.
+O Quadro~\ref{frame:infra_dev} apresenta a estimativa dos principais recursos utilizados durante a fase inicial. Os valores possuem caráter aproximado e podem variar conforme alterações comerciais dos fornecedores, consumo efetivo dos serviços, variação cambial e condições disponíveis no momento da implantação.
 
 {\small
-\begin{longtable}{|p{3.5cm}|p{7.0cm}|p{3.0cm}|}
+\begin{longtable}{|L{3.5cm}|L{7.0cm}|L{3.0cm}|}
 \caption{Infraestrutura estimada para a fase de desenvolvimento (MVP)}
-\label{quad:infra_dev} \\
+\label{frame:infra_dev} \\
+\continuesmark
 
 \hline
 \textbf{Componente} & \textbf{Especificação} & \textbf{Custo/mês} \\ \hline
@@ -144,12 +130,8 @@ O Quadro~\ref{quad:infra_dev} apresenta a estimativa dos principais recursos uti
 \textbf{Componente} & \textbf{Especificação} & \textbf{Custo/mês} \\ \hline
 \endhead
 
-\hline
-\multicolumn{3}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
 \endfoot
-
-\hline
-\multicolumn{3}{c}{\fontsize{10pt}{10pt}\selectfont \textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{3} \\
 \endlastfoot
 
 VPS principal &
@@ -229,12 +211,13 @@ Nesse estágio, os custos deixam de depender apenas da infraestrutura computacio
 
 Diferentemente de componentes com despesas relativamente previsíveis, como servidores virtuais, determinados serviços apresentam cobrança relacionada ao volume efetivamente utilizado. Por essa razão, a estimativa de produção separa os custos-base dos custos variáveis associados à inteligência artificial e à mensageria.
 
-O Quadro~\ref{quad:infra_prod} apresenta essa composição.
+O Quadro~\ref{frame:infra_prod} apresenta essa composição.
 
 {\small
-\begin{longtable}{|p{3.5cm}|p{7.0cm}|p{3.0cm}|}
+\begin{longtable}{|L{3.5cm}|L{7.0cm}|L{3.0cm}|}
 \caption{Infraestrutura estimada para 10.000 usuários ativos}
-\label{quad:infra_prod} \\
+\label{frame:infra_prod} \\
+\continuesmark
 
 \hline
 \textbf{Componente} & \textbf{Especificação} & \textbf{Custo/mês} \\ \hline
@@ -244,12 +227,8 @@ O Quadro~\ref{quad:infra_prod} apresenta essa composição.
 \textbf{Componente} & \textbf{Especificação} & \textbf{Custo/mês} \\ \hline
 \endhead
 
-\hline
-\multicolumn{3}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
 \endfoot
-
-\hline
-\multicolumn{3}{c}{\fontsize{10pt}{10pt}\selectfont \textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{3} \\
 \endlastfoot
 
 VPS &
@@ -309,97 +288,53 @@ Essa forma de análise evita vincular a viabilidade do produto a valores comerci
 
 A arquitetura multicanal também permite que o custo-benefício de cada plataforma de mensageria seja avaliado individualmente antes de sua integração ao produto. Assim, a incorporação de um novo canal pode considerar não apenas sua viabilidade técnica, mas também seu alcance, suas limitações e seus custos operacionais.
 
-
-% =============================================
-% ANÁLISE DE SENSIBILIDADE ECONÔMICA
-% =============================================
-\subsection{Análise de sensibilidade econômica}
+\subsection{Análise de Sensibilidade Econômica}
 
 Considerando o preço mensal de R\$~22,90 para o plano Pro, o número de assinantes necessário para cobrir os custos da operação varia de acordo com o consumo dos serviços externos e com o crescimento da infraestrutura. Como esses valores somente poderão ser determinados com maior precisão após a disponibilização da aplicação, foram considerados três cenários hipotéticos de custo mensal total: R\$~3.000, R\$~5.000 e R\$~8.000.
 
-Para cada cenário, o ponto de equilíbrio foi estimado dividindo-se o custo operacional mensal pelo valor da assinatura do plano Pro e arredondando-se o resultado para o número inteiro imediatamente superior. O Quadro~\ref{quad:break_even} apresenta os resultados.
+Para cada cenário, o ponto de equilíbrio foi estimado dividindo-se o custo operacional mensal pelo valor da assinatura do plano Pro e arredondando-se o resultado para o número inteiro imediatamente superior. A Tabela~\ref{tab:break_even} apresenta os resultados.
 
-{\small
-\begin{longtable}{|p{4cm}|p{4.5cm}|p{5cm}|}
+\begin{tabela}[htbp]
+\centering
 \caption{Análise de sensibilidade do ponto de equilíbrio}
-\label{quad:break_even} \\
-
-\hline
-\textbf{Custo mensal estimado} &
-\textbf{Assinantes Pro necessários} &
-\textbf{Receita mensal aproximada} \\ \hline
-\endfirsthead
-
-\hline
-\textbf{Custo mensal estimado} &
-\textbf{Assinantes Pro necessários} &
-\textbf{Receita mensal aproximada} \\ \hline
-\endhead
-
-R\$~3.000 &
-132 &
-R\$~3.022,80 \\ \hline
-
-R\$~5.000 &
-219 &
-R\$~5.015,10 \\ \hline
-
-R\$~8.000 &
-350 &
-R\$~8.015,00 \\ \hline
-
-\multicolumn{3}{c}{\fontsize{10pt}{10pt}\selectfont \textbf{Fonte:} Elaborado pelos autores (2026).} \\
-
-\end{longtable}
-}
+\label{tab:break_even}
+\begin{tabular}{lrr}
+\toprule
+\textbf{Custo mensal estimado} & \textbf{Assinantes Pro necessários} & \textbf{Receita mensal aproximada} \\
+\midrule
+R\$~3.000 & 132 & R\$~3.022,80 \\
+R\$~5.000 & 219 & R\$~5.015,10 \\
+R\$~8.000 & 350 & R\$~8.015,00 \\
+\bottomrule
+\end{tabular}
+\authorssource
+\end{tabela}
 
 Os cenários demonstram que o número de assinantes necessários para cobrir os custos tecnológicos projetados permanece inferior à quantidade total de usuários considerada no cenário de produção com 10.000 usuários ativos. Entretanto, esse resultado depende diretamente da capacidade do produto de converter usuários do plano gratuito para o plano pago.
 
-Como a taxa real de conversão somente poderá ser determinada após a disponibilização da solução, foram considerados três cenários de referência: 5\%, 10\% e 15\% de conversão. Essas taxas possuem caráter hipotético e não representam uma previsão de desempenho do produto, sendo utilizadas exclusivamente para demonstrar diferentes possibilidades de receita em uma base de 10.000 usuários.
+Como a taxa real de conversão somente poderá ser determinada após a disponibilização da solução, foram considerados três cenários de referência: 5\%, 10\% e 15\% de conversão. Essas taxas possuem caráter hipotético e não representam uma previsão de desempenho do produto, sendo utilizadas exclusivamente para demonstrar diferentes possibilidades de receita em uma base de 10.000 usuários, conforme a Tabela~\ref{tab:conversao}.
 
-{\small
-\begin{longtable}{|p{4cm}|p{4.5cm}|p{5cm}|}
+\begin{tabela}[htbp]
+\centering
 \caption{Cenários de conversão para uma base de 10.000 usuários}
-\label{quad:conversao} \\
-
-\hline
-\textbf{Taxa de conversão} &
-\textbf{Assinantes Pro} &
-\textbf{Receita bruta mensal} \\ \hline
-\endfirsthead
-
-\hline
-\textbf{Taxa de conversão} &
-\textbf{Assinantes Pro} &
-\textbf{Receita bruta mensal} \\ \hline
-\endhead
-
-5\% &
-500 &
-R\$~11.450,00 \\ \hline
-
-10\% &
-1.000 &
-R\$~22.900,00 \\ \hline
-
-15\% &
-1.500 &
-R\$~34.350,00 \\ \hline
-
-\multicolumn{3}{c}{\fontsize{10pt}{10pt}\selectfont \textbf{Fonte:} Elaborado pelos autores (2026).} \\
-
-\end{longtable}
-}
+\label{tab:conversao}
+\begin{tabular}{lrr}
+\toprule
+\textbf{Taxa de conversão} & \textbf{Assinantes Pro} & \textbf{Receita bruta mensal} \\
+\midrule
+5\% & 500 & R\$~11.450,00 \\
+10\% & 1.000 & R\$~22.900,00 \\
+15\% & 1.500 & R\$~34.350,00 \\
+\bottomrule
+\end{tabular}
+\authorssource
+\end{tabela}
 
 Os valores apresentados representam receita bruta e não devem ser interpretados como lucro líquido ou margem operacional. Uma eventual operação comercial deverá considerar adicionalmente despesas como tributos, taxas relacionadas aos meios de pagamento, atendimento ao cliente, aquisição de usuários, suporte técnico, serviços administrativos e contábeis e demais recursos necessários à manutenção do negócio.
 
 Ainda assim, a análise demonstra a existência de cenários nos quais a receita recorrente obtida com o plano Pro pode superar os custos tecnológicos considerados. A confirmação da viabilidade econômica dependerá da validação do consumo médio dos serviços, da taxa efetiva de conversão, do custo médio por usuário e do comportamento observado após a disponibilização do produto.
 
-
-% =============================================
-% VIABILIDADE REGULATÓRIA
-% =============================================
-\subsection{Viabilidade regulatória}
+\subsection{Viabilidade Regulatória}
 
 A viabilidade da solução também depende do tratamento adequado das informações pessoais e financeiras processadas pelo sistema. Por lidar com dados relacionados à vida financeira dos usuários, o projeto deve observar os princípios e direitos estabelecidos pela Lei Geral de Proteção de Dados Pessoais (LGPD), bem como os requisitos aplicáveis ao compartilhamento de informações dentro do ecossistema de \textit{Open Finance}.
 
@@ -417,10 +352,6 @@ A possibilidade de utilização de diferentes canais, entretanto, não elimina a
 
 Dessa forma, a viabilidade regulatória do produto está condicionada à manutenção da conformidade com a legislação aplicável, ao gerenciamento adequado dos consentimentos, à proteção das informações financeiras e ao cumprimento das condições de utilização dos serviços externos integrados à solução.
 
-
-% =============================================
-% PREÇO DE VENDA
-% =============================================
 \section{Preço de venda}\label{sec:preco}
 
 A estratégia de monetização adotada é o modelo \textit{freemium}, no qual o usuário tem acesso gratuito a um conjunto de funcionalidades essenciais e pode optar pela contratação de um plano pago para utilizar recursos mais avançados. Essa abordagem busca reduzir a barreira inicial de entrada, permitir a experimentação da solução antes da contratação e criar oportunidades de conversão à medida que o usuário percebe valor nas funcionalidades adicionais.
@@ -431,14 +362,15 @@ O valor inicial de R\$~22,90 mensais proposto para o plano Pro considera a dispo
 
 Por se tratar de uma proposta ainda em fase de desenvolvimento, o preço deverá ser novamente avaliado durante a validação do MVP com usuários reais. Indicadores como taxa de conversão, frequência de utilização, custo médio por usuário, consumo dos serviços externos e percepção de valor poderão fundamentar eventuais ajustes tanto no preço quanto na composição dos planos.
 
-O Quadro~\ref{quad:planos} apresenta a estrutura inicial de monetização proposta.
+O Quadro~\ref{frame:planos} apresenta a estrutura inicial de monetização proposta.
 
 {\small
 \renewcommand{\arraystretch}{1.2}
 
-\begin{longtable}{|p{5cm}|p{1.8cm}|p{2cm}|p{1.8cm}|p{2.7cm}|}
+\begin{longtable}{|L{4.8cm}|L{1.8cm}|L{2.2cm}|L{1.8cm}|L{2.7cm}|}
 \caption{Planos e condições de faturamento da solução}
-\label{quad:planos} \\
+\label{frame:planos} \\
+\continuesmark
 
 \hline
 \textbf{Funcionalidades} &
@@ -456,14 +388,8 @@ O Quadro~\ref{quad:planos} apresenta a estrutura inicial de monetização propos
 \textbf{Valor mensal} \\ \hline
 \endhead
 
-\hline
-\multicolumn{5}{r}{\textit{Continua na próxima página}} \\
 \endfoot
-
-\hline
-\multicolumn{5}{c}{
-\textbf{Fonte:} Elaborado pelos autores (2026).
-} \\
+\sourcerow{5} \\
 \endlastfoot
 
 Vinculação de 1 instituição via \textit{Open Finance};

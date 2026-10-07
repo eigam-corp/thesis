@@ -1,7 +1,4 @@
-% =============================================
-% CAPÍTULO 9 - PROPOSTA DE DESENVOLVIMENTO
-% =============================================
-\chapter{PROPOSTA DE DESENVOLVIMENTO}
+\chapter{Proposta de desenvolvimento}
 
 A proposta de desenvolvimento da solução busca conciliar modularidade, segurança, escalabilidade e capacidade de evolução. Para isso, será estruturada segundo uma arquitetura de microsserviços orientada a eventos, utilizando o \textit{Apache Kafka} como barramento de comunicação assíncrona entre os principais serviços. Essa abordagem permite reduzir o acoplamento entre os componentes, distribuir responsabilidades de domínio e processar tarefas de forma independente, favorecendo a resiliência a picos de carga e a escalabilidade horizontal.
 
@@ -13,30 +10,24 @@ A camada de inteligência artificial seguirá a mesma premissa de separação de
 
 O processo de desenvolvimento seguirá práticas ágeis e utilizará \textit{Test-Driven Development} (TDD) nas funcionalidades em que sua aplicação for adequada. Além dos testes tradicionais de software, serão previstos testes específicos para integrações entre microsserviços, adaptadores de mensageria, mecanismos de RAG, classificação de intenções, controles da camada conversacional e modelos preditivos.
 
-
-% =============================================
-% TECNOLOGIAS
-% =============================================
 \section{Tecnologias que serão utilizadas}
 
-O Quadro~\ref{qua:tecnologias} apresenta as principais tecnologias previstas para o desenvolvimento do EIGAM. A seleção considera as necessidades funcionais e arquiteturais definidas nas etapas de modelagem, incluindo comunicação assíncrona, persistência heterogênea, integração multicanal, recuperação vetorial, análise preditiva, segurança e observabilidade.
+O Quadro~\ref{frame:tecnologias} apresenta as principais tecnologias previstas para o desenvolvimento do EIGAM. A seleção considera as necessidades funcionais e arquiteturais definidas nas etapas de modelagem, incluindo comunicação assíncrona, persistência heterogênea, integração multicanal, recuperação vetorial, análise preditiva, segurança e observabilidade.
 
 Ressalta-se que serviços externos e modelos de inteligência artificial podem sofrer alterações de versão, disponibilidade ou condições comerciais ao longo do desenvolvimento. Dessa forma, sempre que possível, a arquitetura deverá utilizar interfaces internas que reduzam o acoplamento com fornecedores específicos e permitam substituições sem impacto significativo nas regras de negócio.
 
 {\small
-\begin{longtable}{|p{3.2cm}|p{2.8cm}|p{6.7cm}|p{1.5cm}|}
-\caption{Tecnologias Utilizadas} \label{qua:tecnologias} \\
+\begin{longtable}{|L{3.2cm}|L{2.8cm}|L{6.7cm}|L{1.5cm}|}
+\caption{Tecnologias Utilizadas} \label{frame:tecnologias} \\
+\continuesmark
 \hline
 \textbf{Nome} & \textbf{Fornecedor} & \textbf{Descrição} & \textbf{Versão} \\ \hline
 \endfirsthead
 \hline
 \textbf{Nome} & \textbf{Fornecedor} & \textbf{Descrição} & \textbf{Versão} \\ \hline
 \endhead
-\hline
-\multicolumn{4}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
 \endfoot
-\hline
-\multicolumn{4}{c}{\fontsize{10pt}{10pt}\selectfont \textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{4} \\
 \endlastfoot
 
 Git & Open Source & Sistema de controle de versão utilizado para rastrear alterações no código-fonte. & 2.x \\ \hline
@@ -73,7 +64,7 @@ Grafana Cloud & Grafana Labs & Plataforma utilizada para visualização de métr
 \end{longtable}
 }
 
-\subsection{Estratégia de integração multicanal}
+\subsection{Estratégia de Integração Multicanal}
 
 A comunicação com plataformas de mensageria será implementada por meio de adaptadores responsáveis por isolar particularidades de cada provedor. O núcleo do EIGAM trabalhará com estruturas internas padronizadas para representar mensagens recebidas e mensagens a serem enviadas. Dessa forma, informações específicas do \textit{WhatsApp}, como identificadores, formatos de \textit{webhook}, recursos interativos e regras próprias da \textit{Meta Cloud API}, permanecerão concentradas no adaptador correspondente.
 
@@ -81,7 +72,7 @@ No fluxo de entrada, o adaptador converte o evento recebido do provedor para o f
 
 A implementação inicial utilizará o \textit{WhatsApp}, porém a inclusão de um novo canal deverá exigir predominantemente a criação de um novo adaptador e sua configuração na camada de mensageria. Com isso, o \textit{Chat Service}, o \textit{Finance Service}, o \textit{Notification Service} e os demais componentes de domínio permanecerão independentes da plataforma utilizada pelo usuário.
 
-\subsection{Estratégia de implementação da camada de inteligência artificial}
+\subsection{Estratégia de Implementação da Camada de Inteligência Artificial}
 
 A implementação da camada de inteligência artificial seguirá a distribuição de responsabilidades definida na modelagem do sistema. O \textit{Chat Service} utilizará o modelo de linguagem para classificação semântica de intenções, orquestração do mecanismo de RAG e geração da resposta conversacional. O \textit{Finance Service} será responsável pela classificação e análise das transações, cálculo das projeções e detecção de comportamentos atípicos, enquanto o \textit{Notification Service} utilizará os resultados produzidos pelos demais componentes para definir e formatar comunicações proativas.
 
@@ -91,28 +82,22 @@ As análises preditivas não dependerão exclusivamente do LLM. Para usuários c
 
 Antes de uma resposta conversacional ser entregue ao usuário, serão executados controles determinísticos relacionados à autorização, exposição de valores monetários, consistência das informações e escopo da solicitação. O mascaramento de valores não autorizados não dependerá do modelo de linguagem. Respostas que contenham valores sem origem identificável nos dados estruturados ou no contexto fornecido ao modelo deverão ser rejeitadas ou regeneradas. Essa separação busca reduzir o risco de que uma resposta gerativa seja tratada como fonte autônoma de informação financeira.
 
-
-% =============================================
-% PADRÕES E PRÁTICAS
-% =============================================
 \section{Metodologias e padrões de software}
 
-Os padrões e práticas de engenharia de software são fundamentais para garantir a coerência, a manutenibilidade e a capacidade de evolução de sistemas distribuídos. Segundo Bass, Clements e Kazman (2022), decisões arquiteturais influenciam diretamente atributos como desempenho, segurança, disponibilidade e modificabilidade e, portanto, devem ser explicitamente definidas e documentadas. O Quadro~\ref{qua:padroes} apresenta as principais abordagens adotadas no EIGAM.
+Os padrões e práticas de engenharia de software são fundamentais para garantir a coerência, a manutenibilidade e a capacidade de evolução de sistemas distribuídos. Segundo Bass, Clements e Kazman (2022), decisões arquiteturais influenciam diretamente atributos como desempenho, segurança, disponibilidade e modificabilidade e, portanto, devem ser explicitamente definidas e documentadas. O Quadro~\ref{frame:padroes} apresenta as principais abordagens adotadas no EIGAM.
 
 {\small
-\begin{longtable}{|p{4.5cm}|p{10cm}|}
-\caption{Metodologias e Padrões Adotados} \label{qua:padroes} \\
+\begin{longtable}{|L{4.5cm}|L{10cm}|}
+\caption{Metodologias e Padrões Adotados} \label{frame:padroes} \\
+\continuesmark
 \hline
 \textbf{Nome} & \textbf{Descrição} \\ \hline
 \endfirsthead
 \hline
 \textbf{Nome} & \textbf{Descrição} \\ \hline
 \endhead
-\hline
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont \textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
 
 Metodologia Scrum & Framework ágil utilizado para organizar o desenvolvimento incremental em ciclos de trabalho, permitindo planejamento, acompanhamento, revisão e adaptação frequentes. \\ \hline
@@ -128,10 +113,6 @@ TDD (\textit{Test-Driven Development}) & Prática na qual testes automatizados o
 \end{longtable}
 }
 
-
-% =============================================
-% TESTES
-% =============================================
 \section{Metodologia para testes de software}
 
 A estratégia de testes do EIGAM será composta por diferentes níveis, adequados à natureza distribuída da aplicação. O TDD será utilizado principalmente nas regras de negócio e componentes cujo comportamento possa ser especificado de forma determinística. Segundo Richardson (2019), em arquiteturas de microsserviços, a validação isolada dos serviços deve ser complementada por testes das integrações, pois falhas podem ocorrer não apenas na lógica interna, mas também nos contratos estabelecidos entre componentes independentes.
@@ -150,28 +131,22 @@ Para os componentes preditivos, serão utilizados testes retrospectivos sobre s�
 
 Por fim, serão realizados testes direcionados aos mecanismos de segurança e controle da camada conversacional. Entre os cenários estão sessão expirada, tentativa de exibição de valores sem autorização, solicitação fora do escopo, tentativa de \textit{prompt injection}, resposta com informação monetária sem origem verificável e falhas de provedores externos. O objetivo é validar não apenas a resposta produzida em condições normais, mas também o comportamento seguro do sistema diante de situações adversas.
 
-
-% =============================================
-% MÉTRICAS DE QUALIDADE
-% =============================================
 \section{Métricas de qualidade}
 
-Segundo Bass, Clements e Kazman (2022), atributos de qualidade são propriedades mensuráveis de um sistema que indicam quão bem ele satisfaz as necessidades de seus \textit{stakeholders}. Em sistemas distribuídos orientados a eventos, características como disponibilidade, desempenho, segurança, modificabilidade e observabilidade devem ser consideradas desde a arquitetura. No EIGAM, também é necessário avaliar atributos específicos da camada de inteligência artificial e da integração multicanal. O Quadro~\ref{qua:metricas} apresenta os principais objetivos de qualidade adotados.
+Segundo Bass, Clements e Kazman (2022), atributos de qualidade são propriedades mensuráveis de um sistema que indicam quão bem ele satisfaz as necessidades de seus \textit{stakeholders}. Em sistemas distribuídos orientados a eventos, características como disponibilidade, desempenho, segurança, modificabilidade e observabilidade devem ser consideradas desde a arquitetura. No EIGAM, também é necessário avaliar atributos específicos da camada de inteligência artificial e da integração multicanal. O Quadro~\ref{frame:metricas} apresenta os principais objetivos de qualidade adotados.
 
 {\small
-\begin{longtable}{|p{4cm}|p{10.5cm}|}
-\caption{Métricas de Qualidade} \label{qua:metricas} \\
+\begin{longtable}{|L{4cm}|L{10.5cm}|}
+\caption{Métricas de Qualidade} \label{frame:metricas} \\
+\continuesmark
 \hline
 \textbf{Fator de Qualidade} & \textbf{Objetivo} \\ \hline
 \endfirsthead
 \hline
 \textbf{Fator de Qualidade} & \textbf{Objetivo} \\ \hline
 \endhead
-\hline
-\multicolumn{2}{r}{\fontsize{10pt}{10pt}\selectfont\textit{Continua na próxima página}} \\
 \endfoot
-\hline
-\multicolumn{2}{c}{\fontsize{10pt}{10pt}\selectfont \textbf{Fonte:} Elaborado pelos autores (2026).} \\
+\sourcerow{2} \\
 \endlastfoot
 
 Manutenibilidade &

@@ -1,25 +1,20 @@
-% =============================================
-% CAPÍTULO 1 - CONTEXTUALIZAÇÃO
-% =============================================
-\chapter{CONTEXTUALIZAÇÃO}
+\chapter{Contextualização}
 
 A digitalização do setor financeiro ampliou o acesso dos usuários a contas bancárias, cartões e outros serviços oferecidos por diferentes instituições. Embora esse cenário proporcione maior conveniência, também contribui para a fragmentação da vida financeira, fazendo com que o acompanhamento de saldos, despesas e compromissos frequentemente dependa da consulta a diferentes aplicativos e da interpretação de informações provenientes de múltiplas fontes.
 
 Apesar da disponibilidade desses dados, seu acompanhamento ainda depende, em grande parte, da iniciativa do próprio usuário, uma vez que muitas soluções permanecem centradas em \textit{dashboards}, extratos e gráficos que exigem consultas ativas. Além disso, a existência das informações não garante que elas sejam facilmente compreendidas ou utilizadas na tomada de decisões. O baixo nível de letramento financeiro digital observado em estudos internacionais realizados pela \textit{Organisation for Economic Co-operation and Development} reforça a necessidade de soluções que simplifiquem a interpretação das informações financeiras (OECD, 2023).
 
-Nesse contexto, o \textit{Open Finance} possibilita o compartilhamento padronizado de dados financeiros entre instituições autorizadas, mediante consentimento do titular, criando condições para que informações anteriormente dispersas possam ser utilizadas de forma integrada (BANCO CENTRAL DO BRASIL; CONSELHO MONETÁRIO NACIONAL, 2020). Entretanto, essa infraestrutura, isoladamente, não garante que os dados sejam transformados em informações compreensíveis, contextualizadas e úteis para a tomada de decisões pelo usuário.
+Nesse contexto, o \textit{Open Finance} possibilita o compartilhamento padronizado de dados financeiros entre instituições autorizadas, mediante consentimento do titular, criando condições para que informações anteriormente dispersas possam ser utilizadas de forma integrada (Banco Central do Brasil; Conselho Monetário Nacional, 2020). Entretanto, essa infraestrutura, isoladamente, não garante que os dados sejam transformados em informações compreensíveis, contextualizadas e úteis para a tomada de decisões pelo usuário.
 
-Paralelamente, a ampla utilização de plataformas de mensageria cria oportunidades para aproximar os serviços financeiros da rotina dos usuários. Nesse sentido, o \textit{WhatsApp} apresenta-se como um canal inicial adequado para a solução, por permitir que a interação ocorra em um ambiente já familiar ao público (META PLATFORMS, INC., [s. d.]). Contudo, vincular toda a operação do sistema a uma única plataforma representaria uma dependência tecnológica e comercial em relação ao provedor responsável pelo canal de comunicação, podendo limitar sua capacidade de expansão e adaptação.
+Paralelamente, a ampla utilização de plataformas de mensageria cria oportunidades para aproximar os serviços financeiros da rotina dos usuários. Nesse sentido, o \textit{WhatsApp} apresenta-se como um canal inicial adequado para a solução, por permitir que a interação ocorra em um ambiente já familiar ao público (Meta Platforms, Inc., [s. d.]). Contudo, vincular toda a operação do sistema a uma única plataforma representaria uma dependência tecnológica e comercial em relação ao provedor responsável pelo canal de comunicação, podendo limitar sua capacidade de expansão e adaptação.
 
 Diante desse cenário, este trabalho propõe o desenvolvimento do EIGAM, uma solução de assistência financeira inteligente, preditiva e conversacional projetada para interagir com os usuários por meio de plataformas de mensageria. O \textit{WhatsApp} será adotado inicialmente como principal canal de interação, enquanto a arquitetura da solução será estruturada de forma desacoplada da plataforma de comunicação, permitindo a integração futura com outros serviços de mensageria sem alterações significativas em seu núcleo funcional.
 
 A proposta integra dados obtidos via \textit{Open Finance} a técnicas de análise preditiva e a um assistente conversacional baseado em \textit{Retrieval-Augmented Generation} (RAG), buscando transformar dados financeiros dispersos em informações contextualizadas e úteis. Além de possibilitar consultas em linguagem natural, a solução pretende atuar de forma proativa por meio da geração de análises, projeções, alertas e recomendações personalizadas, apoiando continuamente a tomada de decisões financeiras e observando os requisitos de privacidade e proteção de dados previstos na LGPD.
 
-
 \section{Objetivo}
 
 Desenvolver uma solução de assistência financeira inteligente, preditiva e conversacional, capaz de integrar dados provenientes do \textit{Open Finance} e fornecer ao usuário consultas, análises, previsões, alertas e orientações personalizadas por meio de plataformas de mensageria. O \textit{WhatsApp} será utilizado inicialmente como principal canal de interação, mantendo-se a arquitetura desacoplada da plataforma de comunicação para possibilitar a integração simplificada com outros serviços de mensageria e reduzir a dependência de um único provedor.
-
 
 \section{Público-alvo}
 
@@ -29,35 +24,33 @@ As estratégias do negócio devem ser direcionadas especialmente a pessoas que j
 
 Além disso, como a proposta depende da integração com dados financeiros compartilhados mediante consentimento no ecossistema de \textit{Open Finance}, o serviço tende a ser especialmente relevante para usuários que desejam centralizar informações bancárias e receber análises e orientações personalizadas em linguagem natural, sem depender do acesso recorrente a uma plataforma \textit{web} específica.
 
-
 \subsection{Personas}
 
 As personas consistem em perfis fictícios elaborados com base nas características, comportamentos, necessidades e dificuldades do público que se pretende atender. Sua utilização no projeto permite compreender com maior profundidade os diferentes tipos de usuários, suas expectativas em relação à solução proposta e a forma como interagem com tecnologias voltadas à organização financeira. A partir dessa construção, torna-se possível orientar decisões de desenvolvimento com maior foco na experiência do usuário, na usabilidade e na adequação das funcionalidades ao contexto real de uso. Neste trabalho, foram definidas três personas que representam perfis contrastantes, mas compatíveis com o público-alvo da solução, conforme apresentado nas Figuras \ref{fig:persona1}, \ref{fig:persona2} e \ref{fig:persona3}.
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
-    \caption{Persona 1 - Mathias Lima.}
+    \caption{Persona 1 - Mathias Lima}
     \label{fig:persona1}
     \includegraphics[width=0.9\textwidth]{images/persona_1.png}
-    \fontetabela{\textbf{Fonte:} Elaborado pelos autores (2026).}
+    \authorssource
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
-    \caption{Persona 2 - Márcio Júnior.}
+    \caption{Persona 2 - Márcio Júnior}
     \label{fig:persona2}
     \includegraphics[width=0.9\textwidth]{images/persona_2.png}
-    \fontetabela{\textbf{Fonte:} Elaborado pelos autores (2026).}
+    \authorssource
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[htbp]
     \centering
-    \caption{Persona 3 - Vitoria Moreira.}
+    \caption{Persona 3 - Vitoria Moreira}
     \label{fig:persona3}
     \includegraphics[width=0.9\textwidth]{images/persona_3.png}
-    \fontetabela{\textbf{Fonte:} Elaborado pelos autores (2026).}
+    \authorssource
 \end{figure}
-
 
 \section{Conceito do produto}
 

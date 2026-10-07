@@ -1,34 +1,46 @@
 \documentclass[a4paper, 12pt]{report}
 
-\input{config/pacotes}
-\input{config/configuracoes}
+\input{config/packages}
+\input{config/settings}
+\input{config/metadata}
 
 \begin{document}
 
-\input{config/capa}
-\input{config/folha_rosto}
-\input{config/folha_aprovacao}
-\input{config/dedicatoria_agradecimentos_epigrafe}
-\input{config/resumo_abstract}
-\input{config/listas_sumario}
+\pagestyle{empty}
 
-% =============================================
-% INÍCIO DO CONTEÚDO
-% =============================================
+\pagenumbering{Alph}
+\input{pretextual/cover}
+
 \newpage
-\setcounter{page}{3}
+\pagenumbering{arabic}
+\input{pretextual/title_page}
 
-\input{chapters/01_contextualizacao}
+\newpage
+\pagenumbering{roman}
+\input{pretextual/catalog_card}
+
+\newpage
+\pagenumbering{arabic}
+\setcounter{page}{2}
+\input{pretextual/approval_sheet}
+\input{pretextual/dedication_acknowledgments_epigraph}
+\input{pretextual/abstracts}
+\input{pretextual/lists_and_contents}
+
+\newpage
+\pagestyle{fancy}
+
+\input{chapters/01_context}
 \input{chapters/02_business_model_canvas}
-\input{chapters/03_analise_viabilidade}
-\input{chapters/04_gestao_projeto}
-\input{chapters/05_analise_requisitos}
-\input{chapters/06_modelagem_sistema}
-\input{chapters/07_modelagem_banco_dados}
-\input{chapters/08_prototipagem_telas}
-\input{chapters/09_proposta_desenvolvimento}
+\input{chapters/03_feasibility_analysis}
+\input{chapters/04_project_management}
+\input{chapters/05_requirements_analysis}
+\input{chapters/06_system_modeling}
+\input{chapters/07_database_modeling}
+\input{chapters/08_screen_prototyping}
+\input{chapters/09_development_proposal}
 
-\input{config/referencias}
-\input{config/apendices}
+\input{postextual/references}
+\input{postextual/appendices}
 
 \end{document}
