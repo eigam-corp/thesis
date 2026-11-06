@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { width: 1760px; background: #ffffff; font-family: "Georgia", "Times New Roman", serif; color: #2b2b2b; padding: 18px; }
+  .grid { display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: 300px 300px 260px; gap: 22px; }
+  .note { position: relative; padding: 26px 28px; border-radius: 4px; box-shadow: 0 6px 14px rgba(0,0,0,0.12); overflow: hidden; }
+  .note::after { content: ""; position: absolute; right: 0; bottom: 0; width: 34px; height: 34px; background: linear-gradient(135deg, rgba(0,0,0,0) 50%, rgba(0,0,0,0.10) 50%); }
+  h2 { font-size: 22px; font-weight: 600; letter-spacing: 0.3px; text-transform: uppercase; padding-bottom: 10px; margin-bottom: 14px; border-bottom: 2px solid; display: inline-block; }
+  ul { list-style: none; }
+  li { font-size: 17.5px; line-height: 1.32; margin-bottom: 9px; padding-left: 18px; position: relative; }
+  li::before { content: "•"; position: absolute; left: 0; }
+  .partners { grid-column: 1; grid-row: 1 / span 2; background: #fdf0c4; }
+  .partners h2 { border-color: #e2b54a; }
+  .activities { grid-column: 2; grid-row: 1; background: #e5f3d9; }
+  .activities h2 { border-color: #8cbf63; }
+  .resources { grid-column: 2; grid-row: 2; background: #e5f3d9; }
+  .resources h2 { border-color: #8cbf63; }
+  .value { grid-column: 3; grid-row: 1 / span 2; background: #dcebfa; }
+  .value h2 { border-color: #6c9bd2; }
+  .relationship { grid-column: 4; grid-row: 1; background: #ece4f7; }
+  .relationship h2 { border-color: #9a7fcc; }
+  .channels { grid-column: 4; grid-row: 2; background: #fbe1ea; }
+  .channels h2 { border-color: #d77a9b; }
+  .segments { grid-column: 5; grid-row: 1 / span 2; background: #fde6d2; }
+  .segments h2 { border-color: #e39a5c; }
+  .costs { grid-column: 1 / span 2; grid-row: 3; background: #fdf0c4; }
+  .costs h2 { border-color: #e2b54a; }
+  .revenue { grid-column: 3 / span 3; grid-row: 3; background: #dff2e6; }
+  .revenue h2 { border-color: #5aa77a; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .plan { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+  .price { color: #2e8b57; }
+  .divider { border-left: 2px solid #b9d8c4; padding-left: 18px; }
+</style>
+</head>
+<body>
+<div class="grid">
+  <div class="note partners">
+    <h2>Principais<br>parcerias</h2>
+    <ul>
+      <li>Meta / WhatsApp Cloud API</li>
+      <li>Telegram</li>
+      <li>Provedor de LLM (OpenAI)</li>
+      <li>Agregador de Open Finance (Pluggy)</li>
+      <li>Stripe (pagamentos)</li>
+      <li>Hetzner e Cloudflare (infraestrutura)</li>
+      <li>Banco Central do Brasil (regulação do Open Finance)</li>
+      <li>Criadores de conteúdo financeiro</li>
+    </ul>
+  </div>
+  <div class="note activities">
+    <h2>Atividades-chave</h2>
+    <ul>
+      <li>Desenvolvimento e operação da plataforma</li>
+      <li>Integração e manutenção das conexões de Open Finance</li>
+      <li>Avaliação contínua da IA e dos guardrails</li>
+      <li>Conformidade com a LGPD e segurança</li>
+    </ul>
+  </div>
+  <div class="note resources">
+    <h2>Recursos principais</h2>
+    <ul>
+      <li>Time técnico</li>
+      <li>Microsserviços e sincronização de Open Finance</li>
+      <li>Planejador com LLM, guardrails e projeção estatística</li>
+      <li>Bancos de dados cifrados e infraestrutura como código</li>
+    </ul>
+  </div>
+  <div class="note value">
+    <h2>Proposta de valor</h2>
+    <ul>
+      <li>Gestão financeira por conversa, sem instalar aplicativo novo</li>
+      <li>Centralização de vários bancos pelo Open Finance em uma visão única</li>
+      <li>Respostas em linguagem natural com valores calculados sobre os dados reais do usuário</li>
+      <li>Avisos proativos: limites de gasto, cobranças duplicadas, gastos atípicos e resumos</li>
+      <li>Privacidade auditável: valores só com PIN, consentimento revogável e direitos da LGPD por mensagem</li>
+    </ul>
+  </div>
+  <div class="note relationship">
+    <h2>Relacionamento com cliente</h2>
+    <ul>
+      <li>Assistente IA self-service 24/7 (relacionamento principal)</li>
+      <li>Engajamento proativo: avisos e resumos periódicos</li>
+      <li>Painel web do titular como extensão da conversa</li>
+    </ul>
+  </div>
+  <div class="note channels">
+    <h2>Canais</h2>
+    <ul>
+      <li>WhatsApp Business Platform</li>
+      <li>Telegram</li>
+      <li>Painel web (app.eigam.com.br)</li>
+      <li>Meta Ads click-to-WhatsApp</li>
+      <li>Parcerias com criadores</li>
+    </ul>
+  </div>
+  <div class="note segments">
+    <h2>Segmento de clientes</h2>
+    <ul>
+      <li>Adultos economicamente ativos</li>
+      <li>Estudantes</li>
+      <li>Microempreendedores individuais</li>
+      <li>Usuários com contas em várias instituições que desejam acompanhar gastos, organizar o orçamento e transformar dados bancários em decisões do dia a dia</li>
+    </ul>
+  </div>
+  <div class="note costs">
+    <h2>Estrutura de custos</h2>
+    <div class="cols">
+      <ul>
+        <li>Conexões bancárias (Open Finance)</li>
+        <li>Mensagens do WhatsApp</li>
+        <li>Tokens de LLM</li>
+        <li>Taxas de pagamento (Stripe)</li>
+      </ul>
+      <ul>
+        <li>Infraestrutura (Hetzner)</li>
+        <li>Desenvolvimento do software</li>
+        <li>Marketing pago / CAC</li>
+      </ul>
+    </div>
+  </div>
+  <div class="note revenue">
+    <h2>Fonte de receita</h2>
+    <div class="cols">
+      <div>
+        <div class="plan">Gratuito</div>
+        <ul>
+          <li>1 instituição conectada via Open Finance</li>
+          <li>Saldo, extrato e gastos por categoria pela conversa</li>
+          <li>Categorização automática de transações</li>
+          <li>Uma meta ativa por vez</li>
+        </ul>
+      </div>
+      <div class="divider">
+        <div class="plan">Pro — <span class="price">R$ 29,90/mês ou R$ 328,90/ano</span></div>
+        <ul>
+          <li>Instituições ilimitadas</li>
+          <li>Metas ilimitadas</li>
+          <li>Resumos semanais e mensais</li>
+          <li>Projeções e observações sobre o orçamento</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

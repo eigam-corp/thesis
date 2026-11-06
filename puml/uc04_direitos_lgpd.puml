@@ -2,6 +2,9 @@
 left to right direction
 skinparam packageStyle rectangle
 skinparam actorStyle awesome
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam dpi 150
 
 actor "Usuário\n(Titular)" as U
 actor "Pluggy\n(Open Finance)" as PL
@@ -17,7 +20,7 @@ rectangle "Direitos do Titular — LGPD Art. 18" {
     usecase "Registrar operação\nem audit log" as LC07
     usecase "Anonimizar\ntransações" as LC08
     usecase "Revogar acesso\nno Pluggy" as LC09
-    usecase "Deletar embeddings\ne sessões" as LC10
+    usecase "Apagar conversas,\nsessões e dados derivados" as LC10
 }
 
 U --> LC01
@@ -42,20 +45,20 @@ LC09 --> PL
 LC07 --> AUD
 
 note bottom of LC05
-  Soft-delete: phone_number_hash
-  mantido para prevenir re-cadastro.
+  Soft-delete sem dados pessoais.
   Audit logs mantidos 5 anos
   por obrigação legal (Art. 16).
 end note
 
 note bottom of LC02
-  Arquivo JSON/CSV criptografado
-  disponível via link temporário (24h).
+  Arquivo JSON entregue como
+  documento no próprio canal
+  do pedido.
 end note
 
 note bottom of LC04
-  Para jobs de sync no BullMQ.
+  Encerra a sincronização.
   Dados já coletados mantidos
-  até solicitação de exclusão.
+  até pedido de exclusão.
 end note
 @enduml

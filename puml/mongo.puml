@@ -1,0 +1,138 @@
+@startuml mongo
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam dpi 150
+hide circle
+hide methods
+skinparam class {
+    BackgroundColor #FFFFFF
+    BorderColor #3E8E5E
+    HeaderBackgroundColor #E7F3EC
+    FontSize 11
+    AttributeFontSize 10
+}
+
+entity transactions {
+    _id : ObjectId
+    user_id : string
+    provider_transaction_id : string
+    provider_account_id : string
+    provider_connection_id : string
+    date : Date
+    direction : string
+    kind : string
+    status : string
+    category : string
+    original_category : string
+    operation_type : string
+    payment_method : string
+    merchant_hmac : string
+    counterparty_token_hmacs : string[]
+    description : cifrado
+    amount : cifrado
+    paired_transaction_id : string
+    pair_nature : string
+    installment_number : number
+    installments_total : number
+    provider_bill_id : string
+    is_recurring : boolean
+}
+
+entity balance_snapshots {
+    _id : ObjectId
+    user_id : string
+    provider_account_id : string
+    provider_connection_id : string
+    day : string
+    account_type : string
+    currency_code : string
+    balance : cifrado
+    credit_limit : cifrado
+    available_limit : cifrado
+    recorded_at : Date
+}
+
+entity card_bills {
+    _id : ObjectId
+    user_id : string
+    provider_bill_id : string
+    provider_account_id : string
+    due_day : string
+    closing_day : string
+    total : cifrado
+    minimum_payment : cifrado
+    payments_total : cifrado
+    fetched_at : Date
+}
+
+entity investment_positions {
+    _id : ObjectId
+    user_id : string
+    provider_investment_id : string
+    provider_connection_id : string
+    asset_class : string
+    status : string
+    name : cifrado
+    balance : cifrado
+    invested_amount : cifrado
+    due_day : string
+    fetched_at : Date
+}
+
+entity loan_contracts {
+    _id : ObjectId
+    user_id : string
+    provider_loan_id : string
+    provider_connection_id : string
+    family : string
+    name : cifrado
+    outstanding : cifrado
+    contract_amount : cifrado
+    next_installment : cifrado
+    effective_cost_rate : cifrado
+    due_day : string
+    fetched_at : Date
+}
+
+entity holding_coverage {
+    _id : ObjectId
+    user_id : string
+    provider_connection_id : string
+    investments : object
+    loans : object
+    collected_at : Date
+    fetched_at : Date
+}
+
+entity conversation_history {
+    _id : ObjectId
+    user_id : string
+    channel : string
+    session_id : string
+    messages : cifrado[]
+    message_count : number
+    created_at : Date
+    updated_at : Date
+}
+
+entity predictions {
+    _id : ObjectId
+    user_id : string
+    prediction_type : string
+    category : string
+    model_used : string
+    period_start : Date
+    period_end : Date
+    result : cifrado
+    created_at : Date
+    expires_at : Date
+}
+
+transactions -[hidden]right- balance_snapshots
+balance_snapshots -[hidden]right- card_bills
+card_bills -[hidden]right- investment_positions
+transactions -[hidden]down- loan_contracts
+loan_contracts -[hidden]right- holding_coverage
+holding_coverage -[hidden]right- conversation_history
+conversation_history -[hidden]right- predictions
+@enduml

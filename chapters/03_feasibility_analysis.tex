@@ -2,7 +2,7 @@
 
 Para que uma solução tecnológica apresente potencial real de implantação, não basta considerar apenas sua execução técnica, sendo igualmente necessário avaliar sua aceitação pelo público, seus custos operacionais, sua capacidade de crescimento e as condições regulatórias envolvidas em sua operação. No caso deste projeto, a análise de viabilidade busca verificar se uma solução de assistência financeira inteligente, preditiva e conversacional apresenta aderência às necessidades do público-alvo e condições para ser desenvolvida e mantida de maneira economicamente sustentável.
 
-O EIGAM utilizará inicialmente o \textit{WhatsApp} como principal canal de interação com o usuário. Entretanto, sua arquitetura será estruturada de forma desacoplada da plataforma de mensageria, possibilitando a incorporação futura de outros canais de comunicação sem alterações significativas no núcleo da aplicação. Além disso, a solução depende da integração com serviços externos, como provedores de inteligência artificial e de acesso ao ecossistema de \textit{Open Finance}. Dessa forma, a análise considera tanto a aceitação da proposta quanto os custos, riscos e requisitos envolvidos em sua implantação e posterior expansão.
+O EIGAM utiliza o \textit{WhatsApp} como principal canal de interação com o usuário. Entretanto, sua arquitetura foi estruturada de forma desacoplada da plataforma de mensageria, o que permitiu incorporar o \textit{Telegram} e uma conversa no painel \textit{web} sem alterações no núcleo da aplicação. Além disso, a solução depende da integração com serviços externos, como provedores de inteligência artificial, de mensageria, de pagamento e de acesso ao ecossistema de \textit{Open Finance}. Dessa forma, a análise considera tanto a aceitação da proposta quanto os custos, riscos e requisitos envolvidos em sua implantação e expansão. A análise de demanda foi realizada antes do desenvolvimento; a análise de custos foi revista ao final, com os valores medidos pelo próprio sistema em operação.
 
 \section{Análise de demanda}
 
@@ -12,7 +12,7 @@ Com o objetivo de obter indícios sobre a aderência da solução proposta, foi 
 
 O questionário, cujas questões são detalhadas no Apêndice A, foi respondido por 42 participantes entre 06 e 20 de abril de 2026, por meio da ferramenta Google Forms. O perfil predominante dos respondentes foi composto por adultos entre 25 e 44 anos, com ensino superior completo ou incompleto, distribuídos entre os sexos feminino (22), masculino (19) e um participante que preferiu não declarar. O detalhamento completo das respostas encontra-se na Tabela \ref{tab:questionario}, no Apêndice B.
 
-Inicialmente, foi possível constatar que o \textit{WhatsApp} faz parte do cotidiano de praticamente todos os respondentes, uma vez que 41 dos 42 participantes (97,6\%) afirmaram utilizá-lo diariamente. Esse resultado fornece indícios favoráveis para sua adoção como primeiro canal de interação com o EIGAM, permitindo que a validação inicial do produto ocorra em uma plataforma já familiar à maior parte da amostra. Entretanto, esse dado não implica que a solução deva permanecer restrita a esse canal, razão pela qual sua arquitetura prevê a possibilidade de integração com outras plataformas de mensageria.
+Inicialmente, foi possível constatar que o \textit{WhatsApp} faz parte do cotidiano de praticamente todos os respondentes, uma vez que 41 dos 42 participantes (97,6\%) afirmaram utilizá-lo diariamente. Esse resultado fornece indícios favoráveis para sua adoção como primeiro canal de interação com o EIGAM, permitindo que a validação inicial do produto ocorra em uma plataforma já familiar à maior parte da amostra. Entretanto, esse dado não implica que a solução deva permanecer restrita a esse canal, razão pela qual sua arquitetura foi preparada para integrar outras plataformas de mensageria.
 
 Em relação aos hábitos financeiros, o gráfico da Figura \ref{fig:pq_frequencia} demonstra que a consulta ao saldo bancário é frequente: 22 respondentes (52,4\%) afirmaram realizá-la diariamente e 11 (26,2\%) de duas a três vezes por semana. Os resultados indicam que o acompanhamento das finanças já constitui uma atividade recorrente para parcela significativa da amostra, ainda que dependa predominantemente da iniciativa do próprio usuário.
 
@@ -38,7 +38,7 @@ Esse resultado reforça a relevância de mecanismos capazes de consolidar inform
 
 O gráfico da Figura \ref{fig:pq_openfinance} demonstrou também baixa familiaridade com o \textit{Open Finance}. Entre os participantes, 21 (50\%) declararam não conhecer o ecossistema, 17 afirmaram conhecê-lo, mas nunca o utilizaram, e apenas 4 (9,5\%) já haviam realizado o compartilhamento de dados entre instituições.
 
-Esse resultado evidencia que, embora o \textit{Open Finance} disponibilize recursos capazes de favorecer a integração de informações financeiras, seu funcionamento e seus benefícios ainda podem não ser plenamente conhecidos por parte dos potenciais usuários. Dessa forma, a experiência oferecida pelo EIGAM também poderá contribuir para apresentar de maneira contextualizada as possibilidades proporcionadas pelo compartilhamento autorizado de dados financeiros.
+Esse resultado evidencia que, embora o \textit{Open Finance} disponibilize recursos capazes de favorecer a integração de informações financeiras, seu funcionamento e seus benefícios ainda podem não ser plenamente conhecidos por parte dos potenciais usuários. Dessa forma, a experiência oferecida pelo EIGAM também contribui para apresentar de maneira contextualizada as possibilidades proporcionadas pelo compartilhamento autorizado de dados financeiros.
 
 \begin{figure}[htbp]
     \centering
@@ -74,7 +74,7 @@ Os resultados demonstram que uma parcela relevante dos respondentes apresenta pr
 
 O gráfico da Figura \ref{fig:pq_privacidade} indicou elevado nível de preocupação com a privacidade dos dados financeiros. Entre os respondentes, 15 (35,7\%) atribuíram nota máxima e 14 (33,3\%) atribuíram nota 4, totalizando aproximadamente 69\% dos participantes com nível elevado de preocupação.
 
-Esse resultado reforça a necessidade de que o EIGAM incorpore mecanismos de autenticação, controle de acesso, proteção dos dados e gerenciamento de consentimentos, além de apresentar ao usuário de maneira transparente como suas informações financeiras são utilizadas.
+Esse resultado reforçou a necessidade de que o EIGAM incorporasse mecanismos de autenticação, controle de acesso, proteção dos dados e gerenciamento de consentimentos, além de apresentar ao usuário de maneira transparente como suas informações financeiras são utilizadas.
 
 \begin{figure}[htbp]
     \centering
@@ -98,124 +98,104 @@ Os resultados indicam a existência de disposição de pagamento em parcela rele
 
 De maneira geral, os resultados obtidos fornecem indícios favoráveis à proposta apresentada. A elevada presença de participantes com múltiplas contas bancárias reforça o problema de fragmentação das informações financeiras; o interesse por resumos, previsões e alertas demonstra aderência às funcionalidades preditivas e proativas propostas; e a ampla utilização do \textit{WhatsApp} na amostra sustenta sua escolha como canal inicial de interação.
 
-Ao mesmo tempo, os resultados relacionados à confiança e à privacidade evidenciam aspectos que deverão receber atenção especial durante o desenvolvimento e a validação da solução. Ressalta-se que, devido ao tamanho e às características da amostra utilizada, os resultados obtidos representam indícios relacionados ao grupo pesquisado e não devem ser interpretados como uma generalização do comportamento de toda a população.
+Ao mesmo tempo, os resultados relacionados à confiança e à privacidade evidenciaram aspectos que receberam atenção especial durante o desenvolvimento e a validação da solução. Ressalta-se que, devido ao tamanho e às características da amostra utilizada, os resultados obtidos representam indícios relacionados ao grupo pesquisado e não devem ser interpretados como uma generalização do comportamento de toda a população.
 
 \section{Análise de viabilidade}
 
 A viabilidade do projeto foi analisada sob três perspectivas complementares: técnico-operacional, econômica e regulatória. A perspectiva técnico-operacional considera os recursos necessários à implementação, integração e manutenção da solução; a perspectiva econômica considera os custos associados à infraestrutura e aos serviços externos em diferentes estágios de utilização; e a perspectiva regulatória considera aspectos relacionados ao tratamento de dados pessoais e financeiros e à utilização de plataformas externas.
 
-Uma característica relevante para essa análise é a adoção de uma arquitetura desacoplada da plataforma de mensageria. Embora o \textit{WhatsApp} seja utilizado inicialmente como principal canal de interação, as regras de negócio, os mecanismos de inteligência artificial, a análise preditiva e a integração com o \textit{Open Finance} não deverão depender diretamente dessa plataforma.
+Uma característica relevante para essa análise é a adoção de uma arquitetura desacoplada da plataforma de mensageria. Embora o \textit{WhatsApp} seja o principal canal de interação, as regras de negócio, os mecanismos de inteligência artificial, a análise preditiva e a integração com o \textit{Open Finance} não dependem diretamente dessa plataforma.
 
-Essa decisão reduz a dependência tecnológica e comercial de um único fornecedor e permite que novos canais sejam posteriormente incorporados por meio de integrações específicas, preservando o núcleo funcional do EIGAM.
+Essa decisão reduziu a dependência tecnológica e comercial de um único fornecedor e permitiu incorporar novos canais por meio de adaptadores específicos, preservando o núcleo funcional do EIGAM.
 
 \subsection{Viabilidade Operacional e Econômica}
 
-Durante a etapa de desenvolvimento e validação inicial, a estratégia consiste em utilizar uma infraestrutura enxuta, explorando planos gratuitos (\textit{free tiers}), ambientes de teste e componentes executados em um único servidor virtual privado (VPS) sempre que tecnicamente adequado. Essa abordagem busca reduzir os custos iniciais sem impedir que os componentes sejam posteriormente distribuídos ou redimensionados conforme o crescimento da utilização.
+O planejamento do TCC~1 previa uma infraestrutura enxuta, baseada em planos gratuitos de serviços gerenciados, como Kafka e Redis em nuvem e monitoramento hospedado. Durante o desenvolvimento, essa estratégia foi substituída por um único servidor virtual na Hetzner Cloud, descrito em Terraform, no qual o \textit{broker}, o Redis, o PostgreSQL, a observabilidade e os treze serviços da aplicação são executados em contêineres. Os motivos foram o custo previsível, a localização dos dados na União Europeia e a possibilidade de reconstruir o ambiente inteiro a partir do repositório. No caso do \textit{broker}, o menor plano pago de um serviço gerenciado já superava o orçamento mensal de toda a infraestrutura do projeto e retiraria os dados da União Europeia.
 
-No MVP (\textit{Minimum Viable Product}), o \textit{WhatsApp} será utilizado como primeiro canal de mensageria. A integração de canais adicionais não compõe necessariamente o custo operacional imediato dessa fase, uma vez que a arquitetura será preparada para incorporá-los posteriormente. Dessa forma, a adoção de uma arquitetura multicanal representa inicialmente uma decisão de organização e desenvolvimento do software, e não a necessidade de contratação simultânea de diferentes serviços de mensageria.
+O \textit{WhatsApp} é o principal canal de mensageria, e o \textit{Telegram} foi incorporado sem custo adicional de infraestrutura, pois utiliza o mesmo \textit{gateway} e o mesmo \textit{worker} de envio. A arquitetura multicanal, portanto, representou uma decisão de organização do software, e não a contratação simultânea de diferentes serviços.
 
-O Quadro~\ref{frame:infra_dev} apresenta a estimativa dos principais recursos utilizados durante a fase inicial. Os valores possuem caráter aproximado e podem variar conforme alterações comerciais dos fornecedores, consumo efetivo dos serviços, variação cambial e condições disponíveis no momento da implantação.
+O Quadro~\ref{frame:infra_dev} apresenta os recursos efetivamente utilizados no desenvolvimento e na operação do beta. Os custos fixos estão em euros, moeda de cobrança da Hetzner; os custos variáveis são os preços unitários registrados na tabela de preços do próprio sistema, utilizada para calcular o custo de cada titular.
 
 {\small
-\begin{longtable}{|L{3.5cm}|L{7.0cm}|L{3.0cm}|}
-\caption{Infraestrutura estimada para a fase de desenvolvimento (MVP)}
+\begin{longtable}{|L{3.3cm}|L{7.2cm}|L{3.5cm}|}
+\caption{Infraestrutura e serviços utilizados no desenvolvimento e no beta}
 \label{frame:infra_dev} \\
 \continuesmark
 
 \hline
-\textbf{Componente} & \textbf{Especificação} & \textbf{Custo/mês} \\ \hline
+\textbf{Componente} & \textbf{Especificação} & \textbf{Custo} \\ \hline
 \endfirsthead
 
 \hline
-\textbf{Componente} & \textbf{Especificação} & \textbf{Custo/mês} \\ \hline
+\textbf{Componente} & \textbf{Especificação} & \textbf{Custo} \\ \hline
 \endhead
 
 \endfoot
 \sourcerow{3} \\
 \endlastfoot
 
-VPS principal &
-Hetzner CX22 (2 vCPU, 4 GB RAM, 40 GB SSD), executando os serviços da aplicação por meio de Docker Compose &
-$\sim$R\$~30 \\ \hline
+Servidor &
+Hetzner CX33 (4 vCPU, 8 GB de RAM, 80 GB de SSD) em Falkenstein, executando todos os serviços por meio de Docker Compose &
+$\sim$€~9,99/mês \\ \hline
 
-\textit{Message broker} &
-Upstash Kafka em plano gratuito para comunicação assíncrona entre os serviços &
-R\$~0 \\ \hline
+Volume cifrado &
+40 GB com LUKS para os dados do PostgreSQL, preservado mesmo quando o servidor é recriado &
+$\sim$€~2/mês \\ \hline
 
-Cache e sessões &
-Upstash Redis em plano gratuito &
-R\$~0 \\ \hline
-
-Banco relacional &
-PostgreSQL 16 \textit{self-hosted} no VPS por meio de Docker &
-R\$~0 \\ \hline
+\textit{Broker}, cache e banco relacional &
+Redpanda, Redis e PostgreSQL 16 com pgvector, executados no próprio servidor &
+Incluído no servidor \\ \hline
 
 Banco documental &
-MongoDB Atlas M0 em plano gratuito &
-R\$~0 \\ \hline
+MongoDB Atlas M0 em Frankfurt &
+Plano gratuito \\ \hline
 
-API de inteligência artificial &
-Modelo de linguagem utilizado para interpretação das consultas e geração das respostas conversacionais &
-$\sim$R\$~15--30 \\ \hline
+Observabilidade &
+Prometheus, Loki, Tempo, Grafana e Alertmanager, executados no próprio servidor &
+Incluído no servidor \\ \hline
 
-API de \textit{embeddings} &
-Geração de representações vetoriais utilizadas pelos mecanismos de RAG &
-$\sim$R\$~5--10 \\ \hline
+Borda e certificados &
+Cloudflare (\textit{proxy}, DNS, túnel e Access) e Let's Encrypt &
+Plano gratuito \\ \hline
+
+Modelo de linguagem &
+OpenAI, no planejamento da frase e na redação da resposta &
+R\$~0,016 a R\$~0,019 por chamada ao planejador \\ \hline
+
+Juízo tipado &
+TypeSafe, nos \textit{guardrails} de conselho regulado e de \textit{prompt injection} &
+US\$~0,042 por milhão de \textit{tokens} \\ \hline
 
 Mensageria &
-\textit{WhatsApp} como canal inicial; custo dependente do volume de utilização e das condições comerciais vigentes do provedor &
-Variável \\ \hline
+\textit{WhatsApp}: mensagem de serviço ou utilidade (acima de 1.000 gratuitas por mês) e mensagem de marketing; \textit{Telegram} sem cobrança &
+R\$~0,035 e R\$~0,3217 por mensagem \\ \hline
 
 Integração \textit{Open Finance} &
-Pluggy API em ambiente \textit{sandbox} para desenvolvimento e validação &
-R\$~0 \\ \hline
+Pluggy, por conexão bancária ativa no mês (até 500 conexões; R\$~2,50 acima disso) &
+R\$~5,00 por conexão \\ \hline
 
-SSL e CDN &
-Let's Encrypt e Cloudflare em planos gratuitos &
-R\$~0 \\ \hline
-
-CI/CD &
-GitHub Actions dentro dos limites disponibilizados pelo plano gratuito &
-R\$~0 \\ \hline
-
-Monitoramento &
-Grafana Cloud em plano gratuito &
-R\$~0 \\ \hline
-
-Backup &
-Cloudflare R2 dentro dos limites disponibilizados pelo plano gratuito &
-R\$~0 \\ \hline
+Pagamentos &
+Stripe, por cobrança de cartão &
+3,99\% + R\$~0,39 \\ \hline
 
 Equipamentos (depreciação) &
 3 notebooks para desenvolvimento, considerando vida útil de 4 anos e valor médio de R\$~5.000 por equipamento &
-$\sim$R\$~312 \\ \hline
+$\sim$R\$~312/mês \\ \hline
 
 IA para apoio ao desenvolvimento &
 Ferramentas de inteligência artificial utilizadas pela equipe durante o desenvolvimento &
-$\sim$R\$~330 \\ \hline
-
-\textbf{Total-base estimado (MVP)} &
-\textbf{Não inclui eventuais custos variáveis de mensageria} &
-\textbf{$\sim$R\$~692--712} \\ \hline
+$\sim$R\$~330/mês \\ \hline
 
 \end{longtable}
 }
 
-A estimativa demonstra que o MVP pode ser desenvolvido com uma infraestrutura relativamente reduzida, principalmente em razão do aproveitamento de serviços gratuitos e da consolidação inicial dos componentes em uma única VPS. O custo-base mensal estimado situa-se entre aproximadamente R\$~692 e R\$~712, acrescido de eventuais custos variáveis associados à mensageria.
+O custo fixo medido da infraestrutura foi de cerca de 12 euros mensais, para treze serviços, três bancos de dados, o \textit{broker} e a observabilidade completa. Esse valor é inferior ao estimado no TCC~1 para a fase de desenvolvimento, mesmo após a troca dos planos gratuitos por recursos próprios. A maior parte do custo da equipe continua sendo a depreciação dos equipamentos e as ferramentas de apoio ao desenvolvimento, que não representam custo de manter a aplicação disponível.
 
-Ressalta-se que parcela significativa desse valor corresponde à depreciação dos equipamentos e às ferramentas utilizadas pela equipe de desenvolvimento. Portanto, o valor não representa exclusivamente o custo necessário para manter a infraestrutura da aplicação disponível.
-
-À medida que a solução evolui para um ambiente de produção e aumenta sua quantidade de usuários ativos, os limites oferecidos pelos planos gratuitos podem deixar de ser suficientes, tornando necessário redimensionar determinados componentes. Para fins de análise, considera-se um cenário de referência com 10.000 usuários ativos.
-
-Nesse estágio, os custos deixam de depender apenas da infraestrutura computacional e passam a ser influenciados de maneira mais significativa pelo comportamento dos usuários. O volume de mensagens, as sincronizações de dados financeiros, as consultas aos modelos de inteligência artificial, a geração de \textit{embeddings} e os alertas produzidos pelo sistema influenciam diretamente o custo operacional.
-
-Diferentemente de componentes com despesas relativamente previsíveis, como servidores virtuais, determinados serviços apresentam cobrança relacionada ao volume efetivamente utilizado. Por essa razão, a estimativa de produção separa os custos-base dos custos variáveis associados à inteligência artificial e à mensageria.
-
-O Quadro~\ref{frame:infra_prod} apresenta essa composição.
+Com a aplicação em funcionamento, o teste de carga descrito no Capítulo~\ref{chap:resultados} mostrou que o mesmo servidor atende cerca de 2.850 usuários com boa experiência, e que o limite não é o processamento, mas o tempo de espera pelo modelo de linguagem. Para uma operação de produção, a topologia planejada separa aplicação, dados e \textit{broker} em três servidores na mesma rede privada, com balanceador de carga, armazenamento de objetos para \textit{backups} e um plano pago do MongoDB Atlas, como apresenta o Quadro~\ref{frame:infra_prod}.
 
 {\small
 \begin{longtable}{|L{3.5cm}|L{7.0cm}|L{3.0cm}|}
-\caption{Infraestrutura estimada para 10.000 usuários ativos}
+\caption{Infraestrutura planejada para a operação de produção}
 \label{frame:infra_prod} \\
 \continuesmark
 
@@ -231,66 +211,44 @@ O Quadro~\ref{frame:infra_prod} apresenta essa composição.
 \sourcerow{3} \\
 \endlastfoot
 
-VPS &
-2 servidores Hetzner CX32 (4 vCPU, 8 GB RAM cada), permitindo a distribuição dos principais componentes da aplicação &
-$\sim$R\$~120 \\ \hline
+Servidor de aplicação &
+Hetzner CX32 (4 vCPU, 8 GB de RAM) com os serviços e o Nginx &
+$\sim$€~14 \\ \hline
 
-\textit{Message broker} &
-Upstash Kafka em modelo de cobrança proporcional ao uso &
-$\sim$R\$~50 \\ \hline
+Servidor de dados &
+Hetzner CX32 com PostgreSQL e Redis, sem IP público &
+$\sim$€~14 \\ \hline
 
-Cache e sessões &
-Redis \textit{self-hosted} &
-R\$~0 \\ \hline
+Servidor do \textit{broker} &
+Hetzner CX22 (2 vCPU, 4 GB de RAM) com o Redpanda, sem IP público &
+$\sim$€~5 \\ \hline
 
-Banco relacional &
-PostgreSQL 16 \textit{self-hosted} &
-R\$~0 \\ \hline
+Balanceador e volume &
+Balanceador LB11 e volume de 100 GB cifrado com LUKS &
+$\sim$€~11 \\ \hline
+
+Armazenamento de objetos &
+\textit{Backups} cifrados &
+$\sim$€~6 \\ \hline
 
 Banco documental &
-MongoDB Atlas em plano compatível com o volume da aplicação &
-$\sim$R\$~150 \\ \hline
-
-API de inteligência artificial &
-Processamento das interações conversacionais e geração de análises; custo proporcional ao volume efetivamente processado &
-Variável \\ \hline
-
-API de \textit{embeddings} &
-Vetorização das informações utilizadas pelos mecanismos de recuperação de contexto &
-Variável \\ \hline
-
-Mensageria &
-\textit{WhatsApp} como canal inicial e eventuais canais adicionais; custo dependente do volume de utilização e das políticas comerciais de cada provedor &
-Variável \\ \hline
-
-Integração \textit{Open Finance} &
-Pluggy API em ambiente de produção &
-$\sim$R\$~500 \\ \hline
-
-CI/CD e monitoramento &
-GitHub Actions e Grafana Cloud &
-$\sim$R\$~100 \\ \hline
-
-Backup e CDN &
-Cloudflare R2 e serviços relacionados &
-$\sim$R\$~30 \\ \hline
+MongoDB Atlas M10 em Frankfurt &
+$\sim$€~52 \\ \hline
 
 \textbf{Custo-base estimado} &
-\textbf{Não inclui IA, \textit{embeddings} e mensageria} &
-\textbf{$\sim$R\$~950} \\ \hline
+\textbf{Não inclui modelo de linguagem, mensageria, \textit{Open Finance} e pagamentos} &
+\textbf{$\sim$€~100} \\ \hline
 
 \end{longtable}
 }
 
-A partir dessa composição, o custo mensal da operação em produção deve ser entendido como a combinação entre os custos-base de infraestrutura e os custos variáveis decorrentes principalmente da utilização dos modelos de inteligência artificial, da geração de \textit{embeddings} e das plataformas de mensageria.
+A partir dessa composição, o custo mensal da operação deve ser entendido como a soma de um custo-base de infraestrutura, pequeno e previsível, com custos variáveis que crescem com cada titular. A medição feita pelo próprio sistema mostrou que o maior custo variável não é o modelo de linguagem, como se supunha no TCC~1, mas a conexão bancária, cobrada por conexão ativa no mês, e as mensagens do \textit{WhatsApp}, cobradas uma a uma.
 
-Essa forma de análise evita vincular a viabilidade do produto a valores comerciais específicos que podem sofrer alterações ao longo do tempo. Após a implantação do MVP e a obtenção de dados reais de utilização, será possível calcular com maior precisão indicadores como custo médio por usuário, custo médio por interação e consumo mensal de cada serviço externo.
-
-A arquitetura multicanal também permite que o custo-benefício de cada plataforma de mensageria seja avaliado individualmente antes de sua integração ao produto. Assim, a incorporação de um novo canal pode considerar não apenas sua viabilidade técnica, mas também seu alcance, suas limitações e seus custos operacionais.
+Para ilustrar, considere um cenário de referência com um titular que conecta um banco e envia dez mensagens por dia, a mesma premissa de dimensionamento usada no projeto. Em um mês, esse titular gera cerca de 300 respostas: R\$~5,00 de conexão bancária, cerca de R\$~10,50 em mensagens do \textit{WhatsApp} e, no mínimo, R\$~4,80 em chamadas ao planejador, sem contar a redação da resposta. O total ultrapassa R\$~20 por mês. O mesmo titular pelo \textit{Telegram} custaria cerca de R\$~10 a menos. O cenário mostra por que a regra de uma mensagem por interação foi adotada e por que o plano gratuito limita o número de bancos conectados: para um titular gratuito e muito ativo, a operação é deficitária, e a viabilidade depende da conversão para o plano Pro.
 
 \subsection{Análise de Sensibilidade Econômica}
 
-Considerando o preço mensal de R\$~22,90 para o plano Pro, o número de assinantes necessário para cobrir os custos da operação varia de acordo com o consumo dos serviços externos e com o crescimento da infraestrutura. Como esses valores somente poderão ser determinados com maior precisão após a disponibilização da aplicação, foram considerados três cenários hipotéticos de custo mensal total: R\$~3.000, R\$~5.000 e R\$~8.000.
+Considerando o preço mensal de R\$~29,90 para o plano Pro, o número de assinantes necessário para cobrir os custos da operação varia de acordo com o consumo dos serviços externos e com o crescimento da infraestrutura. Como a base de usuários do beta ainda não permite projetar esses valores com precisão, foram mantidos três cenários hipotéticos de custo mensal total: R\$~3.000, R\$~5.000 e R\$~8.000.
 
 Para cada cenário, o ponto de equilíbrio foi estimado dividindo-se o custo operacional mensal pelo valor da assinatura do plano Pro e arredondando-se o resultado para o número inteiro imediatamente superior. A Tabela~\ref{tab:break_even} apresenta os resultados.
 
@@ -302,17 +260,17 @@ Para cada cenário, o ponto de equilíbrio foi estimado dividindo-se o custo ope
 \toprule
 \textbf{Custo mensal estimado} & \textbf{Assinantes Pro necessários} & \textbf{Receita mensal aproximada} \\
 \midrule
-R\$~3.000 & 132 & R\$~3.022,80 \\
-R\$~5.000 & 219 & R\$~5.015,10 \\
-R\$~8.000 & 350 & R\$~8.015,00 \\
+R\$~3.000 & 101 & R\$~3.019,90 \\
+R\$~5.000 & 168 & R\$~5.023,20 \\
+R\$~8.000 & 268 & R\$~8.013,20 \\
 \bottomrule
 \end{tabular}
 \authorssource
 \end{tabela}
 
-Os cenários demonstram que o número de assinantes necessários para cobrir os custos tecnológicos projetados permanece inferior à quantidade total de usuários considerada no cenário de produção com 10.000 usuários ativos. Entretanto, esse resultado depende diretamente da capacidade do produto de converter usuários do plano gratuito para o plano pago.
+Os cenários demonstram que o número de assinantes necessários para cobrir os custos tecnológicos projetados é pequeno em relação a uma base de 10.000 usuários. Entretanto, esse resultado depende diretamente da capacidade do produto de converter usuários do plano gratuito para o plano pago.
 
-Como a taxa real de conversão somente poderá ser determinada após a disponibilização da solução, foram considerados três cenários de referência: 5\%, 10\% e 15\% de conversão. Essas taxas possuem caráter hipotético e não representam uma previsão de desempenho do produto, sendo utilizadas exclusivamente para demonstrar diferentes possibilidades de receita em uma base de 10.000 usuários, conforme a Tabela~\ref{tab:conversao}.
+Como a taxa real de conversão somente poderá ser determinada após a abertura do produto, foram considerados três cenários de referência: 5\%, 10\% e 15\% de conversão. Essas taxas possuem caráter hipotético e não representam uma previsão de desempenho do produto, sendo utilizadas exclusivamente para demonstrar diferentes possibilidades de receita em uma base de 10.000 usuários, conforme a Tabela~\ref{tab:conversao}.
 
 \begin{tabela}[htbp]
 \centering
@@ -322,17 +280,17 @@ Como a taxa real de conversão somente poderá ser determinada após a disponibi
 \toprule
 \textbf{Taxa de conversão} & \textbf{Assinantes Pro} & \textbf{Receita bruta mensal} \\
 \midrule
-5\% & 500 & R\$~11.450,00 \\
-10\% & 1.000 & R\$~22.900,00 \\
-15\% & 1.500 & R\$~34.350,00 \\
+5\% & 500 & R\$~14.950,00 \\
+10\% & 1.000 & R\$~29.900,00 \\
+15\% & 1.500 & R\$~44.850,00 \\
 \bottomrule
 \end{tabular}
 \authorssource
 \end{tabela}
 
-Os valores apresentados representam receita bruta e não devem ser interpretados como lucro líquido ou margem operacional. Uma eventual operação comercial deverá considerar adicionalmente despesas como tributos, taxas relacionadas aos meios de pagamento, atendimento ao cliente, aquisição de usuários, suporte técnico, serviços administrativos e contábeis e demais recursos necessários à manutenção do negócio.
+Os valores apresentados representam receita bruta e não devem ser interpretados como lucro líquido ou margem operacional. Uma eventual operação comercial deverá considerar adicionalmente tributos, a taxa de 3,99\% mais R\$~0,39 por cobrança de cartão, atendimento ao cliente, aquisição de usuários, suporte técnico, serviços administrativos e contábeis e, principalmente, os custos variáveis por titular discutidos anteriormente.
 
-Ainda assim, a análise demonstra a existência de cenários nos quais a receita recorrente obtida com o plano Pro pode superar os custos tecnológicos considerados. A confirmação da viabilidade econômica dependerá da validação do consumo médio dos serviços, da taxa efetiva de conversão, do custo médio por usuário e do comportamento observado após a disponibilização do produto.
+Ainda assim, a análise demonstra a existência de cenários nos quais a receita recorrente obtida com o plano Pro supera os custos tecnológicos considerados. A confirmação da viabilidade econômica dependerá da taxa efetiva de conversão e do custo médio por titular, que o sistema já mede por turno e por titular e que poderá ser acompanhado no painel de operação a partir da abertura do produto.
 
 \subsection{Viabilidade Regulatória}
 
@@ -340,15 +298,15 @@ A viabilidade da solução também depende do tratamento adequado das informaç�
 
 O acesso aos dados financeiros ocorre mediante autorização do titular. Dessa forma, o sistema deverá manter mecanismos que permitam gerenciar os consentimentos associados às instituições vinculadas, assim como possibilitar sua revogação quando solicitada pelo usuário.
 
-A solução também prevê funcionalidades relacionadas ao exercício dos direitos do titular dos dados, incluindo consulta sobre os dados tratados, correção de informações cadastrais, exportação, revogação de consentimentos e solicitação de exclusão. Esses mecanismos são detalhados posteriormente nos requisitos e casos de uso do sistema.
+A solução implementa as funcionalidades relacionadas ao exercício dos direitos do titular dos dados, incluindo consulta sobre os dados tratados, correção de informações cadastrais, exportação, revogação de consentimentos e solicitação de exclusão, todas acessíveis por mensagem. Esses mecanismos são detalhados nos requisitos e casos de uso do sistema. A política de privacidade e os termos de uso foram publicados e são apresentados ao titular no aceite do cadastro, e os dados pessoais são mantidos em servidores na União Europeia.
 
-Outro aspecto relevante está relacionado à utilização de plataformas de mensageria como meio de comunicação com o usuário. Esses canais são fornecidos por empresas externas e possuem suas próprias políticas, interfaces de integração, condições comerciais e limitações técnicas. Consequentemente, a utilização de cada canal deverá observar as regras estabelecidas pelo respectivo provedor.
+Outro aspecto relevante está relacionado à utilização de plataformas de mensageria como meio de comunicação com o usuário. Esses canais são fornecidos por empresas externas e possuem suas próprias políticas, interfaces de integração, condições comerciais e limitações técnicas. Consequentemente, a utilização de cada canal deve observar as regras estabelecidas pelo respectivo provedor. No \textit{WhatsApp}, por exemplo, mensagens fora da janela de 24 horas após a última mensagem do titular só podem ser enviadas por \textit{templates} previamente aprovados pela Meta, regra que moldou o envio de avisos e resumos.
 
-No caso do MVP, a utilização inicial do \textit{WhatsApp} implica dependência parcial da infraestrutura e das regras de funcionamento da plataforma. Entretanto, a arquitetura multicanal proposta busca reduzir o impacto dessa dependência ao separar a lógica de comunicação das demais funcionalidades do EIGAM.
+A utilização do \textit{WhatsApp} implica dependência parcial da infraestrutura e das regras de funcionamento da plataforma. Entretanto, a arquitetura multicanal reduziu o impacto dessa dependência ao separar a lógica de comunicação das demais funcionalidades do EIGAM.
 
-Dessa maneira, alterações nas condições técnicas ou comerciais de determinada plataforma não exigiriam necessariamente a substituição dos mecanismos responsáveis pela integração financeira, análise preditiva e inteligência artificial. A solução poderá incorporar outros canais de comunicação por meio da implementação de novas integrações compatíveis com a camada de mensageria definida pelo sistema.
+Dessa maneira, alterações nas condições técnicas ou comerciais de determinada plataforma não exigem a substituição dos mecanismos responsáveis pela integração financeira, análise preditiva e inteligência artificial. A mudança na cobrança de mensagens de serviço pela Meta, ocorrida durante o desenvolvimento, foi absorvida dessa forma, e o \textit{Telegram} foi incorporado por meio de um novo adaptador compatível com a camada de mensageria.
 
-A possibilidade de utilização de diferentes canais, entretanto, não elimina as responsabilidades relacionadas à proteção dos dados. Cada nova integração deverá ser avaliada individualmente antes de sua disponibilização, considerando os tipos de informações transmitidas, os recursos oferecidos pelo provedor e os requisitos de segurança estabelecidos pela solução.
+A possibilidade de utilização de diferentes canais, entretanto, não elimina as responsabilidades relacionadas à proteção dos dados. Cada nova integração deve ser avaliada individualmente antes de sua disponibilização, considerando os tipos de informações transmitidas, os recursos oferecidos pelo provedor e os requisitos de segurança estabelecidos pela solução.
 
 Dessa forma, a viabilidade regulatória do produto está condicionada à manutenção da conformidade com a legislação aplicável, ao gerenciamento adequado dos consentimentos, à proteção das informações financeiras e ao cumprimento das condições de utilização dos serviços externos integrados à solução.
 
@@ -358,11 +316,11 @@ A estratégia de monetização adotada é o modelo \textit{freemium}, no qual o 
 
 O levantamento realizado indicou que 35 dos 42 participantes, equivalentes a 83,3\% da amostra, considerariam pagar algum valor por um plano premium. Entretanto, a maior concentração das respostas ocorreu entre R\$~11,00 e R\$~20,00 mensais, faixa indicada por 15 participantes. Por essa razão, os resultados da pesquisa foram utilizados como referência para a definição da estratégia comercial, mas não como único fator para a determinação do preço.
 
-O valor inicial de R\$~22,90 mensais proposto para o plano Pro considera a disponibilização do conjunto completo de recursos da solução, incluindo integração com múltiplas instituições financeiras, análises preditivas, metas, resumos automáticos, alertas avançados e recomendações personalizadas. A definição também considera a necessidade de sustentar os custos variáveis associados ao uso de inteligência artificial, mensageria e integração com serviços financeiros.
+No TCC~1, o valor proposto para o plano Pro foi de R\$~22,90 mensais. Em 30/10/2026, já com o custo variável de cada titular sendo medido pelo próprio sistema, o preço foi revisto para R\$~29,90 mensais ou R\$~328,90 por ano. O valor considera a disponibilização do conjunto completo de recursos da solução e a necessidade de sustentar os custos variáveis associados à conexão bancária, à mensageria e ao uso de inteligência artificial, que, conforme o cenário de referência apresentado anteriormente, podem ultrapassar R\$~20 mensais para um titular muito ativo no \textit{WhatsApp}.
 
-Por se tratar de uma proposta ainda em fase de desenvolvimento, o preço deverá ser novamente avaliado durante a validação do MVP com usuários reais. Indicadores como taxa de conversão, frequência de utilização, custo médio por usuário, consumo dos serviços externos e percepção de valor poderão fundamentar eventuais ajustes tanto no preço quanto na composição dos planos.
+O novo preço está acima da faixa mais citada na pesquisa e dentro da faixa de R\$~21,00 a R\$~30,00, indicada por 6 participantes (14,3\%). Essa diferença representa um risco comercial reconhecido: a sensibilidade ao preço observada na amostra deverá ser confirmada com a abertura do produto, e indicadores como taxa de conversão, frequência de utilização, custo médio por titular e percepção de valor poderão fundamentar ajustes tanto no preço quanto na composição dos planos.
 
-O Quadro~\ref{frame:planos} apresenta a estrutura inicial de monetização proposta.
+O Quadro~\ref{frame:planos} apresenta a estrutura de monetização implementada. O controle de acesso por plano é feito pelo \textit{Billing Service}, consultado pelos demais serviços antes de liberar um recurso Pro, e a cobrança recorrente é feita pelo Stripe, sem que os dados do cartão passem pelo EIGAM.
 
 {\small
 \renewcommand{\arraystretch}{1.2}
@@ -393,10 +351,11 @@ O Quadro~\ref{frame:planos} apresenta a estrutura inicial de monetização propo
 \endlastfoot
 
 Vinculação de 1 instituição via \textit{Open Finance};
-consulta de saldo e extrato;
+consulta de saldo, extrato e gastos por categoria;
 respostas conversacionais;
 alertas básicos;
-classificação de transações
+categorização automática de transações;
+uma meta ativa por vez
 &
 Gratuito
 &
@@ -409,12 +368,10 @@ R\$~0,00
 
 Acesso completo aos módulos da solução:
 instituições ilimitadas;
-análises preditivas;
-previsões;
-metas financeiras;
-resumos automáticos;
-alertas avançados;
-recomendações personalizadas
+metas ilimitadas;
+projeções;
+resumos semanais e mensais;
+observações sobre o orçamento
 &
 \multirow{2}{*}{Pro}
 &
@@ -422,24 +379,24 @@ Mensal
 &
 --
 &
-R\$~22,90
+R\$~29,90
 \\ \cline{3-5}
 
 &
 &
 Anual
 &
-$\sim$9\%
+$\sim$8\%
 &
-R\$~249,90/ano \newline
-(R\$~20,83/mês)
+R\$~328,90/ano \newline
+(R\$~27,41/mês)
 \\ \hline
 
 \end{longtable}
 }
 
-A estrutura \textit{freemium} também permite diferenciar funcionalidades de acordo com seu impacto sobre os custos operacionais da aplicação. Recursos que demandam maior processamento, múltiplas instituições vinculadas ou análises mais frequentes podem ser concentrados no plano Pro, enquanto o plano gratuito permanece como porta de entrada para a utilização do serviço.
+A estrutura \textit{freemium} também permite diferenciar funcionalidades de acordo com seu impacto sobre os custos operacionais da aplicação. A limitação do plano gratuito a uma instituição conectada decorre diretamente do custo por conexão bancária, enquanto recursos que demandam mais processamento, como resumos e projeções, ficam no plano Pro.
 
-A adoção de outros canais de mensageria também poderá ser incorporada à estratégia comercial conforme o produto evolua. Dependendo das características e dos custos de cada plataforma, determinados canais poderão ser disponibilizados para todos os usuários ou associados a planos específicos, sem alterar as funcionalidades centrais do EIGAM.
+A adoção de outros canais de mensageria também pode ser incorporada à estratégia comercial. Como o \textit{Telegram} não cobra por mensagem, um mesmo titular custa menos nesse canal, e essa diferença poderá ser considerada na composição futura dos planos, sem alterar as funcionalidades centrais do EIGAM.
 
-Dessa forma, a estratégia de monetização busca equilibrar acessibilidade, percepção de valor e sustentabilidade financeira. A composição definitiva dos planos e seus respectivos preços deverá ser validada posteriormente com base nos dados reais obtidos durante o desenvolvimento, a disponibilização do MVP e a utilização da solução pelo público.
+Dessa forma, a estratégia de monetização busca equilibrar acessibilidade, percepção de valor e sustentabilidade financeira. A composição definitiva dos planos e seus respectivos preços deverá ser validada com base nos dados reais obtidos após a abertura do produto ao público.

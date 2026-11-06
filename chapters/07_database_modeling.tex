@@ -2,17 +2,19 @@
 
 Segundo Elmasri e Navathe (2011, p. 131), ``Geralmente o termo aplicação de banco de dados refere-se a um banco de dados em particular e aos programas associados que implementam as consultas e atualizações dele''. Com isso em mente, a modelagem do banco de dados se trata de uma fase indispensável do desenvolvimento de um produto. Ao se pensar em como será a estrutura de um banco e seus relacionamentos, é possível trazer à tona regras de negócios e comportamentos implícitos que poderiam não ser identificados ao não se passar por esse estágio antes do desenvolvimento do produto.
 
-A plataforma adota uma estratégia de persistência poliglota, utilizando dois bancos de dados com propósitos distintos e complementares: o PostgreSQL para dados relacionais — como usuários, contas vinculadas, metas financeiras, consentimentos e registros de auditoria — e o MongoDB para dados semi-estruturados de alto volume, como transações e histórico financeiro. Essa separação permite otimizar cada banco para seu caso de uso específico, garantindo desempenho, escalabilidade e conformidade com a Lei Geral de Proteção de Dados (LGPD).
+A plataforma adota uma estratégia de persistência poliglota, com dois bancos de dados de propósitos complementares: o PostgreSQL para dados relacionais, como titulares, identidades de canal, consentimentos, metas, assinaturas, custos, operação e registros de auditoria, e o MongoDB para dados semiestruturados de alto volume, como transações, saldos, faturas, investimentos, empréstimos e histórico de conversa. O Redis complementa os dois com dados efêmeros, como sessões, token de privilégio e estado de conversa. Essa separação permite otimizar cada banco para seu caso de uso, garantindo desempenho, escalabilidade e conformidade com a LGPD.
+
+Cada tabela e coleção pertence a um único serviço, e nenhum serviço consulta diretamente os dados de outro. O esquema relacional é mantido em 51 migrações SQL versionadas, aplicadas automaticamente a cada implantação e imutáveis depois de aplicadas. Em relação ao modelo do TCC~1, a principal mudança foi a identidade do usuário: o número de telefone deixou de ser um atributo de \texttt{users} e passou a ser uma identidade de canal, na tabela \texttt{user\_channels}, o que permite ao mesmo titular usar o \textit{WhatsApp}, o \textit{Telegram} e o painel \textit{web}.
 
 \section{Diagrama entidade relacionamento}
 
-Na Figura \ref{fig:der_postgres} é apresentado o Diagrama de Entidade Relacionamento do banco de dados relacional, com seus principais atributos e seus respectivos relacionamentos, com identificação de entidades fortes e fracas.
+A Figura \ref{fig:der_postgres} apresenta o Diagrama de Entidade Relacionamento do banco relacional, com as 38 tabelas agrupadas pelo serviço que é dono de cada uma e os respectivos relacionamentos. Quase todas as entidades dependem de \texttt{users}, o que reflete uma decisão de privacidade: a exclusão de um titular alcança todos os dados derivados, enquanto o registro de auditoria, que não possui chave estrangeira para \texttt{users}, guarda apenas referências e é mantido por obrigação legal.
 
 \begin{figure}[htbp]
     \centering
-    \caption{DER do sistema}
+    \caption{DER do sistema por serviço dono}
     \label{fig:der_postgres}
-    \includegraphics[width=\textwidth]{images/der_postgres.png}
+    \includegraphics[height=0.85\textheight]{images/der_postgres.png}
     \authorssource
 \end{figure}
 
@@ -20,19 +22,19 @@ Na Figura \ref{fig:der_postgres} é apresentado o Diagrama de Entidade Relaciona
 
 O Modelo Entidade-Relacionamento (MER) é empregado para representar os elementos do mundo real por meio de entidades, as quais possuem atributos que descrevem suas características, e relacionamentos que estabelecem conexões entre essas entidades (Elmasri; Navathe, 2011).
 
-Na Figura \ref{fig:mer_postgres} é apresentado o modelo de entidade relacionamento do banco de dados relacional com suas relações e atributos.
+Na Figura \ref{fig:mer_postgres} é apresentado o modelo entidade relacionamento do núcleo do banco relacional, com os atributos principais do titular, das identidades de canal, dos consentimentos, das metas, das assinaturas, dos custos e dos pedidos relacionados à LGPD. As colunas com sufixo \texttt{\_encrypted} são cifradas com \texttt{pgcrypto} antes da gravação, e as colunas com sufixo \texttt{\_hash} guardam um HMAC-SHA256 que permite a busca sem expor o valor original. As tabelas de operação, campanhas, resumos e avisos seguem o mesmo padrão e estão representadas no DER.
 
 \begin{figure}[htbp]
     \centering
-    \caption{MER do sistema — PostgreSQL}
+    \caption{MER do núcleo do sistema — PostgreSQL}
     \label{fig:mer_postgres}
-    \includegraphics[width=\textwidth]{images/mer_postgres.png}
+    \includegraphics[height=0.85\textheight]{images/mer_postgres.png}
     \authorssource
 \end{figure}
 
 \section{Modelo de dados orientado a documentos}
 
-O MongoDB é empregado para armazenar dados semi-estruturados de alto volume, como transações financeiras sincronizadas via Open Finance e o histórico de conversas dos usuários. A flexibilidade do modelo de documentos permite representar estruturas variáveis conforme o tipo de transação, sem a necessidade de migrações de esquema. Para garantir a conformidade com a LGPD, campos monetários e dados sensíveis são criptografados em nível de campo por meio de criptografia simétrica AES-256-GCM na camada de aplicação antes de serem persistidos.
+O MongoDB, gerenciado pelo MongoDB Atlas em Frankfurt, armazena os dados sincronizados via \textit{Open Finance} e o histórico de conversas dos usuários. A flexibilidade do modelo de documentos permite representar estruturas que variam conforme a instituição e o tipo de produto financeiro, sem a necessidade de migrações de esquema. Para garantir a conformidade com a LGPD, campos monetários e textuais sensíveis são cifrados com AES-256-GCM na camada de aplicação antes da persistência, com uma chave derivada para cada titular. Nos diagramas, esses campos estão indicados como cifrados.
 
 Na Figura \ref{fig:mongo} é apresentado o modelo de dados orientado a documentos utilizado no MongoDB.
 
@@ -44,12 +46,20 @@ Na Figura \ref{fig:mongo} é apresentado o modelo de dados orientado a documento
     \authorssource
 \end{figure}
 
-O banco de dados MongoDB é organizado em duas coleções principais, descritas a seguir.
+O banco de dados MongoDB é organizado em oito coleções, descritas a seguir.
 
 \subsection{Coleção \textit{transactions}}
 
-A coleção \texttt{transactions} armazena cada transação financeira sincronizada a partir das instituições conectadas via Open Finance (Pluggy). Cada documento registra informações como valor, data, categoria e instituição de origem, além de um identificador único da transação no Pluggy para evitar duplicidades em sincronizações subsequentes. Os campos sensíveis — descrição e valor monetário — são cifrados com AES-256-GCM na camada de aplicação antes da persistência, com os respectivos vetores de inicialização e \textit{authentication tags} armazenados junto ao documento.
+A coleção \texttt{transactions} armazena cada transação sincronizada a partir das instituições conectadas. O identificador da transação no agregador evita duplicidades em sincronizações subsequentes. Além da data, da categoria em dois níveis e da forma de pagamento, cada documento guarda a direção do dinheiro e a natureza do lançamento (consumo, movimentação entre contas, investimento, empréstimo, receita ou estorno), o que permite separar o que é gasto do que apenas mudou de lugar. O par de pernas de um mesmo evento, como o pagamento de uma fatura, é ligado por \texttt{paired\_transaction\_id}. A descrição e o valor são cifrados, e a busca por estabelecimento usa HMACs da marca e de cada palavra do nome, sem guardar o nome em claro.
+
+\subsection{Coleções de saldos, faturas, investimentos e empréstimos}
+
+A coleção \texttt{balance\_snapshots} fotografa, a cada sincronização, o saldo de cada conta e o limite de cada cartão, o que permite acompanhar a evolução do patrimônio. A coleção \texttt{card\_bills} guarda as faturas de cartão, com vencimento, fechamento, total e pagamentos. As coleções \texttt{investment\_positions} e \texttt{loan\_contracts} guardam a última leitura dos investimentos e empréstimos informados pelo banco, e \texttt{holding\_coverage} registra o que cada instituição informa ou não, pois a ausência de um dado nem sempre significa que ele não existe. Os valores dessas coleções também são cifrados.
 
 \subsection{Coleção \textit{conversation\_history}}
 
-A coleção \texttt{conversation\_history} persiste o histórico das conversas entre o usuário e o assistente financeiro, permitindo que o sistema retome o contexto em novas sessões. O array de mensagens é serializado e cifrado integralmente com AES-256-GCM. Um índice TTL (\textit{Time-to-Live}) de 90 dias garante a exclusão automática de históricos antigos em conformidade com o princípio de minimização de dados da LGPD.
+A coleção \texttt{conversation\_history} persiste o histórico das conversas entre o usuário e o assistente, separado por canal e por sessão, o que permite retomar o contexto e responder a uma mensagem citada. Cada mensagem é cifrada com AES-256-GCM, e os segredos digitados na conversa, como PIN e CPF, são substituídos por um marcador antes da gravação. Um índice TTL (\textit{Time-to-Live}) de 90 dias exclui automaticamente os históricos antigos, em conformidade com o princípio de minimização de dados da LGPD.
+
+\subsection{Coleção \textit{predictions}}
+
+A coleção \texttt{predictions} guarda as projeções de gasto calculadas pelo \textit{Analytics Service}, com o método utilizado, o período e o resultado cifrado, incluindo a abstenção quando nenhum método é aprovado no teste retrospectivo. Os documentos expiram automaticamente.

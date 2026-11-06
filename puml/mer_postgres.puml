@@ -1,0 +1,195 @@
+@startuml mer_postgres
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam dpi 150
+skinparam linetype polyline
+left to right direction
+skinparam nodesep 30
+skinparam ranksep 40
+hide circle
+hide methods
+skinparam class {
+    BackgroundColor #FFFFFF
+    BorderColor #2F5F8A
+    HeaderBackgroundColor #2F6B9A
+    HeaderFontColor #FFFFFF
+    FontSize 11
+    AttributeFontSize 10
+}
+
+entity users {
+    * id : UUID <<PK>>
+    --
+    name_encrypted : BYTEA
+    cpf_encrypted : BYTEA
+    cpf_hash : TEXT
+    email_encrypted : BYTEA
+    pin_hash : VARCHAR(60)
+    onboarding_step : ENUM
+    plan : ENUM
+    preferences : JSONB
+    timezone : TEXT
+    privacy_accepted_at : TIMESTAMPTZ
+    created_at : TIMESTAMPTZ
+    deleted_at : TIMESTAMPTZ
+}
+
+entity user_channels {
+    * id : UUID <<PK>>
+    --
+    user_id : UUID <<FK>>
+    channel : ENUM
+    external_id_encrypted : BYTEA
+    external_id_hash : VARCHAR(64)
+    is_preferred : BOOLEAN
+    linked_at : TIMESTAMPTZ
+    unlinked_at : TIMESTAMPTZ
+}
+
+entity consents {
+    * id : UUID <<PK>>
+    --
+    user_id : UUID <<FK>>
+    provider : VARCHAR(50)
+    provider_connection_id : VARCHAR(100)
+    institution_name : VARCHAR(200)
+    scope : VARCHAR(50)[]
+    status : ENUM
+    chosen_period_months : SMALLINT
+    granted_at : TIMESTAMPTZ
+    expires_at : TIMESTAMPTZ
+    revoked_at : TIMESTAMPTZ
+    revocation_reason : ENUM
+}
+
+entity financial_goals {
+    * id : UUID <<PK>>
+    --
+    user_id : UUID <<FK>>
+    kind : ENUM
+    period : ENUM
+    name_encrypted : BYTEA
+    scope_encrypted : BYTEA
+    target_amount_encrypted : BYTEA
+    deadline : DATE
+    status : ENUM
+    completed_at : TIMESTAMPTZ
+}
+
+entity saved_amount_entries {
+    * id : UUID <<PK>>
+    --
+    goal_id : UUID <<FK>>
+    user_id : UUID <<FK>>
+    amount_encrypted : BYTEA
+    created_at : TIMESTAMPTZ
+}
+
+entity subscriptions {
+    * id : UUID <<PK>>
+    --
+    user_id : UUID <<FK>>
+    plan : ENUM
+    cycle : ENUM
+    status : ENUM
+    provider : VARCHAR(50)
+    provider_subscription_id : VARCHAR(200)
+    price_cents : INTEGER
+    current_period_end : TIMESTAMPTZ
+    cancelled_at : TIMESTAMPTZ
+}
+
+entity billing_events {
+    * id : UUID <<PK>>
+    --
+    subscription_id : UUID <<FK>>
+    user_id : UUID <<FK>>
+    provider_event_id : VARCHAR(200)
+    event_type : VARCHAR(50)
+    amount_cents : INTEGER
+    status : VARCHAR(30)
+    processed_at : TIMESTAMPTZ
+}
+
+entity usage_costs {
+    * id : UUID <<PK>>
+    --
+    user_id : UUID <<FK>>
+    usage_key : VARCHAR(200)
+    source : VARCHAR(40)
+    meter : VARCHAR(80)
+    quantity : BIGINT
+    price_id : UUID <<FK>>
+    amount_brl : NUMERIC
+    occurred_at : TIMESTAMPTZ
+}
+
+entity usage_prices {
+    * id : UUID <<PK>>
+    --
+    source : VARCHAR(40)
+    meter_pattern : VARCHAR(80)
+    unit : VARCHAR(30)
+    unit_price : NUMERIC
+    currency : CHAR(3)
+    valid_from : DATE
+    tier_from : BIGINT
+}
+
+entity audit_logs {
+    * id : BIGSERIAL <<PK>>
+    --
+    user_id : UUID
+    service_name : VARCHAR(50)
+    operation_type : VARCHAR(50)
+    resource_type : VARCHAR(50)
+    details : JSONB
+    timestamp : TIMESTAMPTZ
+    previous_hash : VARCHAR(64)
+    record_hash : VARCHAR(64)
+}
+
+entity data_deletion_requests {
+    * id : UUID <<PK>>
+    --
+    user_id : UUID <<FK>>
+    status : ENUM
+    requested_at : TIMESTAMPTZ
+    attempts : INTEGER
+    delivered_channel : ENUM
+    completed_at : TIMESTAMPTZ
+}
+
+entity user_data_exports {
+    * id : UUID <<PK>>
+    --
+    user_id : UUID <<FK>>
+    format : ENUM
+    status : ENUM
+    delivered_channel : ENUM
+    delivered_at : TIMESTAMPTZ
+}
+
+entity holder_feedback {
+    * id : UUID <<PK>>
+    --
+    user_id : UUID <<FK>>
+    channel : TEXT
+    rating : SMALLINT
+    comment_encrypted : BYTEA
+    created_at : TIMESTAMPTZ
+}
+
+users ||--o{ user_channels
+users ||--o{ consents
+users ||--o{ financial_goals
+financial_goals ||--o{ saved_amount_entries
+users ||--o{ subscriptions
+subscriptions ||--o{ billing_events
+usage_prices ||--o{ usage_costs
+users ||---o{ usage_costs
+users ||---o{ data_deletion_requests
+users ||---o{ user_data_exports
+users ||---o{ holder_feedback
+users .. audit_logs : referência sem FK
+@enduml

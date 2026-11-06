@@ -2,21 +2,25 @@
 left to right direction
 skinparam packageStyle rectangle
 skinparam actorStyle awesome
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam dpi 150
 
 actor "Usuário" as U
 actor "Pluggy\n(Open Finance)" as PL
 actor "OpenAI\n(LLM)" as AI
 
 rectangle "Acesso e Consulta Financeira" {
-    usecase "Realizar cadastro\nvia WhatsApp" as UC01
+    usecase "Realizar cadastro\npela conversa" as UC01
     usecase "Vincular conta\nao Open Finance" as UC02
-    usecase "Autenticar via\nsenha de 6 dígitos" as UC03
+    usecase "Autenticar via\nPIN de 6 dígitos" as UC03
     usecase "Consultar saldo\ne extrato" as UC04
     usecase "Consultar histórico\nde transações" as UC05
     usecase "Consultar resumo\nfinanceiro" as UC06
     usecase "Receber resposta\nem linguagem natural" as UC07
     usecase "Visualizar gráfico\nde gastos" as UC08
-    usecase "Obter token\nde privilégio (1h)" as UC09
+    usecase "Obter token\nde privilégio (8h)" as UC09
+    usecase "Acessar o painel\ndo titular" as UC28
 }
 
 U --> UC01
@@ -25,6 +29,7 @@ U --> UC03
 U --> UC04
 U --> UC05
 U --> UC06
+U --> UC28
 
 UC04 ..> UC03 : <<include>>
 UC05 ..> UC03 : <<include>>
@@ -38,25 +43,31 @@ UC06 ..> UC08 : <<extend>>
 UC03 ..> UC09 : <<include>>
 
 UC02 --> PL
-UC04 --> PL : sincroniza dados
-UC07 --> AI : gera resposta
+UC07 --> AI : planeja e redige
 
 note right of UC09
-  Token com TTL de 1h.
-  Expirado: valores monetários
-  são mascarados (R$ •••••)
+  Token de 8h, ajustável de 1 a 24h.
+  Sem token: valores mascarados
+  (R$ •••••) na conversa,
+  nas imagens e no painel.
 end note
 
 note right of UC03
-  Senha de 6 dígitos definida
-  no cadastro, armazenada como
-  bcrypt (salt rounds: 12) no PostgreSQL.
-  Lockout após 5 falhas (30 min).
+  PIN armazenado com bcrypt
+  (12 salt rounds) no PostgreSQL.
+  Bloqueio de 30 min
+  após 5 falhas.
 end note
 
 note right of UC01
-  Onboarding inclui criação
-  da senha de 6 dígitos
-  e confirmação.
+  WhatsApp, Telegram ou Mini App:
+  aceite dos termos, nome, CPF,
+  e-mail e PIN.
+end note
+
+note right of UC28
+  Entrada por código enviado
+  ao WhatsApp ou por link
+  de uso único da conversa.
 end note
 @enduml

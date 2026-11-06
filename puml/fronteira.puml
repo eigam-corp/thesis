@@ -1,100 +1,134 @@
 @startuml Diagrama de Fronteira Sistemica
 skinparam packageStyle rectangle
 skinparam actorStyle awesome
-skinparam linetype ortho
-skinparam nodesep 50
-skinparam ranksep 60
-skinparam defaultFontSize 11
+skinparam linetype polyline
+skinparam nodesep 40
+skinparam ranksep 70
+skinparam defaultFontSize 12
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam ArrowColor #555555
+skinparam dpi 150
 
 skinparam rectangle {
     BorderColor #333333
     BorderThickness 2
     FontStyle bold
-    FontSize 13
+    FontSize 14
 }
 
 skinparam package {
     BorderColor #888888
     BorderThickness 1
-    FontSize 11
+    FontSize 12
 }
 
 skinparam component {
     BackgroundColor #F5F5F5
     BorderColor #666666
-    FontSize 10
-}
-
-skinparam actor {
     FontSize 11
 }
 
-' ── Atores ───────────────────────────────────────────────
-
-actor "Usuário" as USR
-
-' ── Integrações externas ──────────────────────────────────
-
-package "Meta / WhatsApp" #FDECEA {
-    component "WhatsApp\nCloud API" as WA
+skinparam database {
+    BackgroundColor #F5F5F5
+    BorderColor #666666
+    FontSize 11
 }
 
-package "Open Finance (BCB)" #E8F5E9 {
+actor "Titular" as USR
+actor "Equipe de\noperação" as OPS
+
+package "Mensageria" #FDECEA {
+    component "WhatsApp\nCloud API (Meta)" as WA
+    component "Telegram\nBot API" as TG
+}
+
+package "Open Finance" #E8F5E9 {
     component "Pluggy" as PLUGGY
 }
 
-package "OpenAI" #EDE7F6 {
-    component "LLM + Embeddings" as AI
+package "Inteligência artificial" #EDE7F6 {
+    component "OpenAI\n(LLM e transcrição)" as AI
+    component "TypeSafe\n(juízo tipado)" as JEV
 }
 
-' ── Fronteira do sistema ──────────────────────────────────
+package "Pagamentos" #FFF8E1 {
+    component "Stripe" as STRIPE
+}
 
-rectangle "  Plataforma de Inteligência Financeira  " as SYS #FFFFFF {
+package "Borda" #E3F2FD {
+    component "Cloudflare\n(proxy, túnel, Access)" as CF
+}
 
-    package "Entrada" {
+rectangle "  EIGAM  " as SYS #FFFFFF {
+
+    package "Entrada e painéis" {
         component "API Gateway" as GW
+        component "Painel do titular" as HP
+        component "Painel de operação" as AP
     }
 
-    package "Domínio" {
+    package "Conversa e IA" {
         component "Chat Service" as CS
+        component "AI Service" as AIS
+        component "Identity Service" as IDS
+    }
+
+    package "Finanças" {
         component "Finance Service" as FS
+        component "Analytics Service" as ANS
+    }
+
+    package "Comunicação e plataforma" {
         component "Notification Service" as NS
+        component "Render Service" as RS
         component "Outbound Worker" as OW
+        component "Billing Service" as BS
         component "Audit Service" as AUD
     }
 
     package "Dados" {
-        component "PostgreSQL" as PG
-        component "MongoDB" as MG
-        component "Redis" as RD
-        component "Kafka" as KF
+        queue "Redpanda\n(API Kafka)" as KF
+        database "PostgreSQL\n(pgvector, pgcrypto)" as PG
+        database "MongoDB" as MG
+        database "Redis" as RD
     }
 
     GW --> KF
     KF --> CS
-    KF --> FS
     KF --> NS
     KF --> OW
+    KF --> BS
     KF --> AUD
+    KF --> ANS
+    CS --> AIS
+    CS --> IDS
+    CS --> FS
     CS --> RD
-    CS --> PG
-    CS --> MG
-    FS --> PG
+    NS --> RS
     FS --> MG
-    NS --> RD
-    AUD --> PG
+    FS --> PG
+    IDS --> PG
+    HP --> IDS
+    AP --> CS
 }
 
-' ── Conexões externas ────────────────────────────────────
-
 USR --> WA : mensagem
-WA --> GW : webhook\n(TLS + HMAC)
+USR --> TG : mensagem
+USR --> CF : navegador
+OPS --> CF : navegador
+CF --> GW
+CF --> HP
+CF --> AP
+WA --> GW : webhook (HMAC)
+TG --> GW : webhook (segredo)
 OW --> WA : resposta
-
-FS --> PLUGGY : sync transações
-PLUGGY --> GW : webhook item_id
-
-CS --> AI : prompt + query
-FS --> AI : embeddings
+OW --> TG : resposta
+FS --> PLUGGY : sincronização
+PLUGGY --> GW : webhook
+AIS --> AI : planejamento e redação
+AIS --> JEV : guardrails
+BS --> STRIPE : assinaturas
+STRIPE --> GW : webhook
 
 @enduml

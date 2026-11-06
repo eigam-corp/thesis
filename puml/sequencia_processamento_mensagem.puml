@@ -1,0 +1,41 @@
+@startuml processamento_mensagem
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam dpi 150
+skinparam sequenceMessageAlign center
+hide footbox
+
+actor "Titular" as U
+participant "Mensageiro\n(Meta ou Telegram)" as CH
+participant "API Gateway" as GW
+queue "Redpanda" as KF
+participant "Chat Service" as CS
+participant "Identity\nService" as ID
+participant "AI Service" as AI
+participant "Finance\nService" as FS
+participant "Outbound\nWorker" as OW
+
+U -> CH : "quanto gastei no mercado este mês?"
+CH -> GW : webhook
+GW -> GW : valida HMAC e deduplica
+GW -> KF : produz evento cifrado
+GW --> CH : 200 OK (milissegundos)
+KF -> CS : messages.inbound
+CS -> KF : indicador de digitação
+CS -> CS : comandos da LGPD e regras\ndeterminísticas (regex)
+CS -> ID : titular e passo do cadastro
+ID --> CS : estado do titular
+CS -> AI : POST /tools/plan/v2 (frase sem CPF, PIN ou e-mail)
+AI --> CS : plano: query_financial_data(período, categoria)
+CS -> CS : valida o plano, vincula o user_id\ne verifica o token de privilégio
+CS -> FS : consulta financeira
+FS --> CS : fatos (valores em centavos)
+CS -> AI : POST /answer (fatos estruturados)
+AI -> AI : guardrails de saída
+AI --> CS : resposta
+CS -> CS : mascaramento por regex\n(sem token: R$ •••••)
+CS -> KF : messages.outbound (um evento)
+KF -> OW : consome
+OW -> CH : envia uma mensagem
+CH -> U : resposta com texto e imagem
+@enduml

@@ -2,6 +2,9 @@
 left to right direction
 skinparam packageStyle rectangle
 skinparam actorStyle awesome
+skinparam defaultFontName Arial
+skinparam shadowing false
+skinparam dpi 150
 
 actor "Usuário" as U
 actor "Sistema\n(Scheduler)" as SYS
@@ -9,13 +12,13 @@ actor "Pluggy\n(Open Finance)" as PL
 
 rectangle "Análise Preditiva e Alertas" {
     usecase "Receber alerta\nde gasto atípico" as UC10
-    usecase "Receber alerta\nde saldo baixo" as UC11
-    usecase "Receber alerta\nde vencimento" as UC12
-    usecase "Consultar projeção\nde gastos futuros" as UC13
+    usecase "Receber alerta\nde limite de gasto" as UC11
+    usecase "Consultar pagamentos\nrecorrentes" as UC12
+    usecase "Consultar projeção\nde gastos do mês" as UC13
     usecase "Detectar transações\nrecorrentes" as UC14
-    usecase "Classificar\ntransações por categoria" as UC15
+    usecase "Categorizar\ntransações" as UC15
     usecase "Sincronizar\ntransações automaticamente" as UC16
-    usecase "Receber alerta\nde progresso de meta" as UC17
+    usecase "Receber alerta de\ncobrança duplicada" as UC17
 }
 
 U --> UC10
@@ -25,27 +28,29 @@ U --> UC13
 U --> UC17
 
 SYS --> UC16
-SYS --> UC10 : dispara se desvio > 2σ
-SYS --> UC11 : dispara se projeção\nnegativa em 7 dias
-SYS --> UC12 : dispara por recorrência\nidentificada
+SYS --> UC10 : escore-z robusto ≥ 3,5\nou aumento por categoria
+SYS --> UC11 : 80%, 100% ou\nrisco de estouro
+SYS --> UC17 : mesmo valor e\nestabelecimento
 
-UC16 --> PL : busca a cada 6h
+UC16 --> PL : varredura a cada 6h
 UC16 ..> UC15 : <<include>>
 UC16 ..> UC14 : <<include>>
+UC12 ..> UC14 : <<include>>
 UC13 ..> UC16 : <<include>>
 
 UC10 ..> UC16 : <<include>>
 UC11 ..> UC16 : <<include>>
+UC17 ..> UC16 : <<include>>
 
 note bottom of UC15
-  Classificação automática
-  via regras MCC + LLM
-  para casos ambíguos.
+  Taxonomia do conector:
+  95 categorias em 17 grupos,
+  sem modelo de linguagem.
 end note
 
-note bottom of UC16
-  Job BullMQ agendado a cada 6h
-  por usuário com consentimento ativo.
-  Máx. 500 transações por sync.
+note bottom of UC13
+  Método escolhido por teste
+  retrospectivo; sem aprovação,
+  o sistema se abstém.
 end note
 @enduml
