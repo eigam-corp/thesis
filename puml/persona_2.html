@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: 'Bricolage Eigam'; src: url('BricolageGrotesque-latin.woff2') format('woff2'); font-weight: 200 800; font-stretch: 75% 100%; }
+  @font-face { font-family: 'Inter Eigam'; src: url('Inter-Variable.woff') format('woff'); font-weight: 100 900; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { width: 1760px; height: 845px; background: #f6f8f1; font-family: 'Inter Eigam', sans-serif; color: #203825; padding: 24px; }
+  .card { background: #ffffff; border: 1px solid #e3e8e0; border-radius: 16px; box-shadow: 0 1px 2px rgb(32 56 37 / 0.06); height: 100%; padding: 38px 44px; display: flex; flex-direction: column; }
+  h1 { font-family: 'Bricolage Eigam', sans-serif; font-size: 64px; font-weight: 700; color: #203825; line-height: 1.05; }
+  h1 .mark { background: linear-gradient(transparent 62%, #dcfb67 62%); padding: 0 4px; }
+  .tag { font-size: 24px; color: #4d6051; margin-top: 8px; margin-bottom: 20px; }
+  .meta { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 26px; }
+  .meta .cell { background: #f6f8f1; border: 1px solid #e3e8e0; border-radius: 12px; padding: 14px 18px; }
+  .meta .k { font-size: 16px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: #67786b; margin-bottom: 5px; }
+  .meta .v { font-size: 22px; font-weight: 600; color: #203825; line-height: 1.25; }
+  .main { display: grid; grid-template-columns: 1fr 1fr 1fr 340px; gap: 34px; flex: 1; align-items: stretch; }
+  h2 { font-family: 'Bricolage Eigam', sans-serif; font-size: 28px; font-weight: 700; color: #203825; padding-bottom: 7px; margin-bottom: 13px; border-bottom: 3px solid #dcfb67; display: inline-block; }
+  p { font-size: 22px; line-height: 1.6; text-align: justify; color: #203825; }
+  .side { display: flex; flex-direction: column; gap: 16px; }
+  .photo { width: 340px; height: 330px; border-radius: 16px; border: 1px solid #e3e8e0; overflow: hidden; flex: 0 0 auto; }
+  .photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .quote { flex: 1; background: #eefbb8; border: 1px solid #203825; border-radius: 16px; padding: 18px 20px; display: flex; align-items: center; }
+  .quote p { font-size: 21px; line-height: 1.5; font-style: italic; font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="card">
+  <h1><span class="mark">Márcio Júnior</span></h1>
+  <div class="tag">Persona 2 — núcleo jovem: o estagiário que começa a ganhar o próprio dinheiro</div>
+  <div class="meta">
+    <div class="cell"><div class="k">Ocupa&ccedil;&atilde;o</div><div class="v">Estagiário administrativo</div></div>
+    <div class="cell"><div class="k">Localiza&ccedil;&atilde;o</div><div class="v">Ribeirão Preto, SP</div></div>
+    <div class="cell"><div class="k">Idade</div><div class="v">19 anos</div></div>
+    <div class="cell"><div class="k">Estado civil</div><div class="v">Solteiro, sem filhos</div></div>
+    <div class="cell"><div class="k">Educa&ccedil;&atilde;o</div><div class="v">Ensino médio completo</div></div>
+  </div>
+  <div class="main">
+    <div><h2>Biografia</h2><p>Márcio está começando sua vida financeira de forma mais independente. Recebe uma bolsa de estágio, faz pequenos trabalhos extras e utiliza bastante o WhatsApp no dia a dia. Ele tem conta em banco digital, usa cartão de crédito e faz pagamentos por Pix com frequência, mas ainda não possui muito controle sobre seus gastos mensais.</p></div>
+    <div><h2>Desafios</h2><p>Márcio costuma gastar sem perceber, principalmente com delivery, transporte por aplicativo, lazer e assinaturas digitais. Ele tem dificuldade em visualizar para onde o dinheiro está indo e muitas vezes só percebe que passou dos limites quando a fatura do cartão fecha.</p></div>
+    <div><h2>Necessidades</h2><p>Márcio precisa de uma solução simples, rápida e acessível pelo WhatsApp, que mostre seus gastos de forma clara, envie alertas antes de ele ultrapassar os limites e o ajude a estabelecer metas financeiras pequenas, como guardar dinheiro para uma viagem, um curso ou uma compra importante.</p></div>
+    <div class="side"><div class="photo"><img src="foto_2.png" alt=""></div><div class="quote"><p>“Só percebo que passei do limite quando a fatura do cartão fecha.”</p></div></div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+* { margin:0; padding:0; box-sizing:content-box; }
+:root { --pt: 1px; }
+body { width:393px; }
+.tela { position:relative; width:393px; height:760px; overflow:hidden; display:flex; flex-direction:column;
+  background:#F5F2EB url(whatsapp/wallpaper.jpg) 0 0/432px 784.8px;
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,system-ui,sans-serif; color:#0A0A0A; -webkit-font-smoothing:antialiased; }
+.tela img { display:block; flex:none; }
+.topo { position:relative; flex:none; height:98px; background:rgba(245,242,235,.8); box-shadow:0 .33px 0 rgba(0,0,0,.15); white-space:nowrap; }
+.topo>* { position:absolute; }
+.relogio { left:41.5px; top:19.5px; width:54px; line-height:20px; text-align:center; font-size:17px; font-weight:600; letter-spacing:-.6px; }
+.sinais { left:283.3px; top:22.7px; width:79px; height:14px; }
+.voltar { left:0; top:60px; width:32px; height:32px; }
+.avatar { left:61px; top:58px; width:36px; height:36px; border-radius:50%; }
+.nome { left:107px; top:59.8px; font-size:16px; line-height:19px; font-weight:600; letter-spacing:-.02em; }
+.status { left:107px; top:78.3px; font-size:12px; line-height:14px; letter-spacing:-.01em; color:rgba(0,0,0,.5); }
+.video { left:291px; top:59px; width:32px; height:32px; }
+.ligar { left:339px; top:59px; width:32px; height:32px; }
+.mensagens { flex:1; min-height:0; overflow:hidden; display:flex; flex-direction:column; gap:12px; padding:0 16px 9px; }
+.data { align-self:center; margin-top:23px; min-width:100px; height:20px; box-sizing:border-box; padding:0 14px; display:flex; align-items:center; justify-content:center; border-radius:8px; background:#FFFFFF; box-shadow:0 0 0 .66px rgba(0,0,0,.06); font-size:12px; font-weight:600; }
+.msg { position:relative; max-width:287px; box-sizing:border-box; padding:5.5px 10px 6.5px; border-radius:12px; box-shadow:0 0 0 .66px rgba(0,0,0,.06); font-size:15.8px; line-height:21px; letter-spacing:-.013em; overflow-wrap:break-word; }
+.msg p { margin:0; }
+.msg p+p { margin-top:6px; }
+.msg strong { font-weight:600; }
+.eu { align-self:flex-end; background:#D0FECF; }
+.ele { align-self:flex-start; background:#FFFFFF; }
+.msg::after { content:""; position:absolute; bottom:-1px; width:15px; height:19px; background:no-repeat 0 0/100% 100%; }
+.eu::after { right:-7.5px; background-image:url(whatsapp/ios-tail-me.svg); }
+.ele::after { left:-7.5px; background-image:url(whatsapp/ios-tail-them.svg); }
+.msg p:last-of-type::after { content:""; display:inline-block; width:43px; }
+.eu p:last-of-type::after { width:60px; }
+.hora { position:absolute; right:8px; bottom:3px; display:flex; align-items:center; gap:2px; font-size:11px; line-height:13px; letter-spacing:.05em; color:rgba(0,0,0,.5); font-variant-numeric:tabular-nums; white-space:nowrap; }
+.hora img { width:17px; height:17px; }
+.chip { align-self:flex-start; width:287px; box-sizing:border-box; margin-top:-8px; padding:9px 10px; border-radius:12px; background:#FFFFFF; box-shadow:0 0 0 .66px rgba(0,0,0,.06); text-align:center; font-size:15px; font-weight:600; color:#1f6b2c; }
+.cartao { width:240px; border-radius:8px; overflow:hidden; margin-bottom:4px; }
+.doc { display:flex; align-items:center; gap:9px; padding:4px 2px 2px; }
+.doc .ic { width:38px; height:46px; border-radius:6px; background:#eefbb8; border:1px solid #20382533; display:flex; align-items:center; justify-content:center; font-size:10.5px; font-weight:700; color:#203825; }
+.doc .nm { font-size:14.5px; line-height:19px; font-weight:600; }
+.doc .sz { font-size:12px; color:rgba(0,0,0,.5); }
+.composer { flex:none; display:flex; align-items:flex-end; gap:8px; padding:5.5px 9px 24.5px 7px; background:rgba(245,242,235,.8); box-shadow:0 -.33px 0 rgba(0,0,0,.15); }
+.composer>img, .acoes img { width:32px; height:32px; }
+.campo { flex:1; min-width:0; min-height:29px; margin:1.5px 0; box-sizing:border-box; padding:3px 9px 2px 10px; display:flex; justify-content:flex-end; align-items:flex-end; border-radius:15px; background:#FFFFFF; box-shadow:inset 0 0 0 .33px #B2B2B2; }
+.campo img { width:24px; height:24px; margin-bottom:.5px; }
+.acoes { flex:none; width:77px; display:flex; justify-content:flex-end; gap:7px; }
+.home { position:absolute; left:50%; bottom:8px; width:140px; height:5px; margin-left:-70px; border-radius:2.5px; background:#0A0A0A; }
+
+@font-face { font-family:'Inter'; src:url('Inter-Variable.woff') format('woff'); font-weight:100 900; }
+.mensagens { position:relative; display:block; padding:0; gap:0; }
+.fio { position:absolute; left:0; right:0; top:0; display:flex; flex-direction:column; gap:12px; padding:0 16px 10px; }
+.msg p:last-of-type::after { content:none; }
+.msg .corpo { position:relative; }
+.msg .corpo > * + * { margin-top:7px; }
+.msg .q { border-left:3px solid rgba(0,0,0,.16); padding-left:8px; color:rgba(0,0,0,.66); }
+.msg .esc { font-size:13px; line-height:17px; color:rgba(0,0,0,.48); }
+.msg .lk { color:#027eb5; }
+.sp { display:inline-block; width:43px; height:1px; }
+.eu .sp { width:60px; }
+.msg .hora { right:-2px; bottom:-3.5px; }
+.largo { width:287px; }
+.acao { margin:7px -10px -6.5px; border-top:.66px solid rgba(0,0,0,.1); padding:9px 10px 10px; display:flex; align-items:center; justify-content:center; gap:7px; font-size:15px; font-weight:600; color:#1f6b2c; }
+.acao svg { flex:none; }
+.midia { width:287px; padding:3px 3px 6.5px; }
+.midia .foto { display:block; width:281px; border-radius:9px; }
+.midia .corpo { padding:6px 7px 0; }
+.midia .hora { right:5px; bottom:-3.5px; }
+.docbox { display:flex; align-items:center; gap:10px; background:rgba(0,0,0,.045); border-radius:9px; padding:10px 10px; }
+.docbox .ic { flex:none; width:30px; height:38px; border-radius:4px; display:flex; align-items:flex-end; justify-content:center; padding-bottom:5px; box-sizing:border-box; font-size:8.5px; font-weight:800; color:#fff; letter-spacing:.02em; }
+.docbox .pdf { background:#e5252a; }
+.docbox .json { background:#7b8794; }
+.docbox .nm { font-size:13.5px; line-height:17px; font-weight:600; word-break:normal; overflow-wrap:anywhere; }
+.docbox .sz { font-size:12px; line-height:15px; color:rgba(0,0,0,.5); margin-top:2px; }
+.rodape { font-size:13px; line-height:17px; color:rgba(0,0,0,.45); }
+.chip { width:287px; display:flex; align-items:center; justify-content:center; gap:7px; }
+.backdrop { position:absolute; inset:0; background:rgba(0,0,0,.42); z-index:5; }
+.folha { position:absolute; left:0; right:0; bottom:0; z-index:6; border-radius:14px 14px 0 0; overflow:hidden; background:#fff; }
+.folha img { display:block; width:393px; }
+</style></head><body><div class="tela"><div class="topo"><span class="relogio">20:22</span><img class="sinais" src="whatsapp/ios-status-icons.svg" width="79" height="14"><img class="voltar" src="whatsapp/ios-chevron-left.svg" width="32" height="32"><img class="avatar" src="whatsapp/eigam-avatar.png" width="64" height="64"><strong class="nome">Eigam</strong><span class="status">online</span><img class="video" src="whatsapp/ios-video.svg" width="32" height="32"><img class="ligar" src="whatsapp/ios-phone.svg" width="32" height="32"></div><div class="mensagens"><div class="fio" data-top=""><span class="data" data-i="0">Hoje</span><div class="msg eu" data-i="1"><div class="corpo"><p>Oi<span class="sp"></span></p><span class="hora">20:20<img src="whatsapp/ios-check-read.svg" width="17" height="17"></span></div></div><div class="msg ele largo" data-i="2"><div class="corpo"><p>Oi! Eu sou o Eigam, o seu assistente financeiro.<br>Você me pergunta sobre o seu dinheiro por aqui mesmo, sem aplicativo e sem site.</p><p>Pode perguntar à vontade: eu respondo com uma conta de exemplo, sem conectar banco nenhum.</p><p>Para usar os seus dados de verdade, preciso do seu aceite à Política de Privacidade e aos Termos de Uso.</p><p>Política de Privacidade: <span class="lk">https://eigam.com.br/privacidade</span><br>Termos de Uso: <span class="lk">https://eigam.com.br/termos</span></p><p>Toque em <strong>Aceito</strong>, ou responda <strong>aceito</strong>.<span class="sp"></span></p><span class="hora">20:20</span></div></div><div class="chip">Aceito</div><div class="chip">Agora não</div><div class="chip">Já tenho conta</div><div class="msg eu" data-i="3"><div class="corpo"><p>Aceito<span class="sp"></span></p><span class="hora">20:20<img src="whatsapp/ios-check-read.svg" width="17" height="17"></span></div></div><div class="msg ele" data-i="4"><div class="corpo"><p>Para começar, como você quer que eu te chame?</p><div class="q">Pode ser só o primeiro nome, ou um apelido.<span class="sp"></span></div><span class="hora">20:20</span></div></div><div class="msg eu" data-i="5"><div class="corpo"><p>Bia<span class="sp"></span></p><span class="hora">20:20<img src="whatsapp/ios-check-read.svg" width="17" height="17"></span></div></div><div class="msg ele" data-i="6"><div class="corpo"><p>Prazer, Bia!</p><p>Me pergunte qualquer coisa sobre dinheiro que eu respondo na hora.</p><p>Três perguntas para começar, e as duas últimas eu respondo com um gráfico:</p><p>• Quanto gastei esse mês?<br>• Quanto gastei por categoria?<br>• Quanto gastei mês a mês?</p><div class="q">Os números são de uma conta de exemplo. Conectar um banco traz os seus.<span class="sp"></span></div><span class="hora">20:20</span></div></div><div class="msg eu" data-i="7"><div class="corpo"><p>Quanto gaste esse mês<span class="sp"></span></p><span class="hora">20:21<img src="whatsapp/ios-check-read.svg" width="17" height="17"></span></div></div><div class="msg ele" data-i="8"><div class="corpo"><p>Entendi, Bia.</p><p>💰 <strong>Gasto em novembro</strong>: <strong>R$ 3.136,60</strong><br>🧾 <strong>Transações</strong>: <strong>17</strong><br>📊 <strong>Média por transação</strong>: <strong>R$ 184,51</strong></p><div class="q">Esses números são de uma conta de demonstração; conecte um banco para ver os seus.</div><p>Quer ver outubro?</p><p class="esc">Novembro · todos os bancos · gastos<span class="sp"></span></p><span class="hora">20:21</span></div></div><div class="msg eu" data-i="9"><div class="corpo"><p>Conectar banco<span class="sp"></span></p><span class="hora">20:21<img src="whatsapp/ios-check-read.svg" width="17" height="17"></span></div></div><div class="msg ele largo" data-i="10"><div class="corpo"><p>Qual banco você quer conectar?</p><div class="q">Se o seu não estiver na lista, toque em Outro banco.<span class="sp"></span></div><span class="hora">20:21</span></div><div class="acao"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#1f6b2c" stroke-width="2.2" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><circle cx="3.5" cy="6" r="1.2" fill="#1f6b2c"/><circle cx="3.5" cy="12" r="1.2" fill="#1f6b2c"/><circle cx="3.5" cy="18" r="1.2" fill="#1f6b2c"/></svg>Escolher</div></div><div class="msg eu" data-i="11"><div class="corpo"><p>Nubank<span class="sp"></span></p><span class="hora">20:21<img src="whatsapp/ios-check-read.svg" width="17" height="17"></span></div></div><div class="msg ele largo" data-i="12"><div class="corpo"><p>Para conectar o <strong>Nubank</strong>, preciso primeiro do seu cadastro.</p><p>🪪 <strong>Falta</strong>: CPF, e-mail e um PIN<br>🏛️ <strong>Por quê</strong>: o banco confirma a conexão pelo seu CPF</p><div class="q">Leva um minuto. No fim, eu já te deixo o botão para conectar o Nubank.<span class="sp"></span></div><span class="hora">20:21</span></div></div><div class="chip">Criar minha conta</div><div class="msg eu" data-i="13"><div class="corpo"><p>Criar minha conta<span class="sp"></span></p><span class="hora">20:21<img src="whatsapp/ios-check-read.svg" width="17" height="17"></span></div></div><div class="msg ele" data-i="14"><div class="corpo"><p>Vamos criar a sua conta. Primeiro, o seu CPF.</p><div class="q">São 11 dígitos, com ou sem pontuação. O banco confirma a conexão por ele.<span class="sp"></span></div><span class="hora">20:21</span></div></div><div class="msg eu" data-i="15"><div class="corpo"><p>•••.•••.•••-••<span class="sp"></span></p><span class="hora">20:21<img src="whatsapp/ios-check-read.svg" width="17" height="17"></span></div></div><div class="msg ele" data-i="16"><div class="corpo"><p>CPF anotado. Agora o seu e-mail.</p><div class="q">Uso só para o recibo, se um dia você assinar o Pro. Não mando newsletter nem propaganda.<span class="sp"></span></div><span class="hora">20:21</span></div></div><div class="msg eu" data-i="17"><div class="corpo"><p>bia@exemplo.com<span class="sp"></span></p><span class="hora">20:21<img src="whatsapp/ios-check-read.svg" width="17" height="17"></span></div></div><div class="msg ele" data-i="18"><div class="corpo"><p>E-mail anotado. Por último, crie um PIN de 6 dígitos.</p><div class="q">Ele protege os seus valores. Sem o PIN eu mostro nome e categoria da transação, mas a quantia fica oculta.<span class="sp"></span></div><span class="hora">20:21</span></div></div><div class="msg eu" data-i="19"><div class="corpo"><p>••••••<span class="sp"></span></p><span class="hora">20:22<img src="whatsapp/ios-check-read.svg" width="17" height="17"></span></div></div><div class="msg ele" data-i="20"><div class="corpo"><p>Repita o PIN para eu confirmar.<span class="sp"></span></p><span class="hora">20:22</span></div></div><div class="msg eu" data-i="21"><div class="corpo"><p>••••••<span class="sp"></span></p><span class="hora">20:22<img src="whatsapp/ios-check-read.svg" width="17" height="17"></span></div></div><div class="msg ele largo" data-i="22"><div class="corpo"><p>Tudo certo, Bia! Sua conta está pronta.</p><p>O próximo passo é conectar um banco. É de lá que vêm as suas transações.<span class="sp"></span></p><span class="hora">20:22</span></div></div><div class="chip">Conectar Nubank</div></div></div><div class="composer"><img src="whatsapp/ios-plus.svg" width="32" height="32"><span class="campo"><img src="whatsapp/ios-sticker.svg" width="24" height="24"></span><span class="acoes"><img src="whatsapp/ios-camera.svg" width="32" height="32"><img src="whatsapp/ios-mic.svg" width="32" height="32"></span></div><span class="home"></span></div><script>
+function posiciona(){
+  var box=document.querySelector('.mensagens'), fio=document.querySelector('.fio');
+  var H=box.clientHeight, h=fio.scrollHeight, top=fio.getAttribute('data-top');
+  if (h<=H || top==='0') { fio.style.top='0px'; return; }
+  if (top!=='') { var el=fio.querySelector('[data-i="'+top+'"]'); fio.style.top=(10-el.offsetTop)+'px'; return; }
+  fio.style.top=(H-h)+'px';
+}
+posiciona();
+document.fonts.ready.then(posiciona);
+window.addEventListener('load', function(){ document.fonts.ready.then(posiciona); });
+</script></body></html>

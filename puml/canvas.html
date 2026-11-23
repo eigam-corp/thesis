@@ -3,37 +3,31 @@
 <head>
 <meta charset="utf-8">
 <style>
+  @font-face { font-family: 'Bricolage Eigam'; src: url('BricolageGrotesque-latin.woff2') format('woff2'); font-weight: 200 800; font-stretch: 75% 100%; }
+  @font-face { font-family: 'Inter Eigam'; src: url('Inter-Variable.woff') format('woff'); font-weight: 100 900; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { width: 1760px; background: #ffffff; font-family: "Georgia", "Times New Roman", serif; color: #2b2b2b; padding: 18px; }
-  .grid { display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: 300px 300px 260px; gap: 22px; }
-  .note { position: relative; padding: 26px 28px; border-radius: 4px; box-shadow: 0 6px 14px rgba(0,0,0,0.12); overflow: hidden; }
-  .note::after { content: ""; position: absolute; right: 0; bottom: 0; width: 34px; height: 34px; background: linear-gradient(135deg, rgba(0,0,0,0) 50%, rgba(0,0,0,0.10) 50%); }
-  h2 { font-size: 22px; font-weight: 600; letter-spacing: 0.3px; text-transform: uppercase; padding-bottom: 10px; margin-bottom: 14px; border-bottom: 2px solid; display: inline-block; }
+  body { width: 1760px; background: #f6f8f1; font-family: 'Inter Eigam', sans-serif; color: #203825; padding: 20px; }
+  .grid { display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: 320px 320px 280px; gap: 16px; }
+  .note { position: relative; padding: 22px 24px; background: #ffffff; border: 1px solid #e3e8e0; border-radius: 14px; box-shadow: 0 1px 2px rgb(32 56 37 / 0.06); overflow: hidden; }
+  h2 { font-family: 'Bricolage Eigam', sans-serif; font-size: 21px; font-weight: 700; letter-spacing: 0.2px; color: #203825; padding-bottom: 8px; margin-bottom: 14px; border-bottom: 3px solid #dcfb67; display: inline-block; }
   ul { list-style: none; }
-  li { font-size: 17.5px; line-height: 1.32; margin-bottom: 9px; padding-left: 18px; position: relative; }
-  li::before { content: "•"; position: absolute; left: 0; }
-  .partners { grid-column: 1; grid-row: 1 / span 2; background: #fdf0c4; }
-  .partners h2 { border-color: #e2b54a; }
-  .activities { grid-column: 2; grid-row: 1; background: #e5f3d9; }
-  .activities h2 { border-color: #8cbf63; }
-  .resources { grid-column: 2; grid-row: 2; background: #e5f3d9; }
-  .resources h2 { border-color: #8cbf63; }
-  .value { grid-column: 3; grid-row: 1 / span 2; background: #dcebfa; }
-  .value h2 { border-color: #6c9bd2; }
-  .relationship { grid-column: 4; grid-row: 1; background: #ece4f7; }
-  .relationship h2 { border-color: #9a7fcc; }
-  .channels { grid-column: 4; grid-row: 2; background: #fbe1ea; }
-  .channels h2 { border-color: #d77a9b; }
-  .segments { grid-column: 5; grid-row: 1 / span 2; background: #fde6d2; }
-  .segments h2 { border-color: #e39a5c; }
-  .costs { grid-column: 1 / span 2; grid-row: 3; background: #fdf0c4; }
-  .costs h2 { border-color: #e2b54a; }
-  .revenue { grid-column: 3 / span 3; grid-row: 3; background: #dff2e6; }
-  .revenue h2 { border-color: #5aa77a; }
+  li { font-size: 17px; line-height: 1.34; margin-bottom: 9px; padding-left: 18px; position: relative; color: #203825; }
+  li::before { content: "–"; position: absolute; left: 0; color: #1f6b2c; font-weight: 700; }
+  .partners { grid-column: 1; grid-row: 1 / span 2; }
+  .activities { grid-column: 2; grid-row: 1; }
+  .resources { grid-column: 2; grid-row: 2; }
+  .value { grid-column: 3; grid-row: 1 / span 2; background: #eefbb8; border-color: #203825; }
+  .relationship { grid-column: 4; grid-row: 1; }
+  .channels { grid-column: 4; grid-row: 2; }
+  .segments { grid-column: 5; grid-row: 1 / span 2; }
+  .costs { grid-column: 1 / span 2; grid-row: 3; background: #fdf0e7; border-color: #f6d3bc; }
+  .costs h2 { border-bottom-color: #9a4a1c; }
+  .revenue { grid-column: 3 / span 3; grid-row: 3; background: #e8f4dc; border-color: #369900; }
+  .revenue h2 { border-bottom-color: #369900; }
   .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-  .plan { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
-  .price { color: #2e8b57; }
-  .divider { border-left: 2px solid #b9d8c4; padding-left: 18px; }
+  .plan { font-family: 'Bricolage Eigam', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .price { color: #1f6b2c; font-weight: 600; }
+  .divider { border-left: 2px solid #b5bdb7; padding-left: 18px; }
 </style>
 </head>
 <body>
@@ -41,14 +35,14 @@
   <div class="note partners">
     <h2>Principais<br>parcerias</h2>
     <ul>
-      <li>Meta / WhatsApp Cloud API</li>
-      <li>Telegram</li>
-      <li>Provedor de LLM (OpenAI)</li>
-      <li>Agregador de Open Finance (Pluggy)</li>
-      <li>Stripe (pagamentos)</li>
-      <li>Hetzner e Cloudflare (infraestrutura)</li>
+      <li>Plataformas de mensageria (WhatsApp e Telegram)</li>
+      <li>Provedor do modelo de linguagem</li>
+      <li>Agregador de Open Finance</li>
+      <li>Provedor de pagamentos</li>
+      <li>Provedores de nuvem e de borda</li>
+      <li>Plataformas de assistentes de IA (conector MCP)</li>
       <li>Banco Central do Brasil (regulação do Open Finance)</li>
-      <li>Criadores de conteúdo financeiro</li>
+      <li>Criadores de conteúdo financeiro para o público jovem</li>
     </ul>
   </div>
   <div class="note activities">
@@ -72,10 +66,11 @@
   <div class="note value">
     <h2>Proposta de valor</h2>
     <ul>
-      <li>Gestão financeira por conversa, sem instalar aplicativo novo</li>
+      <li>Gestão financeira por conversa, na linguagem do público jovem, sem instalar aplicativo novo</li>
       <li>Centralização de vários bancos pelo Open Finance em uma visão única</li>
       <li>Respostas em linguagem natural com valores calculados sobre os dados reais do usuário</li>
       <li>Avisos proativos: limites de gasto, cobranças duplicadas, gastos atípicos e resumos</li>
+      <li>Metas, projeções e simulação de compra para quem está formando os primeiros hábitos financeiros</li>
       <li>Privacidade auditável: valores só com PIN, consentimento revogável e direitos da LGPD por mensagem</li>
     </ul>
   </div>
@@ -90,20 +85,20 @@
   <div class="note channels">
     <h2>Canais</h2>
     <ul>
-      <li>WhatsApp Business Platform</li>
+      <li>WhatsApp (canal principal)</li>
       <li>Telegram</li>
       <li>Painel web (app.eigam.com.br)</li>
-      <li>Meta Ads click-to-WhatsApp</li>
-      <li>Parcerias com criadores</li>
+      <li>Assistente de IA do titular (conector MCP)</li>
+      <li>Anúncios click-to-WhatsApp e criadores de conteúdo</li>
     </ul>
   </div>
   <div class="note segments">
     <h2>Segmento de clientes</h2>
     <ul>
-      <li>Adultos economicamente ativos</li>
-      <li>Estudantes</li>
-      <li>Microempreendedores individuais</li>
-      <li>Usuários com contas em várias instituições que desejam acompanhar gastos, organizar o orçamento e transformar dados bancários em decisões do dia a dia</li>
+      <li>Jovens de 18 a 30 anos, nativos digitais</li>
+      <li>Estudantes, estagiários e jovens aprendizes</li>
+      <li>Profissionais em início de carreira e autônomos da economia digital</li>
+      <li>Jovens com a primeira conta digital ou com contas em várias instituições, que querem formar o hábito de acompanhar gastos e juntar dinheiro</li>
     </ul>
   </div>
   <div class="note costs">
@@ -112,11 +107,11 @@
       <ul>
         <li>Conexões bancárias (Open Finance)</li>
         <li>Mensagens do WhatsApp</li>
-        <li>Tokens de LLM</li>
-        <li>Taxas de pagamento (Stripe)</li>
+        <li>Tokens do modelo de linguagem</li>
+        <li>Taxas de pagamento</li>
       </ul>
       <ul>
-        <li>Infraestrutura (Hetzner)</li>
+        <li>Infraestrutura em nuvem</li>
         <li>Desenvolvimento do software</li>
         <li>Marketing pago / CAC</li>
       </ul>
@@ -126,21 +121,20 @@
     <h2>Fonte de receita</h2>
     <div class="cols">
       <div>
-        <div class="plan">Gratuito</div>
+        <div class="plan">Teste - <span class="price">7 dias, R$ 0,00</span></div>
         <ul>
-          <li>1 instituição conectada via Open Finance</li>
-          <li>Saldo, extrato e gastos por categoria pela conversa</li>
-          <li>Categorização automática de transações</li>
-          <li>Uma meta ativa por vez</li>
+          <li>Acesso completo a partir da conexão do primeiro banco</li>
+          <li>Sem cartão de crédito</li>
+          <li>Conta de exemplo sem prazo antes do primeiro banco</li>
         </ul>
       </div>
       <div class="divider">
-        <div class="plan">Pro — <span class="price">R$ 29,90/mês ou R$ 328,90/ano</span></div>
+        <div class="plan">Pro - <span class="price">R$ 29,90/mês ou R$ 328,90/ano (11 mensalidades)</span></div>
         <ul>
           <li>Instituições ilimitadas</li>
-          <li>Metas ilimitadas</li>
-          <li>Resumos semanais e mensais</li>
-          <li>Projeções e observações sobre o orçamento</li>
+          <li>Metas, alertas e resumos semanais e mensais</li>
+          <li>Projeções, saldo livre e simulação de compra</li>
+          <li>Conexão de assistentes de IA externos (MCP)</li>
         </ul>
       </div>
     </div>

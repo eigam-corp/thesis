@@ -1,26 +1,26 @@
 \chapter{Modelagem do sistema}
 
-A modelagem do sistema representa uma etapa fundamental no processo de desenvolvimento de \textit{software}, pois permite estruturar os requisitos, identificar restrições e representar de forma clara as responsabilidades, interações e funcionalidades esperadas da solução. No contexto deste projeto, essa etapa assume especial relevância em razão da integração com dados financeiros sensíveis, da utilização de serviços externos, da comunicação por plataformas de mensageria e dos requisitos relacionados à segurança, privacidade e conformidade com a Lei Geral de Proteção de Dados (LGPD).
+A modelagem do sistema representa uma etapa fundamental no processo de desenvolvimento de \textit{software}, pois permite estruturar os requisitos, identificar restrições e representar de forma clara as responsabilidades, interações e funcionalidades esperadas da solução. No contexto deste projeto, essa etapa assume especial relevância em razão da integração com dados financeiros sensíveis, da utilização de serviços externos, da comunicação por serviços de mensageria e dos requisitos relacionados à segurança, privacidade e conformidade com a Lei Geral de Proteção de Dados (LGPD).
 
-O EIGAM é uma solução de assistência financeira inteligente, preditiva e conversacional, integrada ao ecossistema de \textit{Open Finance} e capaz de interagir com os usuários por meio de diferentes plataformas de mensageria. O \textit{WhatsApp} é o principal canal de comunicação, e o \textit{Telegram} e a conversa no painel \textit{web} do titular foram incorporados como canais adicionais, o que comprovou na prática que o núcleo funcional está desacoplado do provedor de mensageria.
+O EIGAM é uma solução de assistência financeira inteligente, preditiva e conversacional, integrada ao ecossistema de \textit{Open Finance} e capaz de interagir com os usuários por meio de diferentes serviços de mensageria. O \textit{WhatsApp} é o principal canal de comunicação, e o \textit{Telegram} e a conversa no painel \textit{web} do titular foram incorporados como canais adicionais, o que comprovou na prática que o núcleo funcional está desacoplado do provedor de mensageria.
 
-Neste capítulo são apresentadas a fronteira sistêmica, as restrições da solução, a arquitetura da camada de inteligência artificial, os requisitos funcionais e não funcionais, os diagramas de casos de uso e suas respectivas descrições. Esses elementos delimitam o escopo do sistema, estabelecem as responsabilidades dos componentes internos e dos serviços externos envolvidos em seu funcionamento e explicitam como os mecanismos conversacionais e preditivos são distribuídos entre os serviços da aplicação. A modelagem foi elaborada no TCC~1 e revista ao final do desenvolvimento, para refletir o sistema como foi implementado; as diferenças em relação à proposta original são discutidas no Capítulo~\ref{chap:resultados}.
+Neste capítulo são apresentadas a fronteira sistêmica, as restrições da solução, a arquitetura da camada de inteligência artificial, os requisitos funcionais e não funcionais, os diagramas de casos de uso e suas respectivas descrições. Esses elementos delimitam o escopo do sistema, estabelecem as responsabilidades dos componentes internos e dos serviços externos envolvidos em seu funcionamento e explicitam como os mecanismos conversacionais e preditivos são distribuídos entre os serviços da aplicação. A modelagem foi elaborada na fase de projeto e revista ao final do desenvolvimento, para refletir o sistema como foi implementado; as diferenças em relação à proposta original são discutidas no Capítulo~\ref{chap:resultados}.
 
 \section{Fronteira sistêmica}
 
 A Figura \ref{fig:fronteira} apresenta a fronteira sistêmica do EIGAM, evidenciando a separação entre os componentes pertencentes à solução e os serviços externos necessários ao seu funcionamento. Essa representação permite identificar as responsabilidades internas da aplicação, bem como os pontos de integração com sistemas de terceiros.
 
-Externamente, a solução se comunica com cinco grupos de serviços. O primeiro corresponde às plataformas de mensageria: a \textit{WhatsApp Cloud API}, fornecida pela Meta, e a \textit{Telegram Bot API}. O acesso a esses canais é intermediado por adaptadores, de modo que novas plataformas possam ser incorporadas sem alterar o núcleo funcional da solução. O segundo é a Pluggy, intermediária na integração com o ecossistema de \textit{Open Finance}, por meio da qual, mediante consentimento do titular, a solução acessa e sincroniza as informações financeiras das instituições vinculadas. O terceiro corresponde aos serviços de inteligência artificial: a OpenAI, utilizada no planejamento das consultas, na redação das respostas e na transcrição de áudio, e a TypeSafe, cujo modelo de juízo tipado apoia os \textit{guardrails}. O quarto é o Stripe, responsável pelas assinaturas do plano Pro. O quinto é a Cloudflare, que protege a borda, publica os painéis por um túnel e autentica a equipe de operação.
+Externamente, a solução se comunica com seis grupos de serviços. O primeiro corresponde aos serviços de mensageria: as APIs oficiais do \textit{WhatsApp} e do \textit{Telegram}. O acesso a esses canais é intermediado por adaptadores, de modo que novos canais possam ser incorporados sem alterar o núcleo funcional da solução. O segundo é o agregador de dados de \textit{Open Finance}, por meio do qual, mediante consentimento do titular, a solução acessa e sincroniza as informações financeiras das instituições vinculadas. O terceiro corresponde aos serviços de inteligência artificial: o provedor do modelo de linguagem, utilizado no planejamento das consultas, na redação das respostas e na transcrição de áudio, e o provedor do modelo de juízo tipado que apoia os \textit{guardrails}. O quarto é o provedor de pagamentos, responsável pelas assinaturas do plano Pro. O quinto é o serviço de borda, que protege o perímetro, publica os painéis por um túnel e autentica a equipe de operação. O sexto são os assistentes de inteligência artificial do próprio titular que, mediante autorização OAuth concedida pelo titular, leem dados da solução pelo servidor MCP.
 
-Internamente, a arquitetura separa as responsabilidades de entrada, conversa, finanças, comunicação e dados. O \textit{API Gateway} recebe os \textit{webhooks} externos; o \textit{Chat Service}, o \textit{AI Service} e o \textit{Identity Service} conduzem a conversa, a leitura da frase e a identidade do titular; o \textit{Finance Service} e o \textit{Analytics Service} processam os dados financeiros e as projeções; o \textit{Notification Service}, o \textit{Render Service} e o \textit{Outbound Worker} cuidam dos avisos, das imagens e do envio das mensagens; o \textit{Billing Service} e o \textit{Audit Service} tratam da cobrança e da auditoria. Os painéis do titular e de operação completam a fronteira como interfaces \textit{web}.
+Internamente, a arquitetura separa as responsabilidades de entrada, conversa, finanças, comunicação e dados. O \textit{API Gateway} recebe os \textit{webhooks} externos; o \textit{Chat Service}, o \textit{AI Service} e o \textit{Identity Service} conduzem a conversa, a leitura da frase e a identidade do titular; o \textit{Finance Service} e o \textit{Analytics Service} processam os dados financeiros e as projeções; o \textit{Notification Service}, o \textit{Render Service} e o \textit{Outbound Worker} cuidam dos avisos, das imagens e do envio das mensagens; o \textit{Billing Service} e o \textit{Audit Service} tratam da cobrança e da auditoria. Os painéis do titular e de operação e o \textit{MCP Service}, servidor somente de leitura para os assistentes externos, completam a fronteira como interfaces expostas.
 
-O armazenamento é distribuído de acordo com as características de cada tipo de dado. O PostgreSQL guarda as informações estruturadas e relacionais, o MongoDB atende os dados de natureza documental, o Redis gerencia sessões, estado de conversa, \textit{cache} e filas, e o Redpanda, compatível com a API do Kafka, atua como barramento de eventos entre os serviços.
+O armazenamento é distribuído de acordo com as características de cada tipo de dado. O PostgreSQL guarda as informações estruturadas e relacionais, o MongoDB atende os dados de natureza documental, o Redis gerencia sessões, estado de conversa, \textit{cache} e filas, e um \textit{broker} compatível com a API do Kafka atua como barramento de eventos entre os serviços.
 
 Dessa forma, a fronteira sistêmica evidencia que as regras de negócio e os mecanismos de inteligência financeira permanecem independentes dos provedores externos utilizados. Essa característica permitiu que o \textit{WhatsApp} fosse o canal principal sem constituir uma dependência estrutural da solução.
 
 \begin{figure}[htbp]
     \centering
-    \caption{Fronteira sistêmica da plataforma}
+    \caption{Fronteira sistêmica da solução}
     \label{fig:fronteira}
     \includegraphics[width=\textwidth]{images/fronteira.png}
     \authorssource
@@ -28,7 +28,7 @@ Dessa forma, a fronteira sistêmica evidencia que as regras de negócio e os mec
 
 \section{Lista de restrições}
 
-Durante a definição e a modelagem do EIGAM, foram identificadas restrições que condicionam seu funcionamento, sua arquitetura e sua capacidade de integração. Por se tratar de uma solução que depende de serviços externos, do compartilhamento autorizado de dados financeiros, de plataformas de mensageria e de mecanismos de inteligência artificial, parte dessas limitações decorre de fatores que não estão sob controle direto da aplicação.
+Durante a definição e a modelagem do EIGAM, foram identificadas restrições que condicionam seu funcionamento, sua arquitetura e sua capacidade de integração. Por se tratar de uma solução que depende de serviços externos, do compartilhamento autorizado de dados financeiros, de serviços de mensageria e de mecanismos de inteligência artificial, parte dessas limitações decorre de fatores que não estão sob controle direto da aplicação.
 
 Além disso, o tratamento de dados pessoais e informações financeiras exige a observância de requisitos regulatórios e de segurança, enquanto a adoção de uma arquitetura multicanal impõe a necessidade de considerar diferenças técnicas entre os provedores de mensageria. As principais restrições identificadas são apresentadas no Quadro \ref{frame:restricoes}.
 
@@ -51,22 +51,22 @@ Além disso, o tratamento de dados pessoais e informações financeiras exige a 
 
 Externa &
 Integração com o \textit{Open Finance} &
-O acesso às informações financeiras depende da disponibilidade e das condições de funcionamento dos serviços utilizados para integração com o ecossistema de \textit{Open Finance}. No projeto, essa comunicação é intermediada pela Pluggy, cuja indisponibilidade ou alteração em suas APIs pode afetar operações de vinculação e sincronização de dados.
+O acesso às informações financeiras depende da disponibilidade e das condições de funcionamento dos serviços utilizados para integração com o ecossistema de \textit{Open Finance}. No projeto, essa comunicação é intermediada por um agregador de dados, cuja indisponibilidade ou alteração em suas APIs pode afetar operações de vinculação e sincronização de dados.
 \\ \hline
 
 Externa &
-Dependência de plataformas de mensageria &
-A comunicação com o usuário depende de APIs e serviços fornecidos por plataformas externas de mensageria. O \textit{WhatsApp} é o canal principal, e alterações em políticas, preços, limites de utilização ou disponibilidade do provedor podem afetar o funcionamento desse canal, como ocorreu com a cobrança de mensagens de serviço durante o desenvolvimento.
+Dependência de serviços de mensageria &
+A comunicação com o usuário depende de APIs e serviços fornecidos por serviços externos de mensageria. O \textit{WhatsApp} é o canal principal, e alterações em políticas, preços, limites de utilização ou disponibilidade do provedor podem afetar o funcionamento desse canal, como ocorreu com a cobrança de mensagens de serviço durante o desenvolvimento.
 \\ \hline
 
 Técnica &
 Interoperabilidade entre canais de mensageria &
-As plataformas de mensageria possuem diferentes formatos de mensagens, recursos interativos, limites e mecanismos de autenticação. Dessa forma, a integração de novos canais deve respeitar uma interface padronizada de comunicação com o núcleo do EIGAM e adaptar as funcionalidades às capacidades disponíveis em cada plataforma.
+Os serviços de mensageria possuem diferentes formatos de mensagens, recursos interativos, limites e mecanismos de autenticação. Dessa forma, a integração de novos canais deve respeitar uma interface padronizada de comunicação com o núcleo do EIGAM e adaptar as funcionalidades às capacidades disponíveis em cada canal.
 \\ \hline
 
 Técnica &
 Limitações dos canais conversacionais &
-Determinados recursos visuais ou interativos disponíveis em aplicações \textit{web} podem não estar presentes em todas as plataformas de mensageria. A apresentação das informações deve, portanto, considerar os recursos suportados pelo canal utilizado sem comprometer o acesso às funcionalidades essenciais da solução.
+Determinados recursos visuais ou interativos disponíveis em aplicações \textit{web} podem não estar presentes em todos os serviços de mensageria. A apresentação das informações deve, portanto, considerar os recursos suportados pelo canal utilizado sem comprometer o acesso às funcionalidades essenciais da solução.
 \\ \hline
 
 Regulatória &
@@ -96,7 +96,7 @@ Os mecanismos de inteligência artificial utilizados possuem natureza probabilí
 
 Externa &
 Dependência de serviços terceirizados &
-Partes da solução dependem de serviços externos para inteligência artificial, integração financeira, mensageria, hospedagem, monitoramento e demais recursos. Alterações de disponibilidade, limites de uso, preços ou interfaces desses fornecedores podem impactar a operação da plataforma.
+Partes da solução dependem de serviços externos para inteligência artificial, integração financeira, mensageria, hospedagem, monitoramento e demais recursos. Alterações de disponibilidade, limites de uso, preços ou interfaces desses fornecedores podem impactar a operação da solução.
 \\ \hline
 
 Infraestrutura &
@@ -106,7 +106,7 @@ A solução depende de infraestrutura computacional disponível para processamen
 
 Infraestrutura &
 Disponibilidade de conexão com a \textit{internet} &
-A comunicação entre o usuário, as plataformas de mensageria, os serviços do EIGAM e os provedores externos depende de conectividade com a \textit{internet}. A indisponibilidade da conexão pode impedir ou atrasar consultas, sincronizações e notificações.
+A comunicação entre o usuário, os serviços de mensageria, os serviços do EIGAM e os provedores externos depende de conectividade com a \textit{internet}. A indisponibilidade da conexão pode impedir ou atrasar consultas, sincronizações e notificações.
 \\ \hline
 
 \end{longtable}
@@ -146,11 +146,11 @@ Regras determinísticas do turno, validação e execução do plano produzido pe
 \\ \hline
 
 \textit{Finance Service} &
-Categorização das transações pela taxonomia do conector, pareamento de lançamentos, detecção de recorrências e geração dos sinais financeiros: limites de gasto, risco de estouro, cobranças duplicadas, transações atípicas e aumento de gasto por categoria.
+Categorização das transações pela taxonomia do conector, pareamento de lançamentos, detecção de recorrências, cálculo do gasto canônico e da posição de caixa, simulação de compra e geração dos sinais financeiros: limites de gasto, risco de estouro, cobranças duplicadas, transações atípicas e aumento de gasto por categoria.
 \\ \hline
 
 \textit{Analytics Service} &
-Projeção do gasto até o fim do mês, com seleção do método por teste retrospectivo e abstenção quando nenhum método atinge o critério de aprovação.
+Projeção do gasto até o fim do mês, estimativa do gasto dos meses seguintes e composição do saldo livre do fim do mês, com os métodos avaliados por teste retrospectivo em um registro de previsões, candidatos em sombra e abstenção quando nenhum método atinge o critério de aprovação.
 \\ \hline
 
 \textit{Notification Service} &
@@ -164,19 +164,19 @@ Essa distribuição permite que o \textit{AI Service} concentre a interpretaçã
 
 \subsection{Leitura da Frase e Planejamento das Consultas}
 
-A leitura da mensagem do titular ocorre em camadas. Antes de qualquer modelo, o \textit{Chat Service} verifica, por expressões regulares, os comandos relacionados aos direitos do titular, como consulta, exportação, revogação e exclusão de dados. Dessa forma, a execução de operações com impacto sobre os dados pessoais não depende de uma classificação probabilística. Em seguida, regras determinísticas tratam o cadastro, a troca de PIN, a conexão e a remoção de bancos, as metas, os investimentos, os empréstimos, as recorrências e a assinatura.
+A leitura da mensagem do titular ocorre em camadas. Antes de qualquer modelo, o \textit{Chat Service} verifica, por expressões regulares, os comandos relacionados aos direitos do titular, como consulta, exportação, revogação e exclusão de dados. Dessa forma, a execução de operações com impacto sobre os dados pessoais não depende de uma classificação probabilística. Em seguida, regras determinísticas tratam o cadastro, a troca de PIN, a conexão e a remoção de bancos, as metas, os investimentos, os empréstimos, as recorrências, a assinatura, a desconexão de assistentes externos, a simulação de compra e o saldo livre do fim do mês; nas duas últimas, a resposta também é montada pelo servidor, sem o modelo de redação, para que o resultado numérico nunca se converta em recomendação.
 
 As demais frases seguem para o planejador do \textit{AI Service}, que utiliza chamada de funções (\textit{function calling}) com um contrato versionado de sete funções: consulta de dados financeiros, faturas de cartão, saldos, instituições conectadas, atualização dos dados, pedido de esclarecimento e indicação de que a frase não é financeira. O modelo apenas escolhe as funções e os argumentos, como período, instituição, categoria, estabelecimento, forma de pagamento e agrupamento, e nunca responde diretamente ao titular nessa etapa. O resultado pode ser a execução das consultas, uma pergunta de esclarecimento com até três botões, uma resposta sem consulta, por exemplo para uma saudação, ou a indisponibilidade da leitura.
 
 O \textit{Chat Service} revalida o plano com os mesmos esquemas utilizados pelos demais serviços e vincula o identificador do titular, que nunca é argumento do modelo. O planejador tem até 4,5 segundos, com uma segunda tentativa, e o \textit{Chat Service} desiste em 4,7 segundos. Nesse caso, a resposta é uma recusa sem número, e não uma estimativa.
 
-A modelagem do TCC~1 previa um classificador de intenções com limiares de confiança de 0,85 e 0,65. Esse classificador foi implementado e utilizado durante parte do desenvolvimento, mas foi substituído pelo planejador, porque duas leituras da mesma frase podiam divergir e cobravam duas chamadas ao modelo por mensagem. A qualidade da leitura passou a ser medida pelo Macro-F1 do motivo devolvido pelo planejador, com mínimo de 0,88.
+A modelagem inicial previa um classificador de intenções com limiares de confiança de 0,85 e 0,65. Esse classificador foi implementado e utilizado durante parte do desenvolvimento, mas foi substituído pelo planejador, porque duas leituras da mesma frase podiam divergir e cobravam duas chamadas ao modelo por mensagem. A qualidade da leitura passou a ser medida pelo Macro-F1 do motivo devolvido pelo planejador, com mínimo de 0,88.
 
 \subsection{Recuperação de Contexto}
 
 O contexto fornecido ao modelo na redação da resposta tem três origens. A primeira são os fatos financeiros consultados no turno, enviados como dados estruturados e tratados como a única fonte autorizada de valores. Para as consultas mais frequentes, o servidor monta as linhas com os números exatos, e o modelo escreve apenas a abertura, a leitura e a oferta do próximo passo. A segunda é o histórico recente da conversa, que permite responder a perguntas de continuação, como ``e no mês passado?''. A terceira é uma base de conhecimento sobre o produto, com textos escritos pela equipe sobre planos, segurança, \textit{Open Finance} e direitos do titular, recuperados por palavras-chave.
 
-A modelagem do TCC~1 previa um mecanismo de \textit{Retrieval-Augmented Generation} (RAG) com busca vetorial sobre o histórico financeiro de cada usuário, com \textit{embeddings} armazenados no \textit{pgvector}. Durante o desenvolvimento, as perguntas sobre o histórico financeiro passaram a ser respondidas pelas consultas estruturadas escolhidas pelo planejador, que devolvem o valor exato em vez de um trecho semanticamente parecido. As perguntas sobre o produto, por sua vez, utilizam um conjunto pequeno de textos escritos pela equipe, igual para todos os titulares, para o qual a recuperação por palavras-chave mostrou-se suficiente. A extensão \textit{pgvector} e a tabela de \textit{embeddings} permanecem no banco como ponto de extensão.
+A modelagem inicial previa um mecanismo de \textit{Retrieval-Augmented Generation} (RAG) com busca vetorial sobre o histórico financeiro de cada usuário, com \textit{embeddings} armazenados no \textit{pgvector}. Durante o desenvolvimento, as perguntas sobre o histórico financeiro passaram a ser respondidas pelas consultas estruturadas escolhidas pelo planejador, que devolvem o valor exato em vez de um trecho semanticamente parecido. As perguntas sobre o produto, por sua vez, utilizam um conjunto pequeno de textos escritos pela equipe, igual para todos os titulares, para o qual a recuperação por palavras-chave mostrou-se suficiente. A extensão \textit{pgvector} e a tabela de \textit{embeddings} permanecem no banco como ponto de extensão.
 
 Os dados recuperados são tratados como contexto da resposta, e não como instruções. Descrições de transações, nomes de metas e de estabelecimentos entram no prompt neutralizados, sem quebras de linha, delimitadores ou contatos, o que reduz a superfície para tentativas de manipulação.
 
@@ -184,7 +184,9 @@ Os dados recuperados são tratados como contexto da resposta, e não como instru
 
 A camada preditiva do EIGAM não depende de modelos generativos. Para tarefas numéricas e de séries temporais, são utilizados métodos estatísticos, e a geração textual permanece separada do cálculo dos resultados.
 
-A modelagem do TCC~1 previa duas camadas de previsão: EWMA para usuários com pouco histórico e Prophet para os demais. Medido sobre a série real de um titular com seis meses de histórico, o Prophet produziu intervalos de previsão de três a dez vezes mais largos que os da EWMA, porque o gasto pessoal por categoria é esparso, com muitos dias sem nenhum lançamento. Por isso, a projeção passou a estimar o gasto até o fim do mês corrente, no total ou por categoria. Três métodos candidatos, o ritmo atual do mês, a mediana histórica e a EWMA, são avaliados por teste retrospectivo. O método só é utilizado se atingir erro percentual absoluto ponderado de até 20\%, viés de até 5\%, cobertura do intervalo de 80\% entre 70\% e 90\% e ganho mínimo de 10\% sobre o método de referência. Quando nenhum método atende ao critério, o sistema informa que ainda não há dados suficientes para uma projeção confiável, em vez de apresentar um número com aparência de precisão.
+A modelagem inicial previa duas camadas de previsão: EWMA para usuários com pouco histórico e Prophet para os demais. Medido sobre a série real de um titular com seis meses de histórico, o Prophet produziu intervalos de previsão de três a dez vezes mais largos que os da EWMA, porque o gasto pessoal por categoria é esparso, com muitos dias sem nenhum lançamento. Por isso, a projeção passou a estimar o gasto até o fim do mês corrente, no total ou por categoria, sob uma política de modelos explícita: todos os candidatos, inclusive o ritmo atual do mês, são avaliados por teste retrospectivo no corte do dia 15, com erro percentual absoluto ponderado de até 20\%, viés de até 5\% e cobertura do intervalo de 80\% entre 70\% e 90\%; candidatos que não são o método de referência precisam ainda de ganho mínimo de 10\% sobre ele. ``Nenhum método'' é um veredito válido, e nesse caso o sistema informa que ainda não há dados suficientes para uma projeção confiável, em vez de apresentar um número com aparência de precisão. O modelo servido é o ritmo robusto, que estende aos dias restantes apenas o gasto típico, e os candidatos reprovados continuam calculados em sombra em um registro de previsões, fechado mensalmente contra o valor real.
+
+Duas estimativas complementares integram a mesma camada. O saldo livre do fim do mês opera em regime de caixa: parte do saldo disponível das contas correntes, desconta faturas a vencer, recorrentes em conta e agendamentos, e estima o movimento líquido restante pela mediana dos seis meses anteriores, cuja amplitude define a faixa da resposta; a resposta recusa com motivo declarado quando falta histórico ou quando alguma conexão está desatualizada. A simulação de compra aplica uma compra hipotética, à vista ou parcelada e com o calendário de fechamento do cartão, sobre a estimativa do fim do mês, a folga das metas e os compromissos dos doze meses seguintes, sem emitir juízo sobre a compra.
 
 A detecção de transações atípicas compara o valor de cada transação recente com o histórico de gastos da mesma categoria por meio de um escore-z robusto, calculado sobre o logaritmo do valor com a mediana e o desvio absoluto mediano, menos sensíveis a valores extremos do que a média e o desvio-padrão. O sinal é emitido a partir de 3,5, exige pelo menos dez transações e noventa dias de histórico, e recebe confiança alta a partir de 5 com vinte transações. Além disso, o \textit{Finance Service} detecta possíveis cobranças duplicadas, aumento de gasto em uma categoria em relação ao padrão do titular e a travessia de 80\% e de 100\% dos limites de gasto definidos nas metas, bem como o risco de ultrapassá-los até o fim do período. O algoritmo PELT, previsto para mudanças estruturais persistentes, não foi implementado.
 
@@ -300,7 +302,7 @@ O Quadro \ref{frame:rf} apresenta os requisitos funcionais do projeto, isto é, 
 
 \subsection{Requisitos Não Funcionais e de Qualidade}
 
-Além dos requisitos funcionais, a solução deve atender a requisitos não funcionais e de qualidade que assegurem seu funcionamento adequado em um contexto de alta sensibilidade de dados. Dado que a plataforma lida com informações financeiras e pessoais de usuários, aspectos como segurança, privacidade, confiabilidade e desempenho são tratados como prioridades estruturais. O detalhamento desses requisitos é apresentado no Quadro \ref{frame:rnf}.
+Além dos requisitos funcionais, a solução deve atender a requisitos não funcionais e de qualidade que assegurem seu funcionamento adequado em um contexto de alta sensibilidade de dados. Dado que a solução lida com informações financeiras e pessoais de usuários, aspectos como segurança, privacidade, confiabilidade e desempenho são tratados como prioridades estruturais. O detalhamento desses requisitos é apresentado no Quadro \ref{frame:rnf}.
 
 \begin{longtable}{|L{1.8cm}|L{3.2cm}|L{7.0cm}|L{2.1cm}|}
 \caption{Requisitos Não Funcionais e de Qualidade} \label{frame:rnf} \\
@@ -329,7 +331,7 @@ Além dos requisitos funcionais, a solução deve atender a requisitos não func
 {[RNF013]} & Clareza na comunicação & O sistema deve apresentar mensagens e respostas em linguagem clara, objetiva e compreensível para o usuário final. & Obrigatório \\ \hline
 {[RNF014]} & Precisão das previsões e recomendações & O sistema deve buscar manter nível adequado de precisão nas previsões e recomendações geradas com base nos dados financeiros do usuário. & Obrigatório \\ \hline
 {[RNF015]} & Recuperação de falhas & O sistema deve ser capaz de lidar com falhas de integração, indisponibilidade de serviços externos ou erros de processamento sem comprometer totalmente sua operação. & Desejável \\ \hline
-{[RNF016]} & Compatibilidade com o canal conversacional & O sistema deve respeitar as limitações e diretrizes de operação da plataforma \textit{WhatsApp Business}. & Obrigatório \\ \hline
+{[RNF016]} & Compatibilidade com o canal conversacional & O sistema deve respeitar as limitações e diretrizes de operação do \textit{WhatsApp Business}. & Obrigatório \\ \hline
 {[RNF017]} & Acessibilidade textual & O sistema deve priorizar mensagens objetivas e bem estruturadas, facilitando a compreensão por diferentes perfis de usuários. & Desejável \\ \hline
 {[RNF018]} & Atualização de dados & O sistema deve manter as informações financeiras do usuário sincronizadas com frequência adequada, de acordo com a disponibilidade das integrações. & Obrigatório \\ \hline
 \end{longtable}
@@ -342,7 +344,7 @@ A solução foi modelada em quatro grupos funcionais de casos de uso: acesso e c
 
 \begin{figure}[htbp]
     \centering
-    \caption{Diagrama de Casos de Uso — Acesso e Consulta Financeira}
+    \caption{Diagrama de Casos de Uso - Acesso e Consulta Financeira}
     \label{fig:uc01}
     \includegraphics[width=1\textwidth]{"images/uml/UC01 - Acesso e Consulta Financeira.png"}
     \authorssource
@@ -350,7 +352,7 @@ A solução foi modelada em quatro grupos funcionais de casos de uso: acesso e c
 
 \begin{figure}[htbp]
     \centering
-    \caption{Diagrama de Casos de Uso — Análise Preditiva e Alertas}
+    \caption{Diagrama de Casos de Uso - Análise Preditiva e Alertas}
     \label{fig:uc02}
     \includegraphics[width=1\textwidth]{"images/uml/UC02 - Analise Preditiva e Alertas.png"}
     \authorssource
@@ -358,7 +360,7 @@ A solução foi modelada em quatro grupos funcionais de casos de uso: acesso e c
 
 \begin{figure}[htbp]
     \centering
-    \caption{Diagrama de Casos de Uso — Metas Financeiras e Resumos Periódicos}
+    \caption{Diagrama de Casos de Uso - Metas Financeiras e Resumos Periódicos}
     \label{fig:uc03}
     \includegraphics[width=1\textwidth]{"images/uml/UC03 - Metas Financeiras e Resumos Periodicos.png"}
     \authorssource
@@ -366,7 +368,7 @@ A solução foi modelada em quatro grupos funcionais de casos de uso: acesso e c
 
 \begin{figure}[htbp]
     \centering
-    \caption{Diagrama de Casos de Uso — Direitos do Titular (LGPD Art.\ 18)}
+    \caption{Diagrama de Casos de Uso - Direitos do Titular (LGPD Art.\ 18)}
     \label{fig:uc04}
     \includegraphics[width=1\textwidth]{"images/uml/UC04 - Direitos do Titular (LGPD Art. 18).png"}
     \authorssource
@@ -376,7 +378,7 @@ A solução foi modelada em quatro grupos funcionais de casos de uso: acesso e c
 
 A seguir são apresentadas as descrições textuais dos casos de uso identificados nos diagramas, organizadas conforme os quatro grupos funcionais da solução.
 
-\noindent\textbf{Grupo 1 — Acesso e Consulta Financeira}
+\noindent\textbf{Grupo 1 - Acesso e Consulta Financeira}
 
 \vspace{4pt}
 
@@ -434,14 +436,14 @@ c. O usuário recusa os termos:\newline
 \sourcerow{2} \\
 \endlastfoot
 \textbf{Caso de uso} & [UC002] Vincular conta ao \textit{Open Finance} \\ \hline
-\textbf{Ator(es)} & Usuário, Pluggy (\textit{Open Finance}) \\ \hline
-\textbf{Motivação} & Permitir ao usuário autorizar o acesso a seus dados bancários via \textit{Open Finance} por meio da integração com a Pluggy, escolhendo por quanto tempo o compartilhamento deve valer. \\ \hline
+\textbf{Ator(es)} & Usuário, Agregador (\textit{Open Finance}) \\ \hline
+\textbf{Motivação} & Permitir ao usuário autorizar o acesso a seus dados bancários via \textit{Open Finance} por meio da integração com o agregador de dados, escolhendo por quanto tempo o compartilhamento deve valer. \\ \hline
 \textbf{Fluxo Principal} &
 1. O usuário solicita a vinculação de conta bancária;\newline
 2. O sistema solicita a escolha da instituição e do prazo do consentimento (3, 6 ou 12 meses, ou até cancelar);\newline
-3. O sistema gera o link de autorização da Pluggy e o envia ao usuário;\newline
+3. O sistema gera o link de autorização do agregador e o envia ao usuário;\newline
 4. O usuário autoriza o compartilhamento no ambiente do próprio banco;\newline
-5. A Pluggy notifica o sistema por \textit{webhook};\newline
+5. O agregador notifica o sistema por \textit{webhook};\newline
 6. O sistema registra o consentimento e envia o comprovante da conexão em imagem;\newline
 7. O sistema realiza a primeira sincronização dos dados.
 \\ \hline
@@ -503,7 +505,7 @@ b. O usuário envia o PIN por nota de voz:\newline
 \sourcerow{2} \\
 \endlastfoot
 \textbf{Caso de uso} & [UC004] Consultar saldo e extrato \\ \hline
-\textbf{Ator(es)} & Usuário, Pluggy (\textit{Open Finance}) \\ \hline
+\textbf{Ator(es)} & Usuário, Agregador (\textit{Open Finance}) \\ \hline
 \textbf{Motivação} & Permitir ao usuário consultar o saldo atual e o extrato de forma conversacional, com os dados da última sincronização das instituições conectadas (inclui [UC003] e [UC007]). \\ \hline
 \textbf{Fluxo Principal} &
 1. O usuário solicita saldo ou extrato ao assistente;\newline
@@ -516,7 +518,7 @@ b. O usuário envia o PIN por nota de voz:\newline
 a. O token de privilégio não está ativo:\newline
 \hspace*{1em}i. O sistema exibe os valores mascarados (R\$ •••••);\newline
 \hspace*{1em}ii. O sistema informa que o PIN libera os valores ([UC003]).\newline
-b. A sincronização com a Pluggy está atrasada ou indisponível:\newline
+b. A sincronização com o agregador está atrasada ou indisponível:\newline
 \hspace*{1em}i. O sistema informa a data da última atualização;\newline
 \hspace*{1em}ii. O sistema apresenta os últimos dados sincronizados.
 \\ \hline
@@ -537,7 +539,7 @@ b. A sincronização com a Pluggy está atrasada ou indisponível:\newline
 \sourcerow{2} \\
 \endlastfoot
 \textbf{Caso de uso} & [UC005] Consultar histórico de transações \\ \hline
-\textbf{Ator(es)} & Usuário, Pluggy (\textit{Open Finance}) \\ \hline
+\textbf{Ator(es)} & Usuário, Agregador (\textit{Open Finance}) \\ \hline
 \textbf{Motivação} & Permitir ao usuário consultar o histórico de transações por período, banco, categoria, estabelecimento ou forma de pagamento (inclui [UC003] e [UC007]). \\ \hline
 \textbf{Fluxo Principal} &
 1. O usuário solicita o histórico de transações ao assistente;\newline
@@ -570,7 +572,7 @@ b. O banco citado não está conectado:\newline
 \sourcerow{2} \\
 \endlastfoot
 \textbf{Caso de uso} & [UC006] Consultar resumo financeiro \\ \hline
-\textbf{Ator(es)} & Usuário, Pluggy (\textit{Open Finance}) \\ \hline
+\textbf{Ator(es)} & Usuário, Agregador (\textit{Open Finance}) \\ \hline
 \textbf{Motivação} & Permitir ao usuário obter um resumo consolidado de suas finanças, com gráfico quando a resposta pede uma visão de conjunto (inclui [UC003] e [UC007]; estende [UC008]). \\ \hline
 \textbf{Fluxo Principal} &
 1. O usuário solicita o resumo financeiro ao assistente;\newline
@@ -603,7 +605,7 @@ b. Não há dados suficientes no período:\newline
 \sourcerow{2} \\
 \endlastfoot
 \textbf{Caso de uso} & [UC007] Receber resposta em linguagem natural \\ \hline
-\textbf{Ator(es)} & Sistema, OpenAI (LLM) \\ \hline
+\textbf{Ator(es)} & Sistema, Provedor de LLM \\ \hline
 \textbf{Motivação} & Gerar respostas compreensíveis a partir dos dados financeiros consultados, com o modelo de linguagem lendo a pergunta e redigindo a resposta, sem ser fonte dos valores (incluso em [UC004], [UC005] e [UC006]). \\ \hline
 \textbf{Fluxo Principal} &
 1. O sistema recebe a pergunta, já sem CPF, PIN, telefone ou e-mail;\newline
@@ -719,11 +721,11 @@ b. O cadastro não foi concluído:\newline
 
 
 \vspace{10pt}
-\noindent\textbf{Grupo 2 — Análise Preditiva e Alertas}
+\noindent\textbf{Grupo 2 - Análise Preditiva e Alertas}
 
 \vspace{4pt}
 
-Os quadros \ref{frame:uc010} a \ref{frame:uc017} descrevem os casos de uso relativos à análise preditiva e aos alertas automáticos, abrangendo a sincronização de transações, a categorização, a detecção de recorrências, a projeção de gastos e os avisos sobre gastos atípicos, limites de gasto e cobranças duplicadas.
+Os quadros \ref{frame:uc010} a \ref{frame:uc030} descrevem os casos de uso relativos à análise preditiva e aos alertas automáticos, abrangendo a sincronização de transações, a categorização, a detecção de recorrências, a projeção de gastos, os avisos sobre gastos atípicos, limites de gasto e cobranças duplicadas, o saldo livre do fim do mês e a simulação de compra.
 
 \vspace{4pt}
 
@@ -923,8 +925,8 @@ a. O rótulo do conector é desconhecido:\newline
 \sourcerow{2} \\
 \endlastfoot
 \textbf{Caso de uso} & [UC016] Sincronizar transações automaticamente \\ \hline
-\textbf{Ator(es)} & Sistema (\textit{Scheduler}), Pluggy (\textit{Open Finance}) \\ \hline
-\textbf{Motivação} & Manter os dados financeiros atualizados por meio de uma varredura a cada 6 horas e dos avisos enviados pela Pluggy, para conexões com consentimento ativo (inclui [UC014] e [UC015]). \\ \hline
+\textbf{Ator(es)} & Sistema (\textit{Scheduler}), Agregador (\textit{Open Finance}) \\ \hline
+\textbf{Motivação} & Manter os dados financeiros atualizados por meio de uma varredura a cada 6 horas e dos avisos enviados pelo agregador, para conexões com consentimento ativo (inclui [UC014] e [UC015]). \\ \hline
 \textbf{Fluxo Principal} &
 1. A varredura identifica as conexões com consentimento ativo;\newline
 2. O sistema solicita a atualização ao agregador quando necessário;\newline
@@ -934,7 +936,7 @@ a. O rótulo do conector é desconhecido:\newline
 6. O sistema avalia os sinais financeiros.
 \\ \hline
 \textbf{Fluxo Alternativo} &
-a. A Pluggy está indisponível:\newline
+a. O agregador está indisponível:\newline
 \hspace*{1em}i. O sistema registra a falha;\newline
 \hspace*{1em}ii. A atualização é tentada na próxima varredura.\newline
 b. O consentimento atingiu o prazo escolhido pelo titular:\newline
@@ -972,9 +974,73 @@ a. O par corresponde a um estorno ou a parcelas:\newline
 \end{longtable}
 }
 
+\vspace{4pt}
+
+{\small
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[UC029] Consultar saldo livre do fim do mês} \label{frame:uc029} \\
+\continuesmark
+\hline
+\endfirsthead
+\hline
+\endhead
+\endfoot
+\sourcerow{2} \\
+\endlastfoot
+\textbf{Caso de uso} & [UC029] Consultar saldo livre do fim do mês \\ \hline
+\textbf{Ator(es)} & Usuário \\ \hline
+\textbf{Motivação} & Responder, em regime de caixa, quanto deve sobrar nas contas correntes conectadas no último dia do mês, a partir dos dados sincronizados (inclui [UC016]). \\ \hline
+\textbf{Fluxo Principal} &
+1. O usuário pergunta quanto sobra ou quanto pode gastar até o fim do mês;\newline
+2. O sistema reconhece a pergunta por regra, sem o modelo de linguagem;\newline
+3. O sistema parte do saldo disponível das contas correntes e desconta as faturas a vencer, as recorrências em conta e os agendamentos;\newline
+4. O sistema soma a parte estimada: a mediana do movimento líquido restante dos seis meses anteriores, cuja amplitude define a faixa;\newline
+5. O sistema monta a resposta no servidor, como faixa de valores, sem formulação de licença para gastar.
+\\ \hline
+\textbf{Fluxo Alternativo} &
+a. Há menos de três meses de histórico, conexão desatualizada ou lançamento ilegível:\newline
+\hspace*{1em}i. O sistema recusa a estimativa e declara o motivo.\newline
+b. O usuário está sem o token de privilégio:\newline
+\hspace*{1em}i. O sistema pede o PIN e não calcula a estimativa.
+\\ \hline
+\end{longtable}
+}
+
+\vspace{4pt}
+
+{\small
+\begin{longtable}{|L{3.5cm}|L{11.0cm}|}
+\caption{[UC030] Simular compra} \label{frame:uc030} \\
+\continuesmark
+\hline
+\endfirsthead
+\hline
+\endhead
+\endfoot
+\sourcerow{2} \\
+\endlastfoot
+\textbf{Caso de uso} & [UC030] Simular compra \\ \hline
+\textbf{Ator(es)} & Usuário \\ \hline
+\textbf{Motivação} & Mostrar o efeito de uma compra hipotética, à vista ou parcelada, sobre o que o sistema já mede, sem emitir recomendação de compra (inclui [UC013]). \\ \hline
+\textbf{Fluxo Principal} &
+1. O usuário descreve a compra (``e se eu comprar X de R\$~Y em Nx?''), podendo citar o cartão;\newline
+2. O sistema lê a frase por regra e calcula as parcelas, que sempre somam o total informado;\newline
+3. Com o cartão citado, as parcelas seguem o fechamento da fatura; sem cartão, cada parcela cai no mês correspondente;\newline
+4. O sistema apresenta a estimativa do fim do mês antes e depois ([UC013]), a folga das metas de limite afetadas e os compromissos dos doze meses seguintes com a parcela somada;\newline
+5. A resposta é montada no servidor, sem o modelo de linguagem, e nada é gravado.
+\\ \hline
+\textbf{Fluxo Alternativo} &
+a. O titular informa juros (parcelas que somam mais que o total):\newline
+\hspace*{1em}i. A diferença é tratada como juros informados e declarada na resposta.\newline
+b. O usuário está sem o token de privilégio:\newline
+\hspace*{1em}i. O sistema pede o PIN antes de calcular.
+\\ \hline
+\end{longtable}
+}
+
 
 \vspace{10pt}
-\noindent\textbf{Grupo 3 — Metas Financeiras e Resumos Periódicos}
+\noindent\textbf{Grupo 3 - Metas Financeiras e Resumos Periódicos}
 
 \vspace{4pt}
 
@@ -1006,7 +1072,7 @@ Os quadros \ref{frame:uc018} a \ref{frame:uc027} descrevem os casos de uso relat
 \textbf{Fluxo Alternativo} &
 a. Dados inválidos, como valor negativo ou prazo no passado:\newline
 \hspace*{1em}i. O sistema informa o erro e solicita correção.\newline
-b. O plano gratuito já possui uma meta ativa:\newline
+b. O plano do titular atingiu o número de metas ativas permitido:\newline
 \hspace*{1em}i. O sistema informa o limite e apresenta o plano Pro.
 \\ \hline
 \end{longtable}
@@ -1122,7 +1188,7 @@ a. O usuário cancela a operação:\newline
 \textbf{Ator(es)} & Sistema (\textit{Scheduler}) \\ \hline
 \textbf{Motivação} & Enviar ao usuário que aderiu ao resumo semanal um aviso, toda segunda-feira, de que o resumo dos sete dias anteriores está disponível, sem valores nem categorias no aviso. \\ \hline
 \textbf{Fluxo Principal} &
-1. Toda segunda-feira, às 9h, o sistema identifica os titulares com adesão ao resumo semanal;\newline
+1. Toda segunda-feira, às 9h, o sistema identifica os titulares com o resumo semanal habilitado, que é o padrão para cadastros concluídos;\newline
 2. O sistema calcula entradas, despesas, as três principais categorias e a comparação com o período anterior;\newline
 3. O sistema guarda o resumo cifrado;\newline
 4. O sistema envia o aviso na janela de horário escolhida pelo titular;\newline
@@ -1154,7 +1220,7 @@ b. O titular não possui conexões ativas:\newline
 \textbf{Ator(es)} & Sistema (\textit{Scheduler}) \\ \hline
 \textbf{Motivação} & Enviar ao usuário que aderiu ao fechamento mensal um aviso, no primeiro dia de cada mês, de que o resumo do mês anterior está disponível. \\ \hline
 \textbf{Fluxo Principal} &
-1. No dia 1, às 9h, o sistema identifica os titulares com adesão ao fechamento mensal;\newline
+1. No dia 1, às 9h, o sistema identifica os titulares com o fechamento mensal habilitado, que é o padrão para cadastros concluídos;\newline
 2. O sistema calcula os números do mês anterior;\newline
 3. O sistema guarda o resumo cifrado;\newline
 4. O sistema envia o aviso; quando semanal e mensal ficam prontos no mesmo dia, saem em um único aviso;\newline
@@ -1289,11 +1355,11 @@ a. O cadastro não foi concluído ou os termos não foram aceitos:\newline
 
 
 \vspace{10pt}
-\noindent\textbf{Grupo 4 — Direitos do Titular (LGPD Art.\ 18)}
+\noindent\textbf{Grupo 4 - Direitos do Titular (LGPD Art.\ 18)}
 
 \vspace{4pt}
 
-Os quadros \ref{frame:lc001} a \ref{frame:lc010} descrevem os casos de uso relativos aos direitos do titular previstos no Art.\ 18 da LGPD, abrangendo consulta, exportação, correção, revogação e exclusão de dados pessoais, bem como os casos de uso de suporte internos ao sistema (registro em \textit{audit log}, anonimização, revogação na Pluggy e exclusão de conversas, sessões e dados derivados).
+Os quadros \ref{frame:lc001} a \ref{frame:lc010} descrevem os casos de uso relativos aos direitos do titular previstos no Art.\ 18 da LGPD, abrangendo consulta, exportação, correção, revogação e exclusão de dados pessoais, bem como os casos de uso de suporte internos ao sistema (registro em \textit{audit log}, anonimização, revogação no agregador e exclusão de conversas, sessões e dados derivados).
 
 \vspace{4pt}
 
@@ -1326,7 +1392,7 @@ Não se aplica.
 
 {\small
 \begin{longtable}{|L{3.5cm}|L{11.0cm}|}
-\caption{[LC002] Exportar dados — portabilidade (Art.\ 18, II e V)} \label{frame:lc002} \\
+\caption{[LC002] Exportar dados - portabilidade (Art.\ 18, II e V)} \label{frame:lc002} \\
 \continuesmark
 \hline
 \endfirsthead
@@ -1335,7 +1401,7 @@ Não se aplica.
 \endfoot
 \sourcerow{2} \\
 \endlastfoot
-\textbf{Caso de uso} & [LC002] Exportar dados — portabilidade (Art.\ 18, II e V) \\ \hline
+\textbf{Caso de uso} & [LC002] Exportar dados - portabilidade (Art.\ 18, II e V) \\ \hline
 \textbf{Ator(es)} & Usuário (Titular), Sistema (\textit{Audit Service}) \\ \hline
 \textbf{Motivação} & Garantir ao titular o direito de exportar seus dados pessoais e financeiros em formato estruturado, entregue no próprio canal do pedido, com registro de auditoria (inclui [LC007]). \\ \hline
 \textbf{Fluxo Principal} &
@@ -1399,13 +1465,13 @@ a. Dados inválidos informados:\newline
 \sourcerow{2} \\
 \endlastfoot
 \textbf{Caso de uso} & [LC004] Revogar consentimento \textit{Open Finance} (Art.\ 18, IX) \\ \hline
-\textbf{Ator(es)} & Usuário (Titular), Pluggy (\textit{Open Finance}), Sistema (\textit{Audit Service}) \\ \hline
+\textbf{Ator(es)} & Usuário (Titular), Agregador (\textit{Open Finance}), Sistema (\textit{Audit Service}) \\ \hline
 \textbf{Motivação} & Permitir ao titular revogar o consentimento de compartilhamento de dados via \textit{Open Finance}, encerrando a sincronização, conforme Art.\ 18, IX da LGPD (inclui [LC007] e [LC009]). \\ \hline
 \textbf{Fluxo Principal} &
 1. O usuário solicita ``revogar consentimento'' ou a remoção de um banco;\newline
 2. O sistema exibe as implicações e solicita confirmação por botões;\newline
 3. O usuário confirma a revogação;\newline
-4. O sistema revoga o acesso na Pluggy ([LC009]);\newline
+4. O sistema revoga o acesso no agregador ([LC009]);\newline
 5. O sistema encerra a sincronização da conexão;\newline
 6. O sistema registra a operação no \textit{audit log} ([LC007]);\newline
 7. O sistema confirma a revogação.
@@ -1413,7 +1479,7 @@ a. Dados inválidos informados:\newline
 \textbf{Fluxo Alternativo} &
 a. O usuário cancela a operação:\newline
 \hspace*{1em}i. O sistema retorna sem realizar alterações.\newline
-b. Erro ao revogar o acesso na Pluggy:\newline
+b. Erro ao revogar o acesso no agregador:\newline
 \hspace*{1em}i. O sistema registra a falha;\newline
 \hspace*{1em}ii. O sistema tenta novamente.
 \\ \hline
@@ -1434,14 +1500,14 @@ b. Erro ao revogar o acesso na Pluggy:\newline
 \sourcerow{2} \\
 \endlastfoot
 \textbf{Caso de uso} & [LC005] Solicitar exclusão de dados (Art.\ 18, VI) \\ \hline
-\textbf{Ator(es)} & Usuário (Titular), Pluggy (\textit{Open Finance}), Sistema (\textit{Audit Service}) \\ \hline
+\textbf{Ator(es)} & Usuário (Titular), Agregador (\textit{Open Finance}), Sistema (\textit{Audit Service}) \\ \hline
 \textbf{Motivação} & Garantir ao titular o direito de solicitar a exclusão de seus dados pessoais. A conta é desativada sem dados pessoais, e os registros de auditoria são mantidos por 5 anos conforme o Art.\ 16 da LGPD (inclui [LC007], [LC008], [LC009] e [LC010]). \\ \hline
 \textbf{Fluxo Principal} &
 1. O usuário solicita ``excluir meus dados'';\newline
 2. O sistema reconhece o comando por regra determinística e solicita o PIN;\newline
 3. O sistema exibe o que será apagado e o que será mantido e pede confirmação por botões, válida por 10 minutos;\newline
 4. O usuário confirma a exclusão;\newline
-5. O sistema revoga as conexões na Pluggy ([LC009]) e anonimiza as transações ([LC008]);\newline
+5. O sistema revoga as conexões no agregador ([LC009]) e anonimiza as transações ([LC008]);\newline
 6. O sistema cancela a assinatura e apaga conversas, sessões e dados derivados ([LC010]);\newline
 7. O sistema remove nome, CPF, e-mail e PIN do cadastro;\newline
 8. O sistema envia a confirmação final pelo canal do pedido;\newline
@@ -1547,7 +1613,7 @@ a. Uma sincronização do titular está em andamento:\newline
 
 {\small
 \begin{longtable}{|L{3.5cm}|L{11.0cm}|}
-\caption{[LC009] Revogar acesso na Pluggy} \label{frame:lc009} \\
+\caption{[LC009] Revogar acesso no agregador} \label{frame:lc009} \\
 \continuesmark
 \hline
 \endfirsthead
@@ -1556,16 +1622,16 @@ a. Uma sincronização do titular está em andamento:\newline
 \endfoot
 \sourcerow{2} \\
 \endlastfoot
-\textbf{Caso de uso} & [LC009] Revogar acesso na Pluggy \\ \hline
-\textbf{Ator(es)} & Sistema, Pluggy (\textit{Open Finance}) \\ \hline
-\textbf{Motivação} & Encerrar o acesso da solução aos dados bancários do usuário junto à Pluggy, desabilitando o consentimento de \textit{Open Finance} (incluso em [LC004] e [LC005]). \\ \hline
+\textbf{Caso de uso} & [LC009] Revogar acesso no agregador \\ \hline
+\textbf{Ator(es)} & Sistema, Agregador (\textit{Open Finance}) \\ \hline
+\textbf{Motivação} & Encerrar o acesso da solução aos dados bancários do usuário junto ao agregador, desabilitando o consentimento de \textit{Open Finance} (incluso em [LC004] e [LC005]). \\ \hline
 \textbf{Fluxo Principal} &
-1. O sistema envia a solicitação de encerramento à API da Pluggy;\newline
-2. A Pluggy encerra a conexão;\newline
+1. O sistema envia a solicitação de encerramento à API do agregador;\newline
+2. O agregador encerra a conexão;\newline
 3. O sistema atualiza o status do consentimento.
 \\ \hline
 \textbf{Fluxo Alternativo} &
-a. A Pluggy está indisponível:\newline
+a. O agregador está indisponível:\newline
 \hspace*{1em}i. O sistema registra a falha;\newline
 \hspace*{1em}ii. O sistema tenta novamente;\newline
 \hspace*{1em}iii. Na exclusão de conta, os dados locais são apagados mesmo assim.

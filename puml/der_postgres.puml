@@ -1,7 +1,10 @@
 @startuml der_postgres
-skinparam defaultFontName Arial
+skinparam defaultFontName "DejaVu Sans"
 skinparam shadowing false
-skinparam dpi 150
+skinparam monochrome true
+skinparam dpi 220
+skinparam defaultFontSize 15
+skinparam ArrowThickness 1.3
 skinparam linetype polyline
 skinparam nodesep 25
 skinparam ranksep 45
@@ -10,16 +13,16 @@ hide members
 hide methods
 left to right direction
 skinparam class {
-    BackgroundColor #FFFFFF
-    BorderColor #555555
-    FontSize 11
+    BackgroundColor White
+    BorderColor Black
+    FontSize 15
 }
 skinparam package {
-    BorderColor #888888
-    FontSize 12
+    BorderColor Black
+    FontSize 16
 }
 
-package "Identity Service" #EAF2FB {
+package "Identity Service" {
     entity users
     entity user_channels
     entity data_deletion_requests
@@ -32,9 +35,11 @@ package "Identity Service" #EAF2FB {
     entity lead_lists
     entity lead_list_members
     entity holder_feedback
+    entity oauth_clients
+    entity assistant_connections
 }
 
-package "Finance Service" #EAF7EA {
+package "Finance Service" {
     entity consents
     entity financial_goals
     entity saved_amount_entries
@@ -43,17 +48,20 @@ package "Finance Service" #EAF7EA {
     entity user_data_versions
     entity budget_alert_states
     entity signal_states
+    entity financial_write_attempts
 }
 
-package "Billing Service" #FFF6E5 {
+package "Billing Service" {
     entity subscriptions
     entity billing_events
     entity usage_prices
     entity exchange_rates
     entity usage_costs
+    entity plans
+    entity plan_prices
 }
 
-package "Notification Service" #FCEBEF {
+package "Notification Service" {
     entity campaigns
     entity campaign_recipients
     entity periodic_summaries
@@ -68,7 +76,7 @@ package "Notification Service" #FCEBEF {
     entity alert_delivery_receipts
 }
 
-package "Audit Service" #F2F2F2 {
+package "Audit Service" {
     entity audit_logs
 }
 
@@ -83,6 +91,8 @@ users ||--o| access_requests
 lead_lists ||--o{ lead_list_members
 users ||--o{ lead_list_members
 users ||--o{ holder_feedback
+users ||--o{ assistant_connections
+oauth_clients ||--o{ assistant_connections
 
 users ||--o{ consents
 users ||--o{ financial_goals
@@ -95,8 +105,11 @@ users ||--o{ summary_document_receipts
 users ||--o| user_data_versions
 users ||--o{ budget_alert_states
 users ||--o{ signal_states
+users ||--o{ financial_write_attempts
 
 users ||--o{ subscriptions
+plans ||--o{ subscriptions
+plans ||--o{ plan_prices
 subscriptions ||--o{ billing_events
 users ||--o{ usage_costs
 usage_prices ||--o{ usage_costs

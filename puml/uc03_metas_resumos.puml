@@ -1,10 +1,12 @@
 @startuml UC03 - Metas Financeiras e Resumos Periodicos
 left to right direction
 skinparam packageStyle rectangle
-skinparam actorStyle awesome
-skinparam defaultFontName Arial
+skinparam monochrome true
+skinparam defaultFontName "DejaVu Sans"
 skinparam shadowing false
-skinparam dpi 150
+skinparam dpi 220
+skinparam defaultFontSize 16
+skinparam ArrowThickness 1.4
 
 actor "Usuário" as U
 actor "Sistema\n(Scheduler)" as SYS
@@ -43,10 +45,10 @@ UC24 ..> UC25 : <<include>>
 UC27 ..> UC26 : <<extend>>
 
 note right of UC22
-  Adesão explícita, desativado
-  de fábrica. O aviso não contém
-  valores, percentuais nem
-  categorias.
+  Habilitado por padrão; desativação
+  por mensagem, tipo a tipo.
+  O aviso não contém valores,
+  percentuais nem categorias.
 end note
 
 note right of UC18

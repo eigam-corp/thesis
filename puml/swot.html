@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<style>
+@font-face { font-family:'Bricolage Eigam'; src:url('BricolageGrotesque-latin.woff2') format('woff2'); font-weight:200 800; font-stretch:75% 100%; }
+@font-face { font-family:'Inter Eigam'; src:url('Inter-Variable.woff') format('woff'); font-weight:100 900; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { width:1760px; height:1000px; background:#F6F8F1; font-family:'Inter Eigam',sans-serif; color:#203825; padding:28px 32px 32px 32px; }
+.wrap { display:grid; grid-template-columns:56px 1fr 1fr; grid-template-rows:44px 1fr 1fr; gap:18px; height:100%; }
+.col-h { display:flex; align-items:center; gap:12px; font-size:16px; font-weight:700; letter-spacing:1.6px; text-transform:uppercase; color:#4A5A4D; }
+.col-h::after { content:""; flex:1; height:1.5px; background:#C9D6C4; }
+.row-h { display:flex; align-items:center; justify-content:center; }
+.row-h span { writing-mode:vertical-rl; transform:rotate(180deg); font-size:16px; font-weight:700; letter-spacing:1.6px; text-transform:uppercase; color:#4A5A4D; }
+.q { position:relative; border-radius:24px; padding:32px 38px 28px; overflow:hidden; }
+.q .top { display:flex; align-items:center; gap:18px; margin-bottom:22px; }
+.q .letra { flex:none; width:62px; height:62px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:'Bricolage Eigam',sans-serif; font-weight:800; font-size:34px; }
+.q h2 { font-family:'Bricolage Eigam',sans-serif; font-weight:700; font-size:40px; letter-spacing:-.6px; line-height:1; }
+.q ul { list-style:none; }
+.q li { position:relative; font-size:23.5px; line-height:1.36; padding-left:34px; margin-bottom:13px; }
+.q li::before { content:""; position:absolute; left:2px; top:10px; width:13px; height:13px; border-radius:50%; }
+.q .marca { display:none; position:absolute; right:-14px; bottom:-74px; font-family:'Bricolage Eigam',sans-serif; font-weight:800; font-size:300px; line-height:1; letter-spacing:-8px; opacity:.07; pointer-events:none; }
+
+/* Forcas: o quadrante de destaque, no verde da marca */
+.s { background:#203825; color:#FFFFFF; }
+.s .letra { background:#DCFB67; color:#203825; }
+.s h2 { color:#DCFB67; }
+.s li { color:#F6F8F1; }
+.s li::before { background:#DCFB67; }
+.s .marca { color:#DCFB67; opacity:.10; }
+
+/* Oportunidades: lima da marca */
+.o { background:#DCFB67; color:#203825; }
+.o .letra { background:#203825; color:#DCFB67; }
+.o h2 { color:#203825; }
+.o li::before { background:#203825; }
+.o .marca { color:#203825; opacity:.08; }
+
+/* Fraquezas e ameacas: cartoes brancos com contorno da marca */
+.w, .t { background:#FFFFFF; border:2px solid #203825; }
+.w .letra, .t .letra { background:#203825; color:#DCFB67; }
+.w h2, .t h2 { color:#203825; }
+.w li, .t li { color:#203825; }
+.w li::before, .t li::before { background:#203825; width:16px; height:4px; top:15px; border-radius:2px; }
+.w .marca, .t .marca { color:#203825; opacity:.05; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div></div>
+  <div class="col-h">Fatores positivos</div>
+  <div class="col-h">Fatores negativos</div>
+
+  <div class="row-h"><span>Origem interna</span></div>
+  <div class="q s">
+    <div class="top"><span class="letra">S</span><h2>Forças</h2></div>
+    <ul>
+      <li>Funciona na ferramenta de conversa que o usuário já utiliza</li>
+      <li>Visão consolidada de vários bancos pelo Open Finance</li>
+      <li>Valores calculados sobre dados reais, nunca estimados pelo modelo</li>
+      <li>Privacidade por mecanismos: PIN, cifragem e direitos da LGPD por mensagem</li>
+      <li>Novos canais e assistentes de IA entram por adaptador</li>
+    </ul>
+    <span class="marca">S</span>
+  </div>
+  <div class="q w">
+    <div class="top"><span class="letra">W</span><h2>Fraquezas</h2></div>
+    <ul>
+      <li>Dependência de serviços externos de dados, IA e mensageria</li>
+      <li>Custo variável por conexão bancária e por mensagem</li>
+      <li>Base de usuários ainda restrita ao beta fechado</li>
+      <li>Latência das respostas complexas acima da meta</li>
+      <li>Limitações visuais do canal conversacional</li>
+    </ul>
+    <span class="marca">W</span>
+  </div>
+
+  <div class="row-h"><span>Origem externa</span></div>
+  <div class="q o">
+    <div class="top"><span class="letra">O</span><h2>Oportunidades</h2></div>
+    <ul>
+      <li>Crescimento do Open Finance no Brasil</li>
+      <li>Público jovem, nativo digital e com contas em vários bancos</li>
+      <li>Difusão de assistentes de IA e do protocolo MCP</li>
+      <li>Demanda por educação e organização financeira</li>
+      <li>Novos canais de conversa com baixo custo de integração</li>
+    </ul>
+    <span class="marca">O</span>
+  </div>
+  <div class="q t">
+    <div class="top"><span class="letra">T</span><h2>Ameaças</h2></div>
+    <ul>
+      <li>Concorrência de bancos digitais e fintechs com assistentes próprios</li>
+      <li>Mudanças de preço e de regras dos provedores de mensageria</li>
+      <li>Mudanças regulatórias na LGPD e no Open Finance</li>
+      <li>Resistência ao compartilhamento de dados financeiros</li>
+      <li>Instabilidade de integrações de terceiros</li>
+    </ul>
+    <span class="marca">T</span>
+  </div>
+</div>
+</body>
+</html>

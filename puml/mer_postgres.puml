@@ -1,7 +1,10 @@
 @startuml mer_postgres
-skinparam defaultFontName Arial
+skinparam defaultFontName "DejaVu Sans"
 skinparam shadowing false
-skinparam dpi 150
+skinparam monochrome true
+skinparam dpi 220
+skinparam defaultFontSize 14
+skinparam ArrowThickness 1.3
 skinparam linetype polyline
 left to right direction
 skinparam nodesep 30
@@ -9,12 +12,12 @@ skinparam ranksep 40
 hide circle
 hide methods
 skinparam class {
-    BackgroundColor #FFFFFF
-    BorderColor #2F5F8A
-    HeaderBackgroundColor #2F6B9A
-    HeaderFontColor #FFFFFF
-    FontSize 11
-    AttributeFontSize 10
+    BackgroundColor White
+    BorderColor Black
+    HeaderBackgroundColor WhiteSmoke
+    HeaderFontColor Black
+    FontSize 14
+    AttributeFontSize 13
 }
 
 entity users {
@@ -26,7 +29,7 @@ entity users {
     email_encrypted : BYTEA
     pin_hash : VARCHAR(60)
     onboarding_step : ENUM
-    plan : ENUM
+    plan : VARCHAR(40)
     preferences : JSONB
     timezone : TEXT
     privacy_accepted_at : TIMESTAMPTZ
@@ -89,7 +92,7 @@ entity subscriptions {
     * id : UUID <<PK>>
     --
     user_id : UUID <<FK>>
-    plan : ENUM
+    plan : VARCHAR(40)
     cycle : ENUM
     status : ENUM
     provider : VARCHAR(50)

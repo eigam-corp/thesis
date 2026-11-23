@@ -1,14 +1,16 @@
 @startuml UC01 - Acesso e Consulta Financeira
 left to right direction
 skinparam packageStyle rectangle
-skinparam actorStyle awesome
-skinparam defaultFontName Arial
+skinparam monochrome true
+skinparam defaultFontName "DejaVu Sans"
 skinparam shadowing false
-skinparam dpi 150
+skinparam dpi 220
+skinparam defaultFontSize 16
+skinparam ArrowThickness 1.4
 
 actor "Usuário" as U
-actor "Pluggy\n(Open Finance)" as PL
-actor "OpenAI\n(LLM)" as AI
+actor "Agregador\n(Open Finance)" as PL
+actor "Provedor\nde LLM" as AI
 
 rectangle "Acesso e Consulta Financeira" {
     usecase "Realizar cadastro\npela conversa" as UC01
@@ -53,8 +55,8 @@ note right of UC09
 end note
 
 note right of UC03
-  PIN armazenado com bcrypt
-  (12 salt rounds) no PostgreSQL.
+  PIN guardado apenas como
+  hash criptográfico.
   Bloqueio de 30 min
   após 5 falhas.
 end note

@@ -2,13 +2,13 @@
 
 Segundo Elmasri e Navathe (2011, p. 131), ``Geralmente o termo aplicação de banco de dados refere-se a um banco de dados em particular e aos programas associados que implementam as consultas e atualizações dele''. Com isso em mente, a modelagem do banco de dados se trata de uma fase indispensável do desenvolvimento de um produto. Ao se pensar em como será a estrutura de um banco e seus relacionamentos, é possível trazer à tona regras de negócios e comportamentos implícitos que poderiam não ser identificados ao não se passar por esse estágio antes do desenvolvimento do produto.
 
-A plataforma adota uma estratégia de persistência poliglota, com dois bancos de dados de propósitos complementares: o PostgreSQL para dados relacionais, como titulares, identidades de canal, consentimentos, metas, assinaturas, custos, operação e registros de auditoria, e o MongoDB para dados semiestruturados de alto volume, como transações, saldos, faturas, investimentos, empréstimos e histórico de conversa. O Redis complementa os dois com dados efêmeros, como sessões, token de privilégio e estado de conversa. Essa separação permite otimizar cada banco para seu caso de uso, garantindo desempenho, escalabilidade e conformidade com a LGPD.
+A solução adota uma estratégia de persistência poliglota, com dois bancos de dados de propósitos complementares: o PostgreSQL para dados relacionais, como titulares, identidades de canal, consentimentos, metas, assinaturas, custos, operação e registros de auditoria, e o MongoDB para dados semiestruturados de alto volume, como transações, saldos, faturas, investimentos, empréstimos e histórico de conversa. O Redis complementa os dois com dados efêmeros, como sessões, token de privilégio e estado de conversa. Essa separação permite otimizar cada banco para seu caso de uso, garantindo desempenho, escalabilidade e conformidade com a LGPD.
 
-Cada tabela e coleção pertence a um único serviço, e nenhum serviço consulta diretamente os dados de outro. O esquema relacional é mantido em 51 migrações SQL versionadas, aplicadas automaticamente a cada implantação e imutáveis depois de aplicadas. Em relação ao modelo do TCC~1, a principal mudança foi a identidade do usuário: o número de telefone deixou de ser um atributo de \texttt{users} e passou a ser uma identidade de canal, na tabela \texttt{user\_channels}, o que permite ao mesmo titular usar o \textit{WhatsApp}, o \textit{Telegram} e o painel \textit{web}.
+Cada tabela e coleção pertence a um único serviço, e nenhum serviço consulta diretamente os dados de outro. O esquema relacional é mantido em 62 migrações SQL versionadas, aplicadas automaticamente a cada implantação e imutáveis depois de aplicadas. Em relação ao modelo inicial, a principal mudança foi a identidade do usuário: o número de telefone deixou de ser um atributo de \texttt{users} e passou a ser uma identidade de canal, na tabela \texttt{user\_channels}, o que permite ao mesmo titular usar o \textit{WhatsApp}, o \textit{Telegram} e o painel \textit{web}. As últimas migrações acrescentaram as estruturas das frentes mais recentes: o catálogo de planos e o período de teste (\texttt{plans} e \texttt{plan\_prices}), as conexões de assistentes externos e seus clientes OAuth (\texttt{assistant\_connections} e \texttt{oauth\_clients}), o diário de intenções de escrita financeira usado na recuperação de falhas (\texttt{financial\_write\_attempts}), o livro-razão reversível das metas de valor guardado e as colunas da caixa de saída transacional dos alertas.
 
 \section{Diagrama entidade relacionamento}
 
-A Figura \ref{fig:der_postgres} apresenta o Diagrama de Entidade Relacionamento do banco relacional, com as 38 tabelas agrupadas pelo serviço que é dono de cada uma e os respectivos relacionamentos. Quase todas as entidades dependem de \texttt{users}, o que reflete uma decisão de privacidade: a exclusão de um titular alcança todos os dados derivados, enquanto o registro de auditoria, que não possui chave estrangeira para \texttt{users}, guarda apenas referências e é mantido por obrigação legal.
+A Figura \ref{fig:der_postgres} apresenta o Diagrama de Entidade Relacionamento do banco relacional, com as 43 tabelas agrupadas pelo serviço que é dono de cada uma e os respectivos relacionamentos. Quase todas as entidades dependem de \texttt{users}, o que reflete uma decisão de privacidade: a exclusão de um titular alcança todos os dados derivados, enquanto o registro de auditoria, que não possui chave estrangeira para \texttt{users}, guarda apenas referências e é mantido por obrigação legal.
 
 \begin{figure}[htbp]
     \centering
@@ -26,7 +26,7 @@ Na Figura \ref{fig:mer_postgres} é apresentado o modelo entidade relacionamento
 
 \begin{figure}[htbp]
     \centering
-    \caption{MER do núcleo do sistema — PostgreSQL}
+    \caption{MER do núcleo do sistema - PostgreSQL}
     \label{fig:mer_postgres}
     \includegraphics[height=0.85\textheight]{images/mer_postgres.png}
     \authorssource
@@ -34,13 +34,13 @@ Na Figura \ref{fig:mer_postgres} é apresentado o modelo entidade relacionamento
 
 \section{Modelo de dados orientado a documentos}
 
-O MongoDB, gerenciado pelo MongoDB Atlas em Frankfurt, armazena os dados sincronizados via \textit{Open Finance} e o histórico de conversas dos usuários. A flexibilidade do modelo de documentos permite representar estruturas que variam conforme a instituição e o tipo de produto financeiro, sem a necessidade de migrações de esquema. Para garantir a conformidade com a LGPD, campos monetários e textuais sensíveis são cifrados com AES-256-GCM na camada de aplicação antes da persistência, com uma chave derivada para cada titular. Nos diagramas, esses campos estão indicados como cifrados.
+O MongoDB, em um serviço gerenciado em Frankfurt, armazena os dados sincronizados via \textit{Open Finance} e o histórico de conversas dos usuários. A flexibilidade do modelo de documentos permite representar estruturas que variam conforme a instituição e o tipo de produto financeiro, sem a necessidade de migrações de esquema. Para garantir a conformidade com a LGPD, campos monetários e textuais sensíveis são cifrados com AES-256-GCM na camada de aplicação antes da persistência, com uma chave derivada para cada titular. Nos diagramas, esses campos estão indicados como cifrados.
 
 Na Figura \ref{fig:mongo} é apresentado o modelo de dados orientado a documentos utilizado no MongoDB.
 
 \begin{figure}[htbp]
     \centering
-    \caption{Modelo de dados — MongoDB}
+    \caption{Modelo de dados - MongoDB}
     \label{fig:mongo}
     \includegraphics[width=\textwidth]{images/mongo.png}
     \authorssource
@@ -62,4 +62,4 @@ A coleção \texttt{conversation\_history} persiste o histórico das conversas e
 
 \subsection{Coleção \textit{predictions}}
 
-A coleção \texttt{predictions} guarda as projeções de gasto calculadas pelo \textit{Analytics Service}, com o método utilizado, o período e o resultado cifrado, incluindo a abstenção quando nenhum método é aprovado no teste retrospectivo. Os documentos expiram automaticamente.
+A coleção \texttt{predictions} guarda as projeções calculadas pelo \textit{Analytics Service}, com o método utilizado, o período e o resultado cifrado, incluindo a abstenção quando nenhum método é aprovado no teste retrospectivo. Um registro de previsões (\textit{prediction log}) acumula, a cada corte, a estimativa do modelo servido e dos candidatos em sombra, nos segmentos de gasto do mês, dos meses seguintes e de saldo livre; um fechamento mensal compara cada registro com o valor que de fato ocorreu, e é esse fechamento que pode liberar ou desligar um modelo. Os documentos expiram automaticamente.

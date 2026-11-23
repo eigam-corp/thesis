@@ -1,14 +1,17 @@
 @startuml processamento_mensagem
-skinparam defaultFontName Arial
+skinparam defaultFontName "DejaVu Sans"
 skinparam shadowing false
-skinparam dpi 150
+skinparam monochrome true
+skinparam dpi 220
+skinparam defaultFontSize 16
+skinparam ArrowThickness 1.4
 skinparam sequenceMessageAlign center
 hide footbox
 
 actor "Titular" as U
-participant "Mensageiro\n(Meta ou Telegram)" as CH
+participant "Mensageiro\n(WhatsApp ou Telegram)" as CH
 participant "API Gateway" as GW
-queue "Redpanda" as KF
+queue "Broker\n(API Kafka)" as KF
 participant "Chat Service" as CS
 participant "Identity\nService" as ID
 participant "AI Service" as AI
@@ -25,12 +28,12 @@ CS -> KF : indicador de digitação
 CS -> CS : comandos da LGPD e regras\ndeterminísticas (regex)
 CS -> ID : titular e passo do cadastro
 ID --> CS : estado do titular
-CS -> AI : POST /tools/plan/v2 (frase sem CPF, PIN ou e-mail)
-AI --> CS : plano: query_financial_data(período, categoria)
+CS -> AI : planejador: lê a frase (sem CPF, PIN ou e-mail)
+AI --> CS : plano: consulta financeira (período, categoria)
 CS -> CS : valida o plano, vincula o user_id\ne verifica o token de privilégio
 CS -> FS : consulta financeira
 FS --> CS : fatos (valores em centavos)
-CS -> AI : POST /answer (fatos estruturados)
+CS -> AI : redação da resposta (fatos estruturados)
 AI -> AI : guardrails de saída
 AI --> CS : resposta
 CS -> CS : mascaramento por regex\n(sem token: R$ •••••)

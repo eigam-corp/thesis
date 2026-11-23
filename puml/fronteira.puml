@@ -1,71 +1,77 @@
 @startuml Diagrama de Fronteira Sistemica
 skinparam packageStyle rectangle
-skinparam actorStyle awesome
+skinparam monochrome true
 skinparam linetype polyline
 skinparam nodesep 40
 skinparam ranksep 70
-skinparam defaultFontSize 12
-skinparam defaultFontName Arial
+skinparam defaultFontSize 15
+skinparam defaultFontName "DejaVu Sans"
 skinparam shadowing false
-skinparam ArrowColor #555555
-skinparam dpi 150
+skinparam ArrowColor Black
+skinparam ArrowThickness 1.4
+skinparam dpi 220
 
 skinparam rectangle {
-    BorderColor #333333
+    BorderColor Black
     BorderThickness 2
     FontStyle bold
-    FontSize 14
+    FontSize 17
 }
 
 skinparam package {
-    BorderColor #888888
+    BorderColor Black
     BorderThickness 1
-    FontSize 12
+    FontSize 15
 }
 
 skinparam component {
-    BackgroundColor #F5F5F5
-    BorderColor #666666
-    FontSize 11
+    BackgroundColor White
+    BorderColor Black
+    FontSize 14
 }
 
 skinparam database {
-    BackgroundColor #F5F5F5
-    BorderColor #666666
-    FontSize 11
+    BackgroundColor White
+    BorderColor Black
+    FontSize 14
 }
 
 actor "Titular" as USR
 actor "Equipe de\noperação" as OPS
 
-package "Mensageria" #FDECEA {
-    component "WhatsApp\nCloud API (Meta)" as WA
-    component "Telegram\nBot API" as TG
+package "Mensageria" {
+    component "API oficial\ndo WhatsApp" as WA
+    component "API oficial\ndo Telegram" as TG
 }
 
-package "Open Finance" #E8F5E9 {
-    component "Pluggy" as PLUGGY
+package "Open Finance" {
+    component "Agregador de dados\n(Open Finance)" as PLUGGY
 }
 
-package "Inteligência artificial" #EDE7F6 {
-    component "OpenAI\n(LLM e transcrição)" as AI
-    component "TypeSafe\n(juízo tipado)" as JEV
+package "Inteligência artificial" {
+    component "Provedor de LLM\n(planejamento, redação\ne transcrição)" as AI
+    component "Provedor do modelo\nde juízo tipado" as JEV
 }
 
-package "Pagamentos" #FFF8E1 {
-    component "Stripe" as STRIPE
+package "Assistentes de IA do titular" {
+    component "Cliente MCP\n(assistente externo)" as EXT
 }
 
-package "Borda" #E3F2FD {
-    component "Cloudflare\n(proxy, túnel, Access)" as CF
+package "Pagamentos" {
+    component "Provedor de\npagamentos" as STRIPE
 }
 
-rectangle "  EIGAM  " as SYS #FFFFFF {
+package "Borda" {
+    component "Serviço de borda\n(proxy, túnel e\nautenticação)" as CF
+}
+
+rectangle "  EIGAM  " as SYS {
 
     package "Entrada e painéis" {
         component "API Gateway" as GW
         component "Painel do titular" as HP
         component "Painel de operação" as AP
+        component "MCP Service" as MCP
     }
 
     package "Conversa e IA" {
@@ -88,7 +94,7 @@ rectangle "  EIGAM  " as SYS #FFFFFF {
     }
 
     package "Dados" {
-        queue "Redpanda\n(API Kafka)" as KF
+        queue "Broker de eventos\n(API Kafka)" as KF
         database "PostgreSQL\n(pgvector, pgcrypto)" as PG
         database "MongoDB" as MG
         database "Redis" as RD
@@ -111,6 +117,8 @@ rectangle "  EIGAM  " as SYS #FFFFFF {
     IDS --> PG
     HP --> IDS
     AP --> CS
+    MCP --> IDS
+    MCP --> FS
 }
 
 USR --> WA : mensagem
@@ -120,6 +128,8 @@ OPS --> CF : navegador
 CF --> GW
 CF --> HP
 CF --> AP
+CF --> MCP
+EXT --> CF : OAuth 2.1 e\nleitura (MCP)
 WA --> GW : webhook (HMAC)
 TG --> GW : webhook (segredo)
 OW --> WA : resposta

@@ -1,16 +1,18 @@
 @startuml UC04 - Direitos do Titular (LGPD Art. 18)
 left to right direction
 skinparam packageStyle rectangle
-skinparam actorStyle awesome
-skinparam defaultFontName Arial
+skinparam monochrome true
+skinparam defaultFontName "DejaVu Sans"
 skinparam shadowing false
-skinparam dpi 150
+skinparam dpi 220
+skinparam defaultFontSize 16
+skinparam ArrowThickness 1.4
 
 actor "Usuário\n(Titular)" as U
-actor "Pluggy\n(Open Finance)" as PL
+actor "Agregador\n(Open Finance)" as PL
 actor "Sistema\n(Audit Service)" as AUD
 
-rectangle "Direitos do Titular — LGPD Art. 18" {
+rectangle "Direitos do Titular - LGPD Art. 18" {
     usecase "Consultar quais dados\nsão tratados\n(Art. 18, I)" as LC01
     usecase "Exportar dados\nportabilidade\n(Art. 18, II e V)" as LC02
     usecase "Corrigir dados\ncadastrais\n(Art. 18, III)" as LC03
@@ -19,7 +21,7 @@ rectangle "Direitos do Titular — LGPD Art. 18" {
     usecase "Consultar com quem\ndados são compartilhados\n(Art. 18, VII)" as LC06
     usecase "Registrar operação\nem audit log" as LC07
     usecase "Anonimizar\ntransações" as LC08
-    usecase "Revogar acesso\nno Pluggy" as LC09
+    usecase "Revogar acesso\nno agregador" as LC09
     usecase "Apagar conversas,\nsessões e dados derivados" as LC10
 }
 

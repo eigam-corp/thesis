@@ -1,14 +1,16 @@
 @startuml UC02 - Analise Preditiva e Alertas
 left to right direction
 skinparam packageStyle rectangle
-skinparam actorStyle awesome
-skinparam defaultFontName Arial
+skinparam monochrome true
+skinparam defaultFontName "DejaVu Sans"
 skinparam shadowing false
-skinparam dpi 150
+skinparam dpi 220
+skinparam defaultFontSize 16
+skinparam ArrowThickness 1.4
 
 actor "Usuário" as U
 actor "Sistema\n(Scheduler)" as SYS
-actor "Pluggy\n(Open Finance)" as PL
+actor "Agregador\n(Open Finance)" as PL
 
 rectangle "Análise Preditiva e Alertas" {
     usecase "Receber alerta\nde gasto atípico" as UC10
@@ -19,6 +21,8 @@ rectangle "Análise Preditiva e Alertas" {
     usecase "Categorizar\ntransações" as UC15
     usecase "Sincronizar\ntransações automaticamente" as UC16
     usecase "Receber alerta de\ncobrança duplicada" as UC17
+    usecase "Consultar saldo livre\ndo fim do mês" as UC29
+    usecase "Simular\ncompra" as UC30
 }
 
 U --> UC10
@@ -26,6 +30,8 @@ U --> UC11
 U --> UC12
 U --> UC13
 U --> UC17
+U --> UC29
+U --> UC30
 
 SYS --> UC16
 SYS --> UC10 : escore-z robusto ≥ 3,5\nou aumento por categoria
@@ -41,6 +47,8 @@ UC13 ..> UC16 : <<include>>
 UC10 ..> UC16 : <<include>>
 UC11 ..> UC16 : <<include>>
 UC17 ..> UC16 : <<include>>
+UC29 ..> UC16 : <<include>>
+UC30 ..> UC13 : <<include>>
 
 note bottom of UC15
   Taxonomia do conector:
@@ -49,8 +57,20 @@ note bottom of UC15
 end note
 
 note bottom of UC13
-  Método escolhido por teste
+  Todos os candidatos passam pelos
+  mesmos critérios do teste
   retrospectivo; sem aprovação,
   o sistema se abstém.
+end note
+
+note bottom of UC29
+  Regime de caixa: saldo, faturas,
+  recorrentes e mediana do restante.
+  Recusa com motivo declarado.
+end note
+
+note bottom of UC30
+  Resposta montada pelo servidor,
+  sem recomendação de compra.
 end note
 @enduml

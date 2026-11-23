@@ -1,15 +1,18 @@
 @startuml mongo
-skinparam defaultFontName Arial
+skinparam defaultFontName "DejaVu Sans"
 skinparam shadowing false
-skinparam dpi 150
+skinparam monochrome true
+skinparam dpi 220
+skinparam defaultFontSize 14
+skinparam ArrowThickness 1.3
 hide circle
 hide methods
 skinparam class {
-    BackgroundColor #FFFFFF
-    BorderColor #3E8E5E
-    HeaderBackgroundColor #E7F3EC
-    FontSize 11
-    AttributeFontSize 10
+    BackgroundColor White
+    BorderColor Black
+    HeaderBackgroundColor WhiteSmoke
+    FontSize 14
+    AttributeFontSize 13
 }
 
 entity transactions {
