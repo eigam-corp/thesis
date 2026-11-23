@@ -4,17 +4,17 @@ A digitalização do setor financeiro ampliou o acesso dos usuários a contas ba
 
 Apesar da disponibilidade desses dados, seu acompanhamento ainda depende, em grande parte, da iniciativa do próprio usuário, uma vez que muitas soluções permanecem centradas em \textit{dashboards}, extratos e gráficos que exigem consultas ativas. Além disso, a existência das informações não garante que elas sejam facilmente compreendidas ou utilizadas na tomada de decisões. O baixo nível de letramento financeiro digital observado em estudos internacionais realizados pela \textit{Organisation for Economic Co-operation and Development} reforça a necessidade de soluções que simplifiquem a interpretação das informações financeiras (OECD, 2023).
 
-Nesse contexto, o \textit{Open Finance} possibilita o compartilhamento padronizado de dados financeiros entre instituições autorizadas, mediante consentimento do titular, criando condições para que informações anteriormente dispersas possam ser utilizadas de forma integrada (Banco Central do Brasil; Conselho Monetário Nacional, 2020). Entretanto, essa infraestrutura, isoladamente, não garante que os dados sejam transformados em informações compreensíveis, contextualizadas e úteis para a tomada de decisões pelo usuário.
+Nesse contexto, o \textit{Open Finance} possibilita o compartilhamento padronizado de dados financeiros entre instituições autorizadas, mediante consentimento do titular (Banco Central do Brasil, 2025), criando condições para que informações anteriormente dispersas possam ser utilizadas de forma integrada (Banco Central do Brasil; Conselho Monetário Nacional, 2020). Entretanto, essa infraestrutura, isoladamente, não garante que os dados sejam transformados em informações compreensíveis, contextualizadas e úteis para a tomada de decisões pelo usuário.
 
 Paralelamente, a ampla utilização de aplicativos de mensagens cria oportunidades para aproximar os serviços financeiros da rotina dos usuários. Nesse sentido, o \textit{WhatsApp} apresenta-se como um canal inicial adequado para a solução, por permitir que a interação ocorra em um ambiente já familiar ao público (Meta Platforms, Inc., [s. d.]). Contudo, vincular toda a operação do sistema a um único provedor representaria uma dependência tecnológica e comercial em relação ao provedor responsável pelo canal de comunicação, podendo limitar sua capacidade de expansão e adaptação.
 
-Diante desse cenário, este trabalho apresenta o desenvolvimento do EIGAM, uma solução de assistência financeira inteligente, preditiva e conversacional que funciona dentro de qualquer ferramenta de conversa: a arquitetura é desacoplada do provedor de comunicação, e cada mensageiro é atendido por um adaptador próprio, sem alterações no núcleo funcional. Essa independência foi verificada na prática com a operação simultânea em dois mensageiros amplamente utilizados e em uma conversa no painel \textit{web} do titular.
+Diante desse cenário, foi desenvolvido o EIGAM, uma solução de assistência financeira inteligente, preditiva e conversacional que funciona dentro de qualquer ferramenta de conversa, sem depender de um provedor de comunicação específico. Essa independência foi verificada na prática com a operação simultânea em dois mensageiros amplamente utilizados e em uma conversa no painel \textit{web} do titular.
 
 A solução integra dados obtidos via \textit{Open Finance} a técnicas de análise preditiva e a um assistente conversacional baseado em modelos de linguagem e em recuperação de contexto, transformando dados financeiros dispersos em informações contextualizadas e úteis. Além de responder a consultas em linguagem natural, a solução atua de forma proativa por meio de avisos sobre limites de gasto, cobranças duplicadas e transações atípicas, de metas financeiras e de resumos periódicos, apoiando a tomada de decisões financeiras e observando os requisitos de privacidade e proteção de dados previstos na Lei Geral de Proteção de Dados Pessoais (LGPD) (Brasil, 2018).
 
 \section{Objetivo}
 
-Desenvolver uma solução de assistência financeira inteligente, preditiva e conversacional, capaz de integrar dados provenientes do \textit{Open Finance} e fornecer ao usuário consultas, análises, previsões, alertas e orientações personalizadas por meio de qualquer ferramenta de conversa, mantendo a arquitetura desacoplada do provedor de comunicação, de modo que novos serviços de mensageria sejam incorporados por adaptadores, sem dependência de um único provedor.
+Desenvolver uma solução de assistência financeira inteligente, preditiva e conversacional, capaz de integrar dados provenientes do \textit{Open Finance} e fornecer ao usuário consultas, análises, previsões, alertas e orientações personalizadas por meio de qualquer ferramenta de conversa, sem dependência de um único provedor de mensageria.
 
 Para atingir esse objetivo geral, foram definidos os seguintes objetivos específicos:
 
@@ -36,30 +36,30 @@ Além disso, como a proposta depende da integração com dados financeiros compa
 
 \subsection{Personas}
 
-As personas consistem em perfis fictícios elaborados com base nas características, comportamentos, necessidades e dificuldades do público que se pretende atender. Sua utilização no projeto permite compreender com maior profundidade os diferentes tipos de usuários, suas expectativas em relação à solução proposta e a forma como interagem com tecnologias voltadas à organização financeira. A partir dessa construção, torna-se possível orientar decisões de desenvolvimento com maior foco na experiência do usuário, na usabilidade e na adequação das funcionalidades ao contexto real de uso. Neste trabalho, foram definidas três personas. Duas representam o núcleo jovem do público-alvo em momentos diferentes da vida financeira: o estagiário que começa a ganhar o próprio dinheiro e a jovem profissional que já acumula contas, cartões e responsabilidades. A terceira representa um perfil de expansão, adjacente ao núcleo: o trabalhador autônomo que usa o \textit{WhatsApp} como ferramenta de trabalho e mistura as finanças pessoais com as do negócio. As três são apresentadas nas Figuras \ref{fig:persona1}, \ref{fig:persona2} e \ref{fig:persona3}.
+As personas consistem em perfis fictícios elaborados com base nas características, comportamentos, necessidades e dificuldades do público que se pretende atender. Sua utilização no projeto permite compreender com maior profundidade os diferentes tipos de usuários, suas expectativas em relação à solução proposta e a forma como interagem com tecnologias voltadas à organização financeira. A partir dessa construção, torna-se possível orientar decisões de desenvolvimento com maior foco na experiência do usuário, na usabilidade e na adequação das funcionalidades ao contexto real de uso. Foram definidas três personas, todas dentro da faixa etária do público-alvo. Duas representam o núcleo jovem em momentos diferentes da vida financeira: o estagiário que começa a ganhar o próprio dinheiro e a jovem profissional que já acumula contas, cartões e responsabilidades. A terceira representa um perfil de expansão: o jovem autônomo que usa o \textit{WhatsApp} como ferramenta de trabalho e mistura as finanças pessoais com as do negócio. As três são apresentadas nas Figuras \ref{fig:persona1}, \ref{fig:persona2} e \ref{fig:persona3}.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \caption{Persona 1 - Mathias Lima}
+    \caption{Persona 1 - Lucas Tanaka}
     \label{fig:persona1}
     \includegraphics[width=0.9\textwidth]{images/persona_1.png}
-    \authorssource
+    \sourcenote{\textbf{Fonte:} Elaborado pelos autores (\workYear), com fotografia de Tima Miroshnichenko (Pexels).}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \caption{Persona 2 - Márcio Júnior}
     \label{fig:persona2}
     \includegraphics[width=0.9\textwidth]{images/persona_2.png}
-    \authorssource
+    \sourcenote{\textbf{Fonte:} Elaborado pelos autores (\workYear), com fotografia de Abstral Official (Unsplash).}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \caption{Persona 3 - Vitoria Moreira}
     \label{fig:persona3}
     \includegraphics[width=0.9\textwidth]{images/persona_3.png}
-    \authorssource
+    \sourcenote{\textbf{Fonte:} Elaborado pelos autores (\workYear), com fotografia de Vitaly Gariev (Unsplash).}
 \end{figure}
 
 \section{Conceito do produto}
@@ -72,11 +72,7 @@ Como diferencial, o produto combina três elementos centrais em uma única exper
 
 O \textit{WhatsApp} foi adotado como principal canal de comunicação com o EIGAM, aproveitando sua ampla utilização e os recursos oferecidos pelo \textit{WhatsApp Business}. Entretanto, o produto não foi concebido como uma solução de vínculo exclusivo a esse mensageiro. A arquitetura separa as regras de negócio, os mecanismos de análise financeira e os recursos de inteligência artificial da camada responsável pela comunicação com cada serviço de mensageria.
 
-Para isso, foi construída uma camada de abstração responsável por padronizar a comunicação entre os diferentes canais e o núcleo da aplicação. As mensagens recebidas pelos canais integrados são convertidas para uma representação interna comum antes de serem processadas pelas funcionalidades do EIGAM. De maneira semelhante, as respostas produzidas pelo sistema são encaminhadas ao adaptador do canal utilizado, responsável por adaptá-las às características e aos recursos oferecidos por cada canal.
-
-Essa estratégia permitiu incorporar o \textit{Telegram} e a conversa no painel \textit{web} por meio de novos adaptadores, sem modificar os serviços responsáveis pelo processamento de dados financeiros, análise preditiva, inteligência artificial e demais regras de negócio. Dessa forma, o \textit{WhatsApp} funciona como o principal canal de acesso à solução, e não como uma dependência estrutural de seu funcionamento.
-
-A adoção dessa arquitetura também busca reduzir riscos associados à dependência de um único fornecedor externo. Alterações em políticas de utilização, modelos de cobrança, disponibilidade de APIs ou restrições técnicas impostas por um determinado serviço de mensageria podem afetar soluções fortemente acopladas a ela. Ao possibilitar a integração com diferentes canais, o EIGAM aumenta sua flexibilidade tecnológica e sua capacidade de adaptação diante de mudanças externas. Durante o desenvolvimento, esse risco se materializou: a Meta passou a cobrar mensagens de serviço que antes eram gratuitas, e a arquitetura permitiu responder à mudança sem alterar o núcleo do produto.
+A adoção dessa arquitetura também busca reduzir riscos associados à dependência de um único fornecedor externo. Alterações em políticas de utilização, modelos de cobrança, disponibilidade de APIs ou restrições técnicas impostas por um determinado serviço de mensageria podem afetar soluções fortemente acopladas a ela. Ao possibilitar a integração com diferentes canais, o EIGAM aumenta sua flexibilidade tecnológica e sua capacidade de adaptação diante de mudanças externas.
 
 A partir dos dados financeiros integrados, a solução oferece não apenas consultas realizadas pelo usuário, mas também uma atuação proativa. O sistema analisa o histórico financeiro para identificar padrões, recorrências e comportamentos relevantes, e envia avisos relacionados, por exemplo, a limites de gasto, cobranças duplicadas, transações atípicas, aumento de gasto em uma categoria e acompanhamento de metas. Dessa forma, o acompanhamento financeiro deixa de depender exclusivamente da iniciativa do usuário.
 

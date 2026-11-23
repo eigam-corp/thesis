@@ -1,6 +1,6 @@
 \chapter{Gestão do projeto}
 
-A gestão do projeto é fundamental para garantir que o desenvolvimento da solução ocorra de forma organizada, controlada e alinhada aos objetivos estabelecidos. De acordo com a Enap, o gerenciamento de projetos consiste na aplicação de conhecimentos, habilidades, ferramentas e técnicas às atividades do projeto, envolvendo planejamento, execução e controle para atender aos requisitos definidos. Destaca-se que projetos são temporários e voltados à entrega de resultados únicos (ENAP, 2014), o que se aplica a este trabalho, já que o sistema proposto possui escopo, prazo e entregas previamente definidos.
+A gestão do projeto é fundamental para garantir que o desenvolvimento da solução ocorra de forma organizada, controlada e alinhada aos objetivos estabelecidos. De acordo com a Enap (2014), o gerenciamento de projetos consiste na aplicação de conhecimentos, habilidades, ferramentas e técnicas às atividades do projeto, envolvendo planejamento, execução e controle para atender aos requisitos definidos. Destaca-se que projetos são temporários e voltados à entrega de resultados únicos (ENAP, 2014), o que se aplica ao EIGAM, já que o sistema proposto possui escopo, prazo e entregas previamente definidos.
 
 Para apoiar essa organização, foram utilizadas ferramentas digitais que auxiliaram a comunicação, o acompanhamento das tarefas e o desenvolvimento do sistema. O Trello foi empregado na visualização e no controle das atividades de concepção, enquanto o GitHub foi utilizado para armazenamento e versionamento do código-fonte, favorecendo a colaboração entre os integrantes da equipe.
 
@@ -8,7 +8,7 @@ Para apoiar essa organização, foram utilizadas ferramentas digitais que auxili
 
 Para o gerenciamento do projeto, optou-se pela utilização de práticas ágeis, com destaque para o \textit{framework} Scrum, por sua flexibilidade e adequação ao desenvolvimento incremental de \textit{software}. Segundo o Guia do Scrum, essa abordagem permite organizar o trabalho em ciclos curtos, com entregas contínuas, revisão frequente e adaptação ao longo do processo, o que favorece maior controle e acompanhamento do desenvolvimento (Schwaber; Sutherland, 2020).
 
-Na fase de concepção, as tarefas foram organizadas em um \textit{backlog} e distribuídas em um quadro Kanban no Trello, com etapas como ``A Fazer'', ``Em Andamento'' e ``Concluído''. Na fase de desenvolvimento, o \textit{backlog} passou a ser versionado no próprio repositório, em formato compatível com o quadro do Trello (listas \textit{Backlog}, \textit{Sprint} Atual, Em andamento, Revisão e Concluído). Essa escolha permitiu consultar e atualizar os cartões junto com o código e com o assistente de programação utilizado pela equipe. O \textit{backlog} reuniu 237 cartões, cada um com critérios de aceitação verificáveis, organizados em 15 	extit{sprints} temáticas, ordenadas por dependência técnica: fundação, infraestrutura, esqueleto ponta a ponta, cadastro e autenticação, núcleo financeiro, análise financeira, conversa com IA, notificações, LGPD e qualidade, cobrança, produção, painel de operação, painel do titular, conversa financeira e MCP do titular.
+Na fase de desenvolvimento, o \textit{backlog} foi versionado no próprio repositório, organizado como um quadro Kanban, com as listas \textit{Backlog}, \textit{Sprint} Atual, Em andamento, Revisão e Concluído. Essa escolha permitiu consultar e atualizar os cartões junto com o código e com o assistente de programação utilizado pela equipe. O \textit{backlog} reuniu 237 cartões, cada um com critérios de aceitação verificáveis, organizados em 15 \textit{sprints} temáticas, ordenadas por dependência técnica: fundação, infraestrutura, esqueleto ponta a ponta, cadastro e autenticação, núcleo financeiro, análise financeira, conversa com IA, notificações, LGPD e qualidade, cobrança, produção, painel de operação, painel do titular, conversa financeira e MCP do titular.
 
 A terceira \textit{sprint} fechou o ciclo completo de uma mensagem, do \textit{WhatsApp} ao \textit{broker}, ao serviço de conversa e de volta ao \textit{WhatsApp}, antes de qualquer funcionalidade. A integração com a Meta era o maior risco técnico do projeto, e validá-la cedo evitou que as demais funcionalidades fossem construídas sobre uma premissa não comprovada. A definição de pronto exigia todos os critérios do cartão cumpridos, testes aprovados sem queda de cobertura, documentação de arquitetura atualizada quando um contrato mudava e, para mudanças de prompt ou modelo, a execução dos \textit{golden sets}.
 
@@ -16,9 +16,9 @@ O GitHub deu suporte ao versionamento do sistema, distribuído em dezoito reposi
 
 \section{Detalhamento das atividades}
 
-As atividades do projeto foram organizadas de forma sequencial, abrangendo desde a concepção do produto até a finalização do trabalho. O Quadro~\ref{frame:atividades} apresenta o conjunto de atividades realizadas: as de 1 a 18 correspondem à fase de concepção, apresentada na Figura~\ref{fig:cronograma}, e as de 19 a 27, à fase de desenvolvimento, apresentada na Figura~\ref{fig:cronograma_dev}.
+As atividades do projeto foram organizadas de forma sequencial, abrangendo desde a concepção do produto até a entrega final. O Quadro~\ref{frame:atividades} apresenta o conjunto de atividades realizadas: as de 1 a 18 correspondem à fase de concepção, apresentada na Figura~\ref{fig:cronograma}, e as de 19 a 27, à fase de desenvolvimento, apresentada na Figura~\ref{fig:cronograma_dev}.
 
-\begin{table}[htbp]
+\begin{table}[H]
 \centering
 \caption{Detalhamento das Atividades}
 \label{frame:atividades}
@@ -61,7 +61,7 @@ As atividades do projeto foram organizadas de forma sequencial, abrangendo desde
 
 As informações contidas no Quadro~\ref{frame:recursos} permitem identificar, de forma organizada, os recursos disponíveis e os recursos demandados pelo projeto, envolvendo equipe, infraestrutura e \textit{softwares} fundamentais para sua execução.
 
-\begin{table}[htbp]
+\begin{table}[H]
 \centering
 \caption{Detalhamento dos Recursos}
 \label{frame:recursos}
@@ -92,7 +92,7 @@ As informações contidas no Quadro~\ref{frame:recursos} permitem identificar, d
 
 O cronograma apresentado na Figura \ref{fig:cronograma} detalha as tarefas da fase de concepção, indicando quem foi responsável por cada execução e quanto tempo foi necessário para sua realização.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \caption{Cronograma da fase de concepção}
     \label{fig:cronograma}
@@ -100,9 +100,9 @@ O cronograma apresentado na Figura \ref{fig:cronograma} detalha as tarefas da fa
     \authorssource
 \end{figure}
 
-A fase de desenvolvimento ocorreu do fim de agosto a novembro de 2026. A Figura~\ref{fig:cronograma_dev} foi construída a partir do histórico dos repositórios: cada barra vai do primeiro ao último \textit{commit} do componente, e os marcos correspondem a decisões e validações registradas nos ADRs e nos relatórios técnicos. Os serviços centrais nasceram juntos, na primeira semana, porque o ciclo ponta a ponta da mensagem foi construído antes de qualquer funcionalidade. Os painéis \textit{web} surgiram na reta final, depois que o uso real mostrou a necessidade de ferramentas de operação e de consulta longa, e o servidor MCP foi o último componente incorporado, seguido do período de teste no catálogo de planos e da integração de metas, alertas e predição, que encerrou a fase. Ao todo, foram mais de 3.100 \textit{commits}, com pico de atividade na semana em que foram construídos os painéis e os resumos periódicos.
+A Figura~\ref{fig:cronograma_dev} apresenta o cronograma da fase de desenvolvimento, construído a partir do histórico dos repositórios: cada barra vai do primeiro ao último \textit{commit} do componente, e os marcos correspondem a decisões e validações registradas nos ADRs e nos relatórios técnicos. Os serviços centrais nasceram juntos, na primeira semana, porque o ciclo ponta a ponta da mensagem foi construído antes de qualquer funcionalidade. Os painéis \textit{web} surgiram na reta final, depois que o uso real mostrou a necessidade de ferramentas de operação e de consulta longa, e o servidor MCP foi o último componente incorporado, seguido do período de teste no catálogo de planos e da integração de metas, alertas e predição, que encerrou a fase. Ao todo, foram mais de 3.100 \textit{commits}, com pico de atividade na semana em que foram construídos os painéis e os resumos periódicos.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \caption{Cronograma executado na fase de desenvolvimento}
     \label{fig:cronograma_dev}
@@ -114,7 +114,7 @@ A fase de desenvolvimento ocorreu do fim de agosto a novembro de 2026. A Figura~
 
 A Matriz SWOT constitui uma ferramenta de apoio à análise estratégica, permitindo identificar os pontos fortes e fracos de um projeto, bem como as oportunidades e ameaças presentes no ambiente externo. Nesse sentido, a Figura \ref{fig:swot} ilustra as principais vantagens e desvantagens do produto desenvolvido.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \caption{Matriz SWOT}
     \label{fig:swot}

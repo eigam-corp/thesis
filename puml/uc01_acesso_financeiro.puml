@@ -50,8 +50,8 @@ UC07 --> AI : planeja e redige
 note right of UC09
   Token de 8h, ajustável de 1 a 24h.
   Sem token: valores mascarados
-  (R$ •••••) na conversa,
-  nas imagens e no painel.
+  (R$ •••••) na conversa e no painel;
+  imagens não são enviadas.
 end note
 
 note right of UC03
@@ -62,9 +62,8 @@ note right of UC03
 end note
 
 note right of UC01
-  WhatsApp, Telegram ou Mini App:
-  aceite dos termos, nome, CPF,
-  e-mail e PIN.
+  Pela conversa: aceite dos termos,
+  nome, CPF, e-mail e PIN.
 end note
 
 note right of UC28

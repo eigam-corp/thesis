@@ -51,9 +51,9 @@ UC29 ..> UC16 : <<include>>
 UC30 ..> UC13 : <<include>>
 
 note bottom of UC15
-  Taxonomia do conector:
-  95 categorias em 17 grupos,
-  sem modelo de linguagem.
+  Categoria atribuída pelo agregador,
+  traduzida para 95 categorias
+  em 17 grupos; sem modelo de linguagem.
 end note
 
 note bottom of UC13
@@ -70,7 +70,6 @@ note bottom of UC29
 end note
 
 note bottom of UC30
-  Resposta montada pelo servidor,
-  sem recomendação de compra.
+  Sem recomendação de compra.
 end note
 @enduml

@@ -2,13 +2,13 @@
 
 O desenvolvimento do EIGAM conciliou modularidade, segurança, escalabilidade e capacidade de evolução. A solução foi construída como uma arquitetura de microsserviços orientada a eventos, na qual um barramento compatível com o \textit{Apache Kafka} conecta os serviços de forma assíncrona. Essa abordagem reduziu o acoplamento entre os componentes, distribuiu as responsabilidades de domínio e permitiu processar tarefas de forma independente, favorecendo a resiliência a picos de carga e a escalabilidade horizontal.
 
-Segundo Newman (2022), microsserviços constituem uma abordagem na qual uma aplicação é organizada como um conjunto de serviços pequenos e independentes, responsáveis por capacidades específicas e passíveis de implantação e evolução separadas. No EIGAM, essa organização separou as responsabilidades de interação conversacional, identidade do titular, processamento financeiro, análise preditiva, notificações, geração de imagens, envio de mensagens, cobrança, auditoria e integração com assistentes de inteligência artificial externos. A modelagem inicial previa sete serviços; ao final do desenvolvimento, o sistema contava com quatorze componentes implantáveis, além de uma biblioteca compartilhada de contratos e de um \textit{design system} para as interfaces \textit{web}.
+Segundo Newman (2022), microsserviços constituem uma abordagem na qual uma aplicação é organizada como um conjunto de serviços pequenos e independentes, responsáveis por capacidades específicas e passíveis de implantação e evolução separadas. No EIGAM, essa organização separou as responsabilidades de interação conversacional, identidade do titular, processamento financeiro, análise preditiva, notificações, geração de imagens, envio de mensagens, cobrança, auditoria e integração com assistentes de inteligência artificial externos.
 
 A arquitetura foi mantida desacoplada dos serviços de mensageria. O \textit{WhatsApp}, acessado pela API oficial do provedor do canal, permaneceu como canal principal, mas as regras de negócio não dependem dos formatos e recursos desse provedor. Uma camada de adaptadores converte as mensagens recebidas em representações internas padronizadas e, no sentido inverso, adapta as respostas às capacidades de cada canal. Essa decisão foi validada na prática: o \textit{Telegram} e a conversa dentro do painel \textit{web} do titular foram incorporados sem alterações nos serviços de domínio.
 
 A camada de inteligência artificial seguiu a mesma premissa de separação de responsabilidades. O modelo de linguagem não é tratado como fonte de verdade dos dados financeiros, mas como recurso para ler a frase do usuário e redigir a resposta. Cálculos financeiros, validações de autorização, mascaramento de valores, comandos relacionados à LGPD e as análises preditivas permaneceram sob responsabilidade de mecanismos determinísticos ou estatísticos, executados pelos serviços que detêm os dados.
 
-O processo de desenvolvimento seguiu práticas ágeis, com o \textit{backlog} organizado em \textit{sprints} temáticas, e utilizou testes automatizados desde o primeiro serviço. Além dos testes unitários e de integração, foram construídos conjuntos de referência rotulados (\textit{golden sets}) para medir a camada conversacional, testes de contrato entre os serviços implementados em linguagens diferentes, baterias com o modelo de linguagem real, um teste de carga no servidor de produção e testes retrospectivos (\textit{backtests}) para as projeções. As decisões difíceis de reverter foram registradas em 47 \textit{Architecture Decision Records} (ADRs), documentos curtos que registram o contexto, a decisão tomada, as alternativas descartadas e o que mudaria a conclusão (Nygard, 2011).
+O processo de desenvolvimento seguiu práticas ágeis, com o \textit{backlog} organizado em \textit{sprints} temáticas, e utilizou testes automatizados desde o primeiro serviço. Além dos testes unitários e de integração, foram construídos conjuntos de referência rotulados (\textit{golden sets}) para medir a camada conversacional, testes de contrato entre os serviços implementados em linguagens diferentes, baterias com o modelo de linguagem real, um teste de carga no servidor de produção e testes retrospectivos (\textit{backtests}) para as projeções.
 
 \section{Arquitetura implementada}
 
@@ -47,7 +47,7 @@ Painel de operação & TypeScript (React) & Interface da equipe, atrás da auten
 
 A comunicação assíncrona utiliza um \textit{broker} compatível com a API do Kafka. Os tópicos são particionados pelo identificador do titular (\texttt{user\_id}), o que garante a ordem das mensagens de cada pessoa sem serializar o sistema inteiro. Campos pessoais e financeiros são cifrados antes da produção do evento, de modo que o \textit{broker} armazena apenas texto cifrado. A Figura~\ref{fig:sequencia_turno} apresenta o caminho de uma mensagem do titular até a resposta.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \caption{Processamento de uma mensagem do titular}
     \label{fig:sequencia_turno}
@@ -59,7 +59,7 @@ O \textit{API Gateway} valida a assinatura do \textit{webhook}, marca a mensagem
 
 \section{Tecnologias utilizadas}
 
-O Quadro~\ref{frame:tecnologias} apresenta as tecnologias efetivamente empregadas no desenvolvimento, único ponto do texto em que os fornecedores contratados são nomeados. Em relação ao planejamento inicial, a principal mudança foi a infraestrutura: em vez de serviços gerenciados em planos gratuitos, adotou-se um servidor virtual em um provedor europeu de nuvem, descrito integralmente em Terraform, com \textit{broker}, bancos e observabilidade executados em contêineres. A geração de gráficos também mudou: o Chart.js deu lugar a páginas HTML e SVG fotografadas pelo Chromium, que permitiram imagens com a identidade visual do produto e com logotipos de bancos e aplicativos.
+O Quadro~\ref{frame:tecnologias} apresenta as tecnologias efetivamente empregadas no desenvolvimento.
 
 {\small
 \begin{longtable}{|L{3.2cm}|L{2.8cm}|L{6.7cm}|L{1.5cm}|}
@@ -115,11 +115,9 @@ Claude Code & Anthropic & Assistente de programação utilizado pela equipe, com
 
 \subsection{Integração Multicanal}
 
-A comunicação com os serviços de mensageria foi implementada por adaptadores que isolam as particularidades de cada provedor. A identidade do usuário deixou de ser o número de telefone e passou a ser um identificador interno (\texttt{user\_id}) com qualquer número de identidades de canal: o telefone no \textit{WhatsApp}, o identificador de conversa no \textit{Telegram} e o próprio \texttt{user\_id} no painel \textit{web}. Assim, uma mesma pessoa pode conversar pelos três canais com o mesmo cadastro, o mesmo PIN e os mesmos dados.
+A comunicação com os serviços de mensageria foi implementada por adaptadores que isolam as particularidades de cada provedor. Cada titular tem identidades de canal ligadas ao mesmo cadastro: o telefone no \textit{WhatsApp}, o identificador de conversa no \textit{Telegram} e o próprio \texttt{user\_id} no painel \textit{web}. Assim, uma mesma pessoa pode conversar pelos três canais com o mesmo cadastro, o mesmo PIN e os mesmos dados.
 
 O núcleo trabalha com intenções de resposta (texto, imagem, documento, formulário e mensagem interativa), e cada adaptador declara as capacidades do seu canal. Um formulário, por exemplo, vira \textit{WhatsApp Flow} no \textit{WhatsApp}, Mini App no \textit{Telegram} e conversa guiada onde não houver recurso equivalente. Os onze formulários do produto, como cadastro, conexão de banco, metas, preferências e direitos do titular, são definidos uma única vez e traduzidos para cada canal. Os \textit{WhatsApp Flows} trocam dados com o \textit{gateway} por um \textit{endpoint} cifrado, conforme a especificação do provedor do canal.
-
-Uma restrição comercial também moldou essa camada. Durante o desenvolvimento, o provedor do \textit{WhatsApp} passou a cobrar mensagens de serviço que antes eram gratuitas. Por isso, cada gatilho, seja mensagem do titular, alerta ou resumo, passou a produzir uma única mensagem: o texto que acompanha uma imagem vai na legenda, o que acompanha um botão vai no corpo da mensagem interativa, e avisos de progresso viraram indicador de digitação, que não é cobrado.
 
 \subsection{Camada de Inteligência Artificial}
 
@@ -131,19 +129,96 @@ Os \textit{guardrails} de saída verificam conselho de investimento ou tributár
 
 Notas de voz são transcritas pelo \textit{AI Service} e seguem o mesmo caminho do texto, inclusive a verificação dos comandos da LGPD. O áudio não é armazenado, e a transcrição é guardada cifrada no histórico.
 
-Duas capacidades respondem sem o modelo de redação, por decisão deliberada. A simulação de compra (``e se eu comprar um celular de R\$~3.000 em 10x?'') é lida por regra no \textit{Chat Service}, calculada pelo \textit{Finance Service} e respondida com um texto montado pelo servidor a partir dos números: a resposta mostra o efeito da compra na estimativa do fim do mês, na folga das metas afetadas e nos compromissos dos doze meses seguintes, respeitando o calendário de fechamento do cartão, e nunca diz se a pessoa deve ou não comprar. O saldo livre do fim do mês segue o mesmo princípio: leitura por regra, cálculo no servidor e redação sem o modelo, para que a fronteira entre número e recomendação não dependa de instruções em \textit{prompt}. Além disso, descrições de transações, nomes de estabelecimentos e demais textos de terceiros entram no \textit{prompt} neutralizados, sem quebras de linha, delimitadores ou contatos, e são tratados como dado, nunca como instrução.
+Descrições de transações, nomes de estabelecimentos e demais textos de terceiros entram no \textit{prompt} neutralizados, sem quebras de linha, delimitadores ou contatos, e são tratados como dado, nunca como instrução.
 
 \subsection{Análise Preditiva e Sinais Financeiros}
 
-A categoria de cada transação passou a ser a do conector de \textit{Open Finance}, organizada em uma taxonomia de dois níveis com 95 categorias em 17 grupos, decidida uma única vez na sincronização e sem uso de modelo de linguagem. O \textit{Finance Service} também pareia as duas pernas de um mesmo evento, como o pagamento de fatura e a compra que ele quita, ou a compra e o seu estorno. Sem esse pareamento, o mesmo gasto seria contado duas vezes.
+A categoria de cada transação vem do agregador de \textit{Open Finance}, que já entrega as transações classificadas com qualidade e em detalhe. Na sincronização, o \textit{Finance Service} organiza essa classificação em uma taxonomia de dois níveis, com 95 categorias em 17 grupos, usada nas consultas, nos gráficos e nas metas. O \textit{Finance Service} também pareia os dois lançamentos de um mesmo evento, como o pagamento de fatura e a compra que ele quita, ou a compra e o seu estorno. Sem esse pareamento, o mesmo gasto seria contado duas vezes.
 
 Antes de qualquer projeção, uma leitura contábil única, chamada de gasto canônico, passou a alimentar o medidor de metas, a série diária, os resumos e o orçamento. Ela separa o reconhecido, o liquidado, o pendente de conta, o pendente de cartão e o ilegível, exclui faturas e transferências pareadas e arredonda em centavos por lançamento, de modo que soma diária, categorias e total fechem. As janelas de tempo passaram a ser dias civis no fuso horário de cada titular, aplicado da leitura da frase ao fechamento das metas.
 
-A projeção de gastos do mês é calculada pelo \textit{Analytics Service} a partir dessa série. A política de modelos submete todos os candidatos, inclusive o ritmo atual do mês, aos mesmos critérios de aprovação no corte do dia 15: erro percentual absoluto ponderado (WAPE) de até 20\%, viés absoluto de até 5\% e cobertura do intervalo de 80\% entre 70\% e 90\%; quem não é o método de referência precisa ainda de ganho mínimo de 10\% sobre ele. ``Nenhum método'' é um veredito válido: sem candidato aprovado, o sistema se abstém, em vez de recuar para o método de referência. O modelo servido é o ritmo robusto, que estende aos dias restantes apenas o gasto típico, com a régua de dia atípico derivada do histórico, e o intervalo da estimativa vem das razões entre previsto e realizado do próprio modelo, com desvio robusto e quantil t de Student. Os candidatos não servidos continuam sendo calculados em sombra em um registro de previsões, e um fechamento mensal compara cada estimativa com o valor que de fato ocorreu; a liberação ampla da estimativa depende desse fechamento com dados reais, e não das séries sintéticas de avaliação.
+A projeção de gastos do mês é calculada pelo \textit{Analytics Service} a partir dessa série. A política de modelos submete todos os candidatos, inclusive o ritmo atual do mês, aos mesmos critérios de aprovação no corte do dia 15: erro percentual absoluto ponderado (WAPE) de até 20\%, viés absoluto de até 5\% e cobertura do intervalo de 80\% entre 70\% e 90\%; quem não é o método de referência precisa ainda de ganho mínimo de 10\% sobre ele. ``Nenhum método'' é um veredito válido: sem candidato aprovado, o sistema se abstém, em vez de recuar para o método de referência. O modelo servido é o ritmo robusto, que estende aos dias restantes do mês apenas o gasto típico. Sejam $D$ o número de dias do mês, $c$ o último dia completo antes da consulta e $g_d$ o gasto do dia $d$. Um dia é considerado atípico quando o seu gasto ultrapassa a régua $L$, derivada do histórico conforme a Equação~\eqref{eq:regua}:
+
+\begin{equation}
+L = \max\left\{ Q_{0{,}95}\left(G_{90}\right),\; 3 \cdot \operatorname{med}\left(G_{90}\right) \right\}
+\label{eq:regua}
+\end{equation}
+
+\noindent em que $G_{90}$ é o conjunto dos gastos diários positivos nos noventa dias anteriores ao início do mês, $Q_{0{,}95}$ é o seu percentil 95 e $\operatorname{med}$ é a mediana. Sem histórico nesse período, a régua passa a ser três vezes a mediana dos dias com gasto do próprio mês. A estimativa do gasto total do mês, $\hat{Y}$, soma o que já foi gasto à extrapolação do gasto típico, na qual cada dia atípico é substituído pela mediana $m$ dos dias com gasto até a régua (Equação~\eqref{eq:ritmo}):
+
+\begin{equation}
+\hat{Y} = \sum_{d=1}^{c} g_d + \frac{D - c}{c} \sum_{d=1}^{c} \tilde{g}_d,
+\qquad
+\tilde{g}_d =
+\begin{cases}
+g_d, & \text{se } g_d \le L \\
+m, & \text{se } g_d > L
+\end{cases}
+\label{eq:ritmo}
+\end{equation}
+
+O intervalo da estimativa vem do desempenho do próprio modelo nos meses anteriores. Para cada um dos até seis meses anteriores, calcula-se a razão $r_k = Y_k / \hat{Y}_k$ entre o total realizado e o que o modelo teria estimado no mesmo dia de corte. Sobre os logaritmos $\ell_k = \ln r_k$, o centro $\mu$ é a mediana e a dispersão $s$ é o desvio absoluto mediano (MAD), reescalado para equivaler ao desvio-padrão em dados normais (Equação~\eqref{eq:dispersao}):
+
+\begin{equation}
+\mu = \operatorname{med}\left(\ell_k\right),
+\qquad
+s = 1{,}4826 \cdot \operatorname{med}\left| \ell_k - \mu \right|
+\label{eq:dispersao}
+\end{equation}
+
+A margem usa o quantil 0,90 da distribuição \textit{t} de Student com $n - 1$ graus de liberdade, em que $n$ é o número de meses disponíveis, o que corresponde a um intervalo de previsão de 80\%. O fator $\sqrt{1 + 1/n}$ acrescenta a incerteza de um mês novo, e a dispersão tem um piso de 0,03 para que poucos meses muito parecidos não produzam uma faixa estreita demais (Equação~\eqref{eq:intervalo}):
+
+\begin{equation}
+\begin{gathered}
+\delta = t_{0{,}90;\, n-1} \cdot \max\left(s,\; 0{,}03\right) \cdot \sqrt{1 + \frac{1}{n}} \\
+\left[\hat{Y}_{\mathrm{inf}},\; \hat{Y}_{\mathrm{sup}}\right] = \left[\hat{Y}\, e^{\mu - \delta},\; \hat{Y}\, e^{\mu + \delta}\right]
+\end{gathered}
+\label{eq:intervalo}
+\end{equation}
+
+O limite inferior nunca fica abaixo do que já foi gasto no mês, e a faixa sempre contém a estimativa $\hat{Y}$. Com menos de três meses de histórico, nos cinco primeiros dias do mês ou com alguma conexão desatualizada, o sistema se abstém. Os candidatos não servidos continuam sendo calculados em sombra em um registro de previsões, e um fechamento mensal compara cada estimativa com o valor que de fato ocorreu; a liberação ampla da estimativa depende desse fechamento com dados reais, e não das séries sintéticas de avaliação.
 
 Duas estimativas complementares foram construídas sobre a mesma base. O saldo livre do fim do mês responde ``quanto deve sobrar nas contas no último dia do mês'': em regime de caixa, parte do saldo disponível das contas correntes, desconta faturas a vencer, recorrentes em conta e agendamentos, e soma a mediana do movimento líquido restante dos seis meses anteriores, cuja amplitude vira a faixa da resposta. A resposta recusa com motivo declarado quando falta histórico, quando alguma conexão está desatualizada ou quando há lançamentos ilegíveis, e nunca é formulada como licença para gastar. A simulação de compra aplica uma compra hipotética sobre o que o produto já mede, sem gravar nada e sem recomendação. As três capacidades preditivas são recursos do plano pago, atrás de chaves de liberação individuais, desligadas até a aprovação estatística correspondente.
 
-Os sinais financeiros nascem no \textit{Finance Service}, onde estão os dados, e seguem cifrados para o \textit{Notification Service}, que decide se e quando avisar. Foram implementados seis sinais: limite de gasto atingido em 80\% e em 100\%, risco de ultrapassar o limite até o fim do período, possível cobrança duplicada, transação atípica e aumento de gasto em uma categoria. O risco de estouro é preditivo e só é emitido quando confirmado por duas previsões de versões distintas dos dados; o aviso de 100\% prevalece sobre ele. A transação atípica utiliza um escore-z robusto sobre o logaritmo do valor, calculado com a mediana e o desvio absoluto mediano do histórico da mesma categoria, com limiar de 3,5 e exigência mínima de dez transações e noventa dias de histórico. O titular escolhe quais famílias de aviso deseja receber e em qual janela de horário; avisos urgentes furam a janela, cada limiar avisa uma vez por meta por mês e há um teto mensal de anomalias por titular.
+Os sinais financeiros nascem no \textit{Finance Service}, onde estão os dados, e seguem cifrados para o \textit{Notification Service}, que decide se e quando avisar. Foram implementados seis sinais: limite de gasto atingido em 80\% e em 100\%, risco de ultrapassar o limite até o fim do período, possível cobrança duplicada, transação atípica e aumento de gasto em uma categoria.
+
+Os dois primeiros comparam o gasto acumulado no período da meta, $G$, com o teto definido pelo titular, $T$. O sinal do limiar $\theta$ é emitido quando a condição da Equação~\eqref{eq:limiar} passa a valer, com a comparação feita em centavos:
+
+\begin{equation}
+G \ge \theta \cdot T, \qquad \theta \in \left\{0{,}8;\; 1\right\}
+\label{eq:limiar}
+\end{equation}
+
+O risco de estouro é preditivo e vale para as metas de limite do gasto total. A partir do sétimo dia do mês, ele é sinalizado quando até o limite inferior da faixa da projeção, definido na Equação~\eqref{eq:intervalo}, ultrapassa o teto (Equação~\eqref{eq:risco}):
+
+\begin{equation}
+\hat{Y}_{\mathrm{inf}} > T
+\label{eq:risco}
+\end{equation}
+
+\noindent A condição precisa ser observada em duas avaliações, com versões distintas dos dados e em dias diferentes, antes de virar aviso; quando a Equação~\eqref{eq:limiar} já vale para $\theta = 1$, o aviso de 100\% prevalece sobre ele.
+
+A transação atípica compara o valor $v$ de um gasto com o histórico de valores $v_i$ da mesma categoria, em escala logarítmica, por um escore-z robusto calculado com a mediana e o desvio absoluto mediano (Equação~\eqref{eq:escorez}):
+
+\begin{equation}
+z = \frac{\ln v - \operatorname{med}\left(\ln v_i\right)}{1{,}4826 \cdot \operatorname{med}\left| \ln v_i - \operatorname{med}\left(\ln v_i\right) \right|}
+\label{eq:escorez}
+\end{equation}
+
+\noindent O sinal exige $z \ge 3{,}5$ e, para não avisar sobre valores pequenos, $v \ge \max\left(\text{R\$~100};\ 3 \cdot \operatorname{med}(v_i)\right)$. O histórico precisa ter ao menos dez transações e noventa dias, e parcelas, estornos e transferências ficam de fora. Com $z \ge 5$ e pelo menos vinte transações de histórico, a confiança do sinal é marcada como alta.
+
+O aumento de gasto em uma categoria compara, a partir do décimo dia do mês, o gasto acumulado na categoria até o dia corrente, $G_c$, com a mediana $\tilde{G}_c$ do gasto acumulado até o mesmo dia nos meses anteriores. O sinal é emitido quando as duas condições da Equação~\eqref{eq:categoria} valem, em que $\tilde{M}_c$ é a mediana do gasto mensal completo da categoria:
+
+\begin{equation}
+G_c \ge 1{,}5 \cdot \tilde{G}_c
+\qquad \text{e} \qquad
+G_c - \tilde{G}_c \ge \max\left(\text{R\$~100};\ 0{,}1 \cdot \tilde{M}_c\right)
+\label{eq:categoria}
+\end{equation}
+
+A possível cobrança duplicada não depende de estatística: é sinalizada quando dois lançamentos da mesma conta, no mesmo estabelecimento e com o mesmo valor em centavos, a partir de R\$~30, ocorrem com até um dia de diferença, excluídas as parcelas e os pequenos gastos recorrentes, como transporte público, pedágio e estacionamento.
+
+O titular escolhe quais famílias de aviso deseja receber e em qual janela de horário; avisos urgentes furam a janela, cada limiar avisa uma vez por meta por mês e há um teto mensal de anomalias por titular.
 
 A entrega dos alertas foi tornada durável por uma caixa de saída transacional (\textit{outbox}): a reserva de cota, o corpo cifrado e os sinais selecionados são gravados na mesma transação, um publicador com \textit{lease} entrega o evento ao barramento, e o consumidor confirma cada etapa em registros próprios. Resultado ambíguo, como um \textit{timeout} depois de o provedor aceitar a mensagem, vira estado retido, nunca reenvio automático. Imediatamente antes do envio, o \textit{Outbound Worker} pede ao \textit{Finance Service} uma autorização com prazo de poucos segundos, que reconfere consentimentos, atualidade dos dados, revisão da meta e preferências: uma revogação feita durante a espera na fila bloqueia o envio.
 

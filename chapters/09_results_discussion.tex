@@ -1,18 +1,16 @@
 \chapter{Resultados e discussão}\label{chap:resultados}
 
-Este capítulo apresenta o que foi entregue, compara o resultado com o que foi proposto na fase de projeto e discute como a qualidade do sistema foi medida e quais foram os resultados dessas medições. As figuras mostram as telas e as imagens produzidas pelo próprio sistema em funcionamento. As imagens avulsas da conversa, as telas dos formulários e as dos painéis foram geradas com dados fictícios: as primeiras vêm das amostras do \textit{Render Service}, as dos formulários foram capturadas percorrendo os Mini Apps servidos pelo \textit{API Gateway}, e as dos painéis, com os serviços de dados substituídos por respostas simuladas. Já os fluxos conversacionais reproduzem conversas reais do beta, com nomes e documentos substituídos para que nenhum titular seja identificado.
-
+Este capítulo apresenta o que foi entregue, compara o resultado com o que foi proposto na fase de projeto e discute como a qualidade do sistema foi medida e quais foram os resultados dessas medições. As figuras mostram as telas e as imagens produzidas pelo próprio sistema em funcionamento.
 \section{Produto entregue}
 
-O EIGAM está em operação desde setembro de 2026 em um servidor virtual em nuvem, com os \textit{webhooks} em \texttt{api.eigam.com.br}, o painel do titular em \texttt{app.eigam.com.br}, o servidor de integração com assistentes externos em \texttt{mcp.eigam.com.br} e o painel de operação em um endereço protegido pela autenticação corporativa da borda. O acesso à conversa está em beta fechado: apenas telefones liberados pela equipe conversam com o assistente, e as demais pessoas que escrevem recebem uma explicação sobre o produto e entram em uma lista de espera. Os comandos da LGPD funcionam para qualquer pessoa, liberada ou não.
+O EIGAM está em operação em um servidor virtual em nuvem, com os \textit{webhooks} em \texttt{api.eigam.com.br}, o painel do titular em \texttt{app.eigam.com.br}, o servidor de integração com assistentes externos em \texttt{mcp.eigam.com.br} e o painel de operação em um endereço protegido pela autenticação corporativa da borda. O acesso à conversa está em beta fechado: apenas telefones liberados pela equipe conversam com o assistente, e as demais pessoas que escrevem recebem uma explicação sobre o produto e entram em uma lista de espera. Os comandos da LGPD funcionam para qualquer pessoa, liberada ou não.
 
-Ao final do desenvolvimento, o projeto acumulava mais de 3.100 \textit{commits} em dezenove repositórios, cerca de 300 mil linhas de TypeScript, 18 mil de TSX e 46 mil de Python, das quais aproximadamente 186 mil são de testes, 62 migrações SQL e 47 registros de decisão de arquitetura. Do \textit{backlog} de 237 cartões, 124 tiveram todos os critérios de aceitação cumpridos e 40 foram cumpridos parcialmente; considerando os critérios individualmente, 830 de 1.255 (66\%) foram concluídos. Os cartões abertos incluem a separação do ambiente de produção em servidores dedicados, a liberação ampla das capacidades preditivas, que aguarda os fechamentos estatísticos com dados reais, e itens de qualidade que dependem de usuários reais, discutidos nas próximas seções. Parte deles foi superada por decisões posteriores registradas nos ADRs, sem que os critérios originais fossem atualizados.
-
+Ao final do desenvolvimento, o projeto acumulava mais de 3.100 \textit{commits} em dezenove repositórios, cerca de 300 mil linhas de TypeScript, 18 mil de TSX e 46 mil de Python, das quais aproximadamente 186 mil são de testes, 62 migrações SQL e 47 registros de decisão de arquitetura.
 \subsection{A Conversa}
 
 A conversa é a interface principal do EIGAM. O titular pergunta em linguagem natural, por texto ou por nota de voz, e recebe a resposta em uma única mensagem. Quando a pergunta pede uma visão de conjunto, a resposta vem acompanhada de uma imagem gerada pelo \textit{Render Service}, com o texto na legenda. A forma do gráfico é escolhida pelos dados: uma rosca para poucas categorias, um ranking com as cores e os logotipos de cada banco, colunas acumuladas para comparar o mês com o anterior, entre outras. As Figuras~\ref{fig:res_categorias} e~\ref{fig:res_bancos} mostram duas dessas imagens.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \begin{minipage}[t]{0.47\textwidth}
         \centering
@@ -33,7 +31,7 @@ A conversa é a interface principal do EIGAM. O titular pergunta em linguagem na
 
 A Figura~\ref{fig:res_acumulado} compara o gasto acumulado do mês com o mesmo ponto do mês anterior, o que responde à pergunta ``estou gastando mais do que no mês passado?'' sem que o titular precise interpretar duas listas. A Figura~\ref{fig:res_comprovante} é o comprovante enviado quando uma conexão de \textit{Open Finance} é autorizada, com a instituição, a data e a validade escolhida pelo titular.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \begin{minipage}[t]{0.47\textwidth}
         \centering
@@ -54,7 +52,7 @@ A Figura~\ref{fig:res_acumulado} compara o gasto acumulado do mês com o mesmo p
 
 A Figura~\ref{fig:res_com_pin} mostra uma resposta com o token de privilégio ativo, emitido depois do PIN. Sem o token, o sistema não gera imagens: os portões do gerador exigem valores liberados, e a resposta chega como texto com os valores mascarados em \texttt{R\$ •••••}, acompanhada da indicação de que o PIN libera os números. A decisão é do servidor, e não do modelo de linguagem.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \caption{Resposta com imagem, emitida com o token de privilégio}
     \label{fig:res_com_pin}
@@ -68,8 +66,10 @@ As figuras desta seção percorrem, tela a tela, os principais processos conduzi
 
 O primeiro contato (Figura~\ref{fig:fluxo_inicio}) foi conduzido por regras determinísticas. A mensagem de boas-vindas apresentou o assistente, ofereceu respostas com uma conta de exemplo e pediu o aceite da Política de Privacidade e dos Termos de Uso antes de qualquer dado real. Depois do aceite e do nome, a titular perguntou o gasto do mês e recebeu a resposta calculada sobre a conta de demonstração, identificada como tal, sem ter informado CPF nem conectado banco.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
+    \caption{Primeiro contato e conta de exemplo}
+    \label{fig:fluxo_inicio}
     \begin{minipage}[t]{0.32\textwidth}
         \centering
         \includegraphics[width=\textwidth]{images/resultados/fluxos/fluxo_inicio_a.png}
@@ -82,15 +82,15 @@ O primeiro contato (Figura~\ref{fig:fluxo_inicio}) foi conduzido por regras dete
         \centering
         \includegraphics[width=\textwidth]{images/resultados/fluxos/fluxo_inicio_c.png}
     \end{minipage}
-    \caption{Primeiro contato e conta de exemplo}
-    \label{fig:fluxo_inicio}
     \authorssource
 \end{figure}
 
 O cadastro (Figura~\ref{fig:fluxo_cadastro}) começou, na mesma conversa, quando a titular pediu para conectar um banco. Como a conexão pelo \textit{Open Finance} exige o CPF, o sistema explicou o que faltava e por quê, e conduziu a coleta de CPF, e-mail e PIN de seis dígitos, com a repetição do PIN para confirmação. Esses dados não ficaram no histórico: o registro da conversa guarda apenas a marca de dado sigiloso omitido, e o PIN é armazenado somente como \textit{hash}. Ao final, o botão já levava ao banco escolhido no início do pedido.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
+    \caption{Fluxo de cadastro pela conversa}
+    \label{fig:fluxo_cadastro}
     \begin{minipage}[t]{0.32\textwidth}
         \centering
         \includegraphics[width=\textwidth]{images/resultados/fluxos/fluxo_cadastro_a.png}
@@ -103,15 +103,15 @@ O cadastro (Figura~\ref{fig:fluxo_cadastro}) começou, na mesma conversa, quando
         \centering
         \includegraphics[width=\textwidth]{images/resultados/fluxos/fluxo_cadastro_c.png}
     \end{minipage}
-    \caption{Fluxo de cadastro pela conversa}
-    \label{fig:fluxo_cadastro}
     \authorssource
 \end{figure}
 
 A conexão de banco (Figura~\ref{fig:fluxo_banco}) partiu de um titular que já tinha três instituições conectadas. Como a instituição desejada não estava entre os atalhos da lista, ele a indicou em um formulário; a autorização aconteceu no aplicativo do próprio banco, sem que a senha bancária passasse pela solução, e cerca de um minuto depois chegou o comprovante de consentimento, com a instituição, a data, a hora e a validade, junto da quantidade de transações encontradas. Os valores dessas transações permaneceram ocultos até o PIN.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
+    \caption{Fluxo de conexão de banco pelo \textit{Open Finance}}
+    \label{fig:fluxo_banco}
     \begin{minipage}[t]{0.32\textwidth}
         \centering
         \includegraphics[width=\textwidth]{images/resultados/fluxos/fluxo_banco_a.png}
@@ -124,15 +124,15 @@ A conexão de banco (Figura~\ref{fig:fluxo_banco}) partiu de um titular que já 
         \centering
         \includegraphics[width=\textwidth]{images/resultados/fluxos/fluxo_banco_c.png}
     \end{minipage}
-    \caption{Fluxo de conexão de banco pelo \textit{Open Finance}}
-    \label{fig:fluxo_banco}
     \authorssource
 \end{figure}
 
 A consulta financeira (Figura~\ref{fig:fluxo_consulta}) mostra o caminho completo descrito na arquitetura: o planejador escolheu as consultas, o servidor calculou os valores e o modelo apenas redigiu a leitura. A pergunta informal ``como gastei 2 mil reais?'' foi entendida como a divisão por categoria do gasto do mês, e o pedido de comparação entre entradas e saídas, que não indicava o período, recebeu dois atalhos antes da resposta. Nas duas respostas, a imagem gerada pelo sistema seguiu com o texto na legenda, e cada resposta informou até quando os dados estavam atualizados. A terceira tela retoma a conversa dois minutos depois, após uma pergunta intermediária sobre transferências.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
+    \caption{Fluxo de consulta financeira em linguagem natural}
+    \label{fig:fluxo_consulta}
     \begin{minipage}[t]{0.32\textwidth}
         \centering
         \includegraphics[width=\textwidth]{images/resultados/fluxos/fluxo_consulta_a.png}
@@ -145,15 +145,15 @@ A consulta financeira (Figura~\ref{fig:fluxo_consulta}) mostra o caminho complet
         \centering
         \includegraphics[width=\textwidth]{images/resultados/fluxos/fluxo_consulta_c.png}
     \end{minipage}
-    \caption{Fluxo de consulta financeira em linguagem natural}
-    \label{fig:fluxo_consulta}
     \authorssource
 \end{figure}
 
 O fluxo do PIN (Figura~\ref{fig:fluxo_pin}) demonstra o mascaramento determinístico. Sem o token de privilégio, a pergunta sobre o gasto com roupas foi respondida apenas com o pedido do PIN; o PIN correto emitiu o token de oito horas, e a consulta pendente foi retomada na mesma mensagem, com o total do ano, a observação de que tudo foi pago no cartão de crédito, as parcelas de compras anteriores mantidas fora do total e o gráfico mensal. A decisão ocorre no publicador do servidor, depois dos \textit{guardrails}, e nunca depende do modelo.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
+    \caption{Fluxo de liberação de valores pelo PIN}
+    \label{fig:fluxo_pin}
     \begin{minipage}[t]{0.32\textwidth}
         \centering
         \includegraphics[width=\textwidth]{images/resultados/fluxos/fluxo_pin_a.png}
@@ -166,15 +166,15 @@ O fluxo do PIN (Figura~\ref{fig:fluxo_pin}) demonstra o mascaramento determinís
         \centering
         \includegraphics[width=\textwidth]{images/resultados/fluxos/fluxo_pin_c.png}
     \end{minipage}
-    \caption{Fluxo de liberação de valores pelo PIN}
-    \label{fig:fluxo_pin}
     \authorssource
 \end{figure}
 
 As metas (Figura~\ref{fig:fluxo_meta}) foram criadas por botões ou por uma frase livre, lida por regras determinísticas que extraem valor, categoria e período. Antes de gravar, o sistema mostrou a meta com o gasto já acumulado no mês: na primeira tentativa, um teto de R\$~700,00 para o gasto total já estava em 102\%, e o titular reformulou o pedido em uma única frase, restringindo o teto à alimentação, que confirmou com 22\% utilizados. Nenhuma meta é gravada sem a confirmação explícita.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
+    \caption{Fluxo de criação de meta de gasto}
+    \label{fig:fluxo_meta}
     \begin{minipage}[t]{0.32\textwidth}
         \centering
         \includegraphics[width=\textwidth]{images/resultados/fluxos/fluxo_meta_a.png}
@@ -187,15 +187,15 @@ As metas (Figura~\ref{fig:fluxo_meta}) foram criadas por botões ou por uma fras
         \centering
         \includegraphics[width=\textwidth]{images/resultados/fluxos/fluxo_meta_c.png}
     \end{minipage}
-    \caption{Fluxo de criação de meta de gasto}
-    \label{fig:fluxo_meta}
     \authorssource
 \end{figure}
 
 As mensagens proativas seguem a mesma regra de privacidade (Figura~\ref{fig:fluxo_resumo}). No dia em que o titular liberou os valores com o PIN, o resumo semanal chegou por um modelo de mensagem aprovado no canal, com uma prévia que informa apenas a tendência do gasto em relação à semana anterior e a categoria que mais pesou, sem valor em reais, e com um botão para os detalhes. Ao tocar no botão, o titular recebeu o resumo completo em PDF, gerado no momento do pedido. Os avisos de metas e de movimentação usam o mesmo desenho de prévia sem valores, mas não haviam sido liberados no canal real durante o beta, conforme as limitações apresentadas adiante.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
+    \caption{Resumo semanal proativo, sem valores na prévia}
+    \label{fig:fluxo_resumo}
     \begin{minipage}[t]{0.32\textwidth}
         \centering
         \includegraphics[width=\textwidth]{images/resultados/fluxos/fluxo_resumo_a.png}
@@ -208,15 +208,15 @@ As mensagens proativas seguem a mesma regra de privacidade (Figura~\ref{fig:flux
         \centering
         \includegraphics[width=\textwidth]{images/resultados/fluxos/fluxo_resumo_c.png}
     \end{minipage}
-    \caption{Resumo semanal proativo, sem valores na prévia}
-    \label{fig:fluxo_resumo}
     \authorssource
 \end{figure}
 
-As capacidades preditivas (Figura~\ref{fig:fluxo_previsao}) apareceram na conversa com as salvaguardas descritas no Capítulo~\ref{chap:desenvolvimento}. A projeção do gasto do mês foi apresentada como faixa, com o valor já realizado, a data dos dados, as saídas deixadas de fora e a declaração de que se trata de estimativa experimental; no nono dia do mês, a largura da faixa expôs a incerteza em vez de escondê-la. Quatro minutos depois, na mesma conversa, a simulação de compra coletou valor, forma de pagamento, número de parcelas e cartão, um dado por vez, e respondeu com o efeito sobre a projeção e sobre os compromissos dos meses seguintes, em texto montado pelo servidor e sem veredito sobre comprar ou não. Quando a estimativa não está aprovada, a resposta é a abstenção: em outra conversa, a pergunta ``Quanto vai sobrar até o fim do mês?'' recebeu ``A estimativa de com quanto você fecha o mês está pausada agora''.
+As capacidades preditivas (Figura~\ref{fig:fluxo_previsao}) apareceram na conversa com as salvaguardas descritas no Capítulo~\ref{chap:desenvolvimento}. A projeção do gasto do mês foi apresentada como faixa, com o valor já realizado, a data dos dados, as saídas deixadas de fora e a declaração de que se trata de estimativa experimental; no nono dia do mês, a largura da faixa expôs a incerteza em vez de escondê-la. Quatro minutos depois, na mesma conversa, a simulação de compra coletou valor, forma de pagamento, número de parcelas e cartão, um dado por vez, e respondeu com o efeito sobre a projeção e sobre os compromissos dos meses seguintes, sem veredito sobre comprar ou não. Quando a estimativa não está aprovada, a resposta é a abstenção: em outra conversa, a pergunta ``Quanto vai sobrar até o fim do mês?'' recebeu ``A estimativa de com quanto você fecha o mês está pausada agora''.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
+    \caption{Fluxo de previsões: projeção do gasto e simulação de compra}
+    \label{fig:fluxo_previsao}
     \begin{minipage}[t]{0.32\textwidth}
         \centering
         \includegraphics[width=\textwidth]{images/resultados/fluxos/fluxo_previsao_a.png}
@@ -229,15 +229,15 @@ As capacidades preditivas (Figura~\ref{fig:fluxo_previsao}) apareceram na conver
         \centering
         \includegraphics[width=\textwidth]{images/resultados/fluxos/fluxo_previsao_c.png}
     \end{minipage}
-    \caption{Fluxo de previsões: projeção do gasto e simulação de compra}
-    \label{fig:fluxo_previsao}
     \authorssource
 \end{figure}
 
 Por fim, os direitos do titular (Figura~\ref{fig:fluxo_lgpd}) foram exercidos por frases reconhecidas por regras determinísticas, com recall de 100\% medido. A pergunta ``quais dados vocês têm sobre mim?'' recebeu o inventário previsto no Art.~18, I, da LGPD: o que é guardado e como é protegido, a base legal, a finalidade, os prazos, quem trata os dados junto com a solução e a situação atual da conta. Em seguida, o pedido de exportação foi registrado e o arquivo em JSON chegou no próprio canal, sem links externos. A exclusão segue o mesmo caminho, com confirmação explícita, e revoga as conexões bancárias, anonimiza as transações e apaga os dados derivados.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
+    \caption{Fluxo dos direitos do titular pela conversa}
+    \label{fig:fluxo_lgpd}
     \begin{minipage}[t]{0.32\textwidth}
         \centering
         \includegraphics[width=\textwidth]{images/resultados/fluxos/fluxo_lgpd_a.png}
@@ -250,57 +250,114 @@ Por fim, os direitos do titular (Figura~\ref{fig:fluxo_lgpd}) foram exercidos po
         \centering
         \includegraphics[width=\textwidth]{images/resultados/fluxos/fluxo_lgpd_c.png}
     \end{minipage}
-    \caption{Fluxo dos direitos do titular pela conversa}
-    \label{fig:fluxo_lgpd}
     \authorssource
 \end{figure}
 
 \subsection{Formulários nos Canais}
 
-Onze formulários cobrem as tarefas que pedem dados estruturados: cadastro, entrada por outro aplicativo, conexão de banco, meta, orçamento, preferências de aviso, direitos do titular, liberação de valores, troca de PIN, plano Pro e avaliação. Cada formulário é definido uma única vez e traduzido pelo adaptador de cada canal. No \textit{Telegram}, os onze estão em uso como Mini Apps, que adotam as cores do tema do próprio usuário. No \textit{WhatsApp}, as definições dos \textit{Flows} e o \textit{endpoint} cifrado estão implementados, mas a publicação depende da liberação do recurso pelo provedor do canal para a conta do projeto; até lá, as mesmas tarefas são feitas por conversa guiada com botões. As Figuras~\ref{fig:res_tg_cadastro} a~\ref{fig:res_tg_preferencias} mostram quatro desses formulários.
+Onze formulários cobrem as tarefas que pedem dados estruturados: cadastro, entrada por outro aplicativo, conexão de banco, meta, orçamento, preferências de aviso, direitos do titular, liberação de valores, troca de PIN, plano Pro e avaliação. Cada formulário é definido uma única vez e traduzido pelo adaptador de cada canal: no \textit{WhatsApp}, vira um \textit{WhatsApp Flow}, uma folha nativa aberta sobre a conversa e trocada com o \textit{gateway} por um \textit{endpoint} cifrado; no \textit{Telegram}, vira um Mini App, que adota as cores do tema do próprio usuário. As Figuras~\ref{fig:form_cadastro} a~\ref{fig:form_preferencias} mostram quatro desses formulários no \textit{WhatsApp}: a mensagem que oferece o formulário, a folha aberta sobre a conversa e, quando cabe, a confirmação que volta para ela.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \caption{Cadastro pelo Mini App do Telegram}
-    \label{fig:res_tg_cadastro}
-    \includegraphics[width=\textwidth]{images/resultados/telegram_cadastro.png}
+    \caption{Cadastro pelo formulário do \textit{WhatsApp Flows}}
+    \label{fig:form_cadastro}
+    \begin{minipage}[t]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/resultados/fluxos/form_cadastro_a.png}
+    \end{minipage}\hfill
+    \begin{minipage}[t]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/resultados/fluxos/form_cadastro_b.png}
+    \end{minipage}\hfill
+    \begin{minipage}[t]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/resultados/fluxos/form_cadastro_c.png}
+    \end{minipage}
+    \par\medskip
+    \begin{minipage}[t]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/resultados/fluxos/form_cadastro_d.png}
+    \end{minipage}\hfill
+    \begin{minipage}[t]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/resultados/fluxos/form_cadastro_e.png}
+    \end{minipage}\hfill
+    \begin{minipage}[t]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/resultados/fluxos/form_cadastro_f.png}
+    \end{minipage}
     \authorssource
 \end{figure}
 
-O cadastro (Figura~\ref{fig:res_tg_cadastro}) começa com três compromissos (dados cifrados, valores só com o PIN e liberdade para exportar ou apagar tudo), segue com nome, CPF e e-mail, cria o PIN de seis dígitos e termina com o aceite dos termos. Antes disso, quem ainda não decidiu se cadastrar pode perguntar o que quiser sobre o produto e experimentar o assistente com uma base de demonstração, sem fornecer nenhum dado pessoal.
+O cadastro (Figura~\ref{fig:form_cadastro}) começa com três compromissos (dados cifrados, valores só com o PIN e liberdade para exportar ou apagar tudo), segue com nome, CPF e e-mail, cria o PIN de seis dígitos e termina com o aceite dos termos. Ao enviar, a confirmação chega na conversa, já com o botão para conectar o primeiro banco. Antes disso, quem ainda não decidiu se cadastrar pode perguntar o que quiser sobre o produto e experimentar o assistente com uma base de demonstração, sem fornecer nenhum dado pessoal.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \caption{Conexão de banco pelo Mini App do Telegram}
-    \label{fig:res_tg_open_finance}
-    \includegraphics[width=0.85\textwidth]{images/resultados/telegram_open_finance.png}
+    \caption{Conexão de banco pelo formulário do \textit{WhatsApp Flows}}
+    \label{fig:form_banco}
+    \begin{minipage}[t]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/resultados/fluxos/form_banco_a.png}
+    \end{minipage}\hfill
+    \begin{minipage}[t]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/resultados/fluxos/form_banco_b.png}
+    \end{minipage}\hfill
+    \begin{minipage}[t]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/resultados/fluxos/form_banco_c.png}
+    \end{minipage}
     \authorssource
 \end{figure}
 
-Na conexão de banco (Figura~\ref{fig:res_tg_open_finance}), o titular escolhe a instituição e por quanto tempo o compartilhamento deve valer: três, seis ou doze meses, ou até cancelar. A autorização acontece no ambiente do próprio banco, pelo \textit{Open Finance}, de modo que a senha bancária nunca passa pelo EIGAM. Na data escolhida, uma varredura encerra a conexão no agregador e revoga o consentimento.
+Na conexão de banco (Figura~\ref{fig:form_banco}), o titular escolhe a instituição e por quanto tempo o compartilhamento deve valer: três, seis ou doze meses, ou até cancelar. A autorização acontece no ambiente do próprio banco, pelo \textit{Open Finance}, de modo que a senha bancária nunca passa pelo EIGAM. Na data escolhida, uma varredura encerra a conexão no agregador e revoga o consentimento.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \caption{Direitos do titular pelo Mini App do Telegram}
-    \label{fig:res_tg_direitos}
-    \includegraphics[width=0.85\textwidth]{images/resultados/telegram_direitos_lgpd.png}
+    \caption{Direitos do titular pelo formulário do \textit{WhatsApp Flows}}
+    \label{fig:form_direitos}
+    \begin{minipage}[t]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/resultados/fluxos/form_direitos_a.png}
+    \end{minipage}\hfill
+    \begin{minipage}[t]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/resultados/fluxos/form_direitos_b.png}
+    \end{minipage}\hfill
+    \begin{minipage}[t]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/resultados/fluxos/form_direitos_c.png}
+    \end{minipage}
     \authorssource
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
-    \caption{Preferências de aviso pelo Mini App do Telegram}
-    \label{fig:res_tg_preferencias}
-    \includegraphics[width=0.6\textwidth]{images/resultados/telegram_preferencias.png}
+    \caption{Preferências de aviso pelo formulário do \textit{WhatsApp Flows}}
+    \label{fig:form_preferencias}
+    \begin{minipage}[t]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/resultados/fluxos/form_preferencias_a.png}
+    \end{minipage}\hfill
+    \begin{minipage}[t]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/resultados/fluxos/form_preferencias_b.png}
+    \end{minipage}\hfill
+    \begin{minipage}[t]{0.32\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{images/resultados/fluxos/form_preferencias_c.png}
+    \end{minipage}
     \authorssource
 \end{figure}
 
-Os direitos da LGPD (Figura~\ref{fig:res_tg_direitos}) podem ser exercidos pelo formulário ou escrevendo o pedido na conversa, por exemplo ``exportar meus dados''. Os dois caminhos chegam ao mesmo reconhecimento determinístico e à mesma confirmação. Nas preferências (Figura~\ref{fig:res_tg_preferencias}), o titular escolhe quais famílias de aviso quer receber e em qual faixa de horário; fora dela, o aviso espera e, se deixar de valer, não é enviado.
+Os direitos da LGPD (Figura~\ref{fig:form_direitos}) podem ser exercidos pelo formulário, oferecido junto com o resumo do que é tratado sobre o titular, ou escrevendo o pedido na conversa, por exemplo ``exportar meus dados''. Os dois caminhos chegam ao mesmo reconhecimento determinístico e à mesma confirmação. Nas preferências (Figura~\ref{fig:form_preferencias}), o titular escolhe quais famílias de aviso quer receber e em qual faixa de horário; fora dela, o aviso espera e, se deixar de valer, não é enviado. Ao salvar, a conversa confirma a escolha item a item.
 
-A Figura~\ref{fig:fluxo_flows} mostra como a mesma definição de formulário é apresentada pelo \textit{WhatsApp Flows}, sobre uma troca de PIN do beta. A conversa ofereceu o formulário com a justificativa de que, por ele, o PIN não fica no histórico da conversa; a folha nativa abre sobre o diálogo com os campos definidos uma única vez no \textit{gateway} (PIN atual, novo PIN e repetição) e, ao enviar, a confirmação voltou para a conversa. Como a troca encerra a liberação de valores que estava ativa, a pergunta seguinte sobre gastos já recebeu o valor oculto, com o pedido do novo PIN.
+A Figura~\ref{fig:fluxo_flows} mostra o mesmo mecanismo em uma troca de PIN do beta. A conversa ofereceu o formulário com a justificativa de que, por ele, o PIN não fica no histórico da conversa; a folha nativa abre sobre o diálogo com os campos definidos uma única vez no \textit{gateway} (PIN atual, novo PIN e repetição) e, ao enviar, a confirmação voltou para a conversa. Como a troca encerra a liberação de valores que estava ativa, a pergunta seguinte sobre gastos já recebeu o valor oculto, com o pedido do novo PIN.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
+    \caption{Troca de PIN pelo formulário do \textit{WhatsApp Flows}}
+    \label{fig:fluxo_flows}
     \begin{minipage}[t]{0.32\textwidth}
         \centering
         \includegraphics[width=\textwidth]{images/resultados/fluxos/fluxo_flows_a.png}
@@ -313,8 +370,6 @@ A Figura~\ref{fig:fluxo_flows} mostra como a mesma definição de formulário é
         \centering
         \includegraphics[width=\textwidth]{images/resultados/fluxos/fluxo_flows_c.png}
     \end{minipage}
-    \caption{Troca de PIN pelo formulário do \textit{WhatsApp Flows}}
-    \label{fig:fluxo_flows}
     \authorssource
 \end{figure}
 
@@ -322,7 +377,7 @@ A Figura~\ref{fig:fluxo_flows} mostra como a mesma definição de formulário é
 
 O painel do titular não estava previsto na proposta original, que propunha uma experiência exclusivamente conversacional. Ele foi incorporado porque a conversa responde bem a perguntas curtas e mal a três necessidades: listas longas, como todas as transações do mês; visão consolidada, sem perguntar parte por parte; e gestão com confirmação visual, como bancos conectados, assinatura e privacidade. Para não contrariar a proposta, adotou-se a regra de que nada existe apenas no painel: ele estende a conversa. A Figura~\ref{fig:res_painel_inicio} mostra a tela inicial.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \caption{Tela inicial do painel do titular}
     \label{fig:res_painel_inicio}
@@ -332,7 +387,7 @@ O painel do titular não estava previsto na proposta original, que propunha uma 
 
 A tela inicial resume o mês em quatro números (saídas, entradas, patrimônio e quantidade de transações) e em quatro gráficos: o ritmo do gasto comparado ao mês anterior, as entradas e saídas dos últimos seis meses, as categorias que mais pesaram e a evolução do patrimônio. A Figura~\ref{fig:res_painel_sem_pin} mostra a mesma tela sem o token de privilégio. Nesse caso, o \textit{Finance Service} devolve os valores nulos, e o painel nunca recebe o número: os gráficos de valor mostram um cadeado, e as categorias passam a ser comparadas pela quantidade de transações. O PIN digitado no painel é o mesmo da conversa e libera os valores nos dois lugares.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \caption{Tela inicial do painel do titular sem o token de privilégio}
     \label{fig:res_painel_sem_pin}
@@ -342,7 +397,7 @@ A tela inicial resume o mês em quatro números (saídas, entradas, patrimônio 
 
 As Figuras~\ref{fig:res_painel_cartoes} e~\ref{fig:res_painel_bancos} mostram duas telas de consulta longa. A de cartões reúne as faturas de todos os cartões conectados, o limite disponível e as parcelas já comprometidas nos próximos meses. A de bancos mostra, para cada conexão, a última sincronização, os saldos e o que aquela instituição informa ou não pelo \textit{Open Finance}, como investimentos e empréstimos. Essa transparência foi necessária porque a ausência de um dado nem sempre significa que ele não existe: muitas vezes o banco apenas não o informa.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \caption{Cartões no painel do titular}
     \label{fig:res_painel_cartoes}
@@ -350,7 +405,7 @@ As Figuras~\ref{fig:res_painel_cartoes} e~\ref{fig:res_painel_bancos} mostram du
     \authorssource
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \caption{Bancos conectados no painel do titular}
     \label{fig:res_painel_bancos}
@@ -360,7 +415,7 @@ As Figuras~\ref{fig:res_painel_cartoes} e~\ref{fig:res_painel_bancos} mostram du
 
 A tela de privacidade (Figura~\ref{fig:res_painel_privacidade}) mostra os dados guardados, sem revelar o CPF, que permanece cifrado, e lista os aparelhos em que o painel está aberto. Os botões de direitos não executam nada na tela: abrem a conversa com o comando já escrito, para que a exportação e a exclusão continuem passando pelo mesmo reconhecimento determinístico e pela mesma confirmação.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \caption{Privacidade no painel do titular}
     \label{fig:res_painel_privacidade}
@@ -372,7 +427,7 @@ A tela de privacidade (Figura~\ref{fig:res_painel_privacidade}) mostra os dados 
 
 O painel de operação atende ao requisito RF012 e respondeu a necessidades que surgiram com o sistema em funcionamento: saber onde as pessoas param no cadastro sem consultar o banco de dados, ler uma conversa quando o titular pede ajuda e acompanhar o custo de cada resposta. A Figura~\ref{fig:res_operacao} mostra a visão geral, com o custo por dia separado por fonte (modelo de linguagem, mensagens do canal, verificação das respostas e transcrição de áudio), as sessões iniciadas, as conexões por banco, a saúde dos conectores do agregador e as revogações de consentimento.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \caption{Visão geral do painel de operação}
     \label{fig:res_operacao}
@@ -417,7 +472,7 @@ O Quadro~\ref{frame:entregas} compara cada requisito funcional definido na fase 
 
 Além do escopo original, foram entregues o \textit{Telegram} como segundo canal, o painel do titular com conversa própria (RF013), a transcrição de notas de voz, a assinatura recorrente do plano Pro, a medição do custo de cada titular, as campanhas por \textit{template}, o laboratório de respostas, a simulação de compra e o servidor MCP, que conecta o EIGAM ao assistente de inteligência artificial do próprio titular. O modelo comercial também mudou: o plano gratuito previsto na proposta foi substituído por um período de teste de sete dias, iniciado na conexão do primeiro banco e sem exigência de cartão, com os planos e preços descritos em um catálogo no \textit{Billing Service}, alterável sem nova implantação. O \textit{Telegram} foi especialmente importante para a proposta: a arquitetura multicanal deixou de ser uma promessa e passou a ser verificável, pois o mesmo titular conversa pelos três canais com o mesmo cadastro, o mesmo PIN e as mesmas respostas. O servidor MCP estendeu essa verificação para fora do produto: as mesmas rotas de leitura do painel atendem um assistente externo, com as mesmas regras de máscara e auditoria decididas no servidor.
 
-As mudanças de rumo também são resultados do trabalho. Três decisões da modelagem foram revistas depois de medidas com dados reais. A primeira foi o Prophet, previsto para projeções com sazonalidade: na série de um titular com seis meses e 2.485 transações, seus intervalos de previsão ficaram de três a dez vezes mais largos que os da EWMA, chegando a mais de 50 vezes o próprio valor projetado, porque o gasto pessoal por categoria é esparso. A biblioteca foi removida. A segunda foi o classificador de intenções com limiares de confiança: ele foi substituído por um planejador que escolhe consultas tipadas, eliminando duas leituras divergentes da mesma frase. A terceira foi a categorização por modelo de linguagem: a taxonomia do próprio conector, mais detalhada do que as dez categorias previstas, tornou o modelo desnecessário nessa etapa. Em sentido oposto, o RAG por similaridade vetorial sobre o histórico financeiro, previsto na modelagem inicial, não chegou a ser ligado: os fatos passaram a vir de consultas estruturadas escolhidas pelo planejador, que dão o valor exato em vez de um trecho parecido, e a recuperação ficou restrita à base de conhecimento sobre o produto. Uma quarta revisão ocorreu dentro da própria política de projeção: o ritmo atual do mês, que servia de método de reserva quando nenhum candidato era aprovado, passou a ser avaliado pelos mesmos critérios dos demais e foi reprovado; a reserva escondia o pior candidato, e ``nenhum método'' passou a ser um veredito legítimo.
+Três decisões da modelagem foram revistas depois de medidas com dados reais. A primeira foi o Prophet, previsto para projeções com sazonalidade: na série de um titular com seis meses e 2.485 transações, seus intervalos de previsão ficaram de três a dez vezes mais largos que os da EWMA, chegando a mais de 50 vezes o próprio valor projetado, porque o gasto pessoal por categoria é esparso. A biblioteca foi removida. A segunda foi o classificador de intenções com limiares de confiança: ele foi substituído por um planejador que escolhe consultas tipadas, eliminando duas leituras divergentes da mesma frase. A terceira foi a categorização por modelo de linguagem: a categoria atribuída pelo próprio agregador de \textit{Open Finance}, mais detalhada do que as dez categorias previstas, tornou o modelo desnecessário nessa etapa. Em sentido oposto, o RAG por similaridade vetorial sobre o histórico financeiro, previsto na modelagem inicial, não chegou a ser ligado: os fatos passaram a vir de consultas estruturadas escolhidas pelo planejador, que dão o valor exato em vez de um trecho parecido, e a recuperação ficou restrita à base de conhecimento sobre o produto. Uma quarta revisão ocorreu dentro da própria política de projeção: o ritmo atual do mês, que servia de método de reserva quando nenhum candidato era aprovado, passou a ser avaliado pelos mesmos critérios dos demais e foi reprovado; a reserva escondia o pior candidato, e ``nenhum método'' passou a ser um veredito legítimo.
 
 Em relação à pesquisa apresentada no Capítulo 3, as funcionalidades de maior interesse foram atendidas em graus diferentes. Os resumos automáticos de gastos, a mais pedida (32 de 42 respondentes), foram entregues. A detecção de gastos atípicos (21) foi entregue, junto com a de cobranças duplicadas. Os alertas de vencimento (29) foram substituídos pela consulta às recorrências e à próxima cobrança, e a previsão de saldo (26) foi atendida pelo saldo livre do fim do mês, que responde quanto deve sobrar nas contas conectadas, com liberação condicionada à medição com dados reais. A preocupação com privacidade, alta para 69\% dos respondentes, orientou o mascaramento, o PIN, a cifragem por campo e o exercício de todos os direitos por mensagem.
 
@@ -429,7 +484,7 @@ A qualidade foi medida em quatro frentes: testes automatizados, avaliação da c
 
 Antes de liberar os alertas, as metas e a projeção, a equipe executou as suítes completas de doze serviços. A Tabela~\ref{tab:testes} apresenta o resultado dessa validação.
 
-\begin{tabela}[htbp]
+\begin{tabela}[H]
 \centering
 \caption{Testes automatizados por serviço na validação de liberação}
 \label{tab:testes}
@@ -458,13 +513,11 @@ A primeira execução encontrou 11.317 testes aprovados e 2 reprovados, além de
 
 A reconstrução de metas, alertas e predição ampliou essas suítes: ao final da integração, a suíte do \textit{Finance Service} passava de 2.000 testes, com dezenas de verificações de integração executadas contra PostgreSQL, MongoDB e Redis reais, incluindo interrupções forçadas do processo (SIGKILL) após confirmações de escrita, para provar que travas, diários de intenção e recuperação administrativa deixam o banco em estado consistente. A auditoria adversarial dessa frente registrou dezoito achados, cada um com estado sustentado e condição restante documentados em uma matriz de liberação; a jornada completa em canal real permaneceu como portão final antes da exposição ao público.
 
-Um ponto merece ressalva. A arquitetura previa que os \textit{golden sets} da conversa bloqueassem a integração contínua. Na prática, eles são executados manualmente: o passo existe no \textit{pipeline}, mas depende de um segredo de acesso ao repositório de documentação que ainda não foi configurado. O que roda a cada alteração são os testes unitários, os de integração, a tabela de paridade do planejador e o portão de \textit{hash} do prompt.
-
 \subsection{Camada de Inteligência Artificial}
 
 A Tabela~\ref{tab:golden} apresenta os resultados dos principais \textit{golden sets}. Os conjuntos que dependem apenas de regras determinísticas atingiram 100\%, como exigido. Os que dependem do modelo foram medidos em baterias com o modelo real.
 
-\begin{tabela}[htbp]
+\begin{tabela}[H]
 \centering
 \caption{Resultados dos principais \textit{golden sets}}
 \label{tab:golden}
@@ -481,9 +534,8 @@ Leitura de metas por regra & 221 & 100\% \\
 Conselhos sem produto citado (fora do treino) & 20 & 20/20 \\
 \textit{Prompt injection} (30 ataques e 43 frases legítimas) & 73 & 73/73 \\
 Leitura do cadastro pelo planejador & 172 & 172/172 \\
-Conversas com continuação de assunto & 76 & 74/76 e 76/76 \\
 Motivo da frase pelo planejador (Macro-F1) & 348 & 0,914 \\
-Consultas financeiras iguais ao gabarito & 1.512 & 1.052 (69,6\%) \\
+Consultas financeiras sem data ou banco errados & 1.512 & 100\% \\
 \bottomrule
 \end{tabular}
 }
@@ -492,11 +544,11 @@ Consultas financeiras iguais ao gabarito & 1.512 & 1.052 (69,6\%) \\
 
 A conformidade de 100\% no mascaramento e nos comandos da LGPD era a meta inegociável do projeto, porque um valor exposto ou um pedido de exclusão perdido causariam dano real ao titular. Ambos são decididos por regras determinísticas, e não pelo modelo, o que torna o resultado reprodutível. O \textit{guardrail} de conselho mostra por que a combinação de regra e modelo foi necessária. A expressão regular sozinha bloqueou apenas 10 dos 20 conselhos do conjunto mantido fora do desenvolvimento, que eram escritos sem citar produto financeiro, como ``deixar esse dinheiro parado na conta perde da inflação''. O modelo de juízo bloqueou os 20, com mediana de 267~ms. Na \textit{prompt injection}, a expressão regular sozinha detectou 20 dos 30 ataques; com o juízo, os 30.
 
-No conjunto de 1.512 consultas financeiras, o planejador produziu a consulta idêntica ao gabarito, campo a campo, em 1.052 frases. As diferenças restantes são, em sua maioria, escolhas equivalentes, como pedir o mesmo dado com outro agrupamento. O mais importante é que nenhuma frase gerou data ou banco errados, e o planejador falhou em apenas 2 casos (0,13\%). O Macro-F1 de 0,914 na identificação do motivo da frase ficou acima do mínimo de 0,88 definido. Na bateria paga executada ao final da frente de metas e alertas, com o modelo real, o planejador acertou 72 das 75 frases do roteiro.
+No conjunto de 1.512 consultas financeiras, nenhuma frase gerou data ou banco errados. O Macro-F1 de 0,914 na identificação do motivo da frase ficou acima do mínimo de 0,88 definido.
 
 Para avaliar respostas abertas, foram geradas perguntas complexas, parte escritas pela equipe e parte por um modelo de linguagem sem acesso às regras do sistema. Um segundo modelo, atuando como juiz, atribuiu notas de 0 a 10 a cada resposta produzida pelo turno completo em produção. A Tabela~\ref{tab:complexas} apresenta a evolução das notas médias entre a primeira e a última medição, depois das correções.
 
-\begin{tabela}[htbp]
+\begin{tabela}[H]
 \centering
 \caption{Notas médias das respostas a perguntas complexas}
 \label{tab:complexas}
@@ -521,7 +573,7 @@ O conjunto 4 é o resultado mais relevante da tabela. Como nunca foi usado para 
 
 O teste de carga foi executado no próprio servidor de produção, ao lado do sistema em uso, em uma rede isolada, sem acesso ao provedor do modelo de linguagem, aos canais de mensageria nem ao agregador de \textit{Open Finance}, e sem tocar em dados de titulares. Um modelo simulado devolvia os planos reais gravados de 1.512 frases, com o tempo real de cada chamada, e as mensagens chegavam segundo um processo de Poisson. A Tabela~\ref{tab:carga} resume os resultados, em segundos, do recebimento do \textit{webhook} até o envio ao canal.
 
-\begin{tabela}[htbp]
+\begin{tabela}[H]
 \centering
 \caption{Latência no teste de carga antes e depois da mudança de consumidores}
 \label{tab:carga}
@@ -550,7 +602,7 @@ Quanto à latência percebida, o \textit{gateway} respondeu às rajadas de até 
 
 A projeção foi o requisito em que a medição mais alterou a proposta, em duas rodadas. A Tabela~\ref{tab:prophet} mostra a largura do intervalo de previsão de 80\%, como percentual do valor projetado, medida na série real de um titular com seis meses de histórico. O modelo de dados define que uma projeção só é confiável quando essa largura não ultrapassa 40\%.
 
-\begin{tabela}[htbp]
+\begin{tabela}[H]
 \centering
 \caption{Largura do intervalo de previsão como percentual do valor projetado}
 \label{tab:prophet}
@@ -569,7 +621,7 @@ Total, semanal & -- & 91\% \\
 
 Diante desse resultado, a projeção passou a estimar o gasto até o fim do mês corrente, no total ou por categoria, com os métodos candidatos escolhidos por teste retrospectivo. A primeira rodada, com três candidatos, reprovou todos: a mediana histórica acertava o centro, mas cobria o valor real em apenas 27\% dos casos, e a EWMA tinha viés de 12\%. A investigação dessa reprovação revelou um problema na própria política: o ritmo atual do mês era usado como reserva sempre que ninguém passava, sem ser confrontado com os mesmos critérios, e era o pior candidato. A política foi então refeita: todos os candidatos, inclusive o ritmo atual, passaram a ser julgados pelos mesmos critérios, ``nenhum método'' virou um veredito válido, e um novo candidato foi construído, o ritmo robusto, que estende aos dias restantes apenas o gasto típico, com a régua de dia atípico tirada do histórico. A Tabela~\ref{tab:backtest} apresenta o teste retrospectivo final, sobre oito séries sintéticas com 426 origens e corte no dia 15, incluindo cenários adversos como uma compra pontual de R\$~5.000, um aluguel no dia 3 e duas semanas de viagem.
 
-\begin{tabela}[htbp]
+\begin{tabela}[H]
 \centering
 \caption{Teste retrospectivo da projeção de fim de mês}
 \label{tab:backtest}
@@ -593,26 +645,16 @@ Critério de aprovação & $\leq$ 20\% & $\leq$ 5\% & 70\% a 90\% & -- \\
 \authorssource
 \end{tabela}
 
-O ritmo robusto venceu com folga: empata com o ritmo atual nas séries sem dia atípico e erra muito menos nas demais, como no cenário do aluguel (0,8\% contra 71,9\%). Nas séries reais de três titulares internos, obtidas pela exportação da LGPD, os meses comuns passaram no critério (WAPE de 12,6\%), e o erro se concentrou nos meses com compra grande fora do padrão, que nenhum histórico antecipa; um candidato que decompõe o mês em compromissos conhecidos e gasto variável roda em sombra no registro de previsões como possível substituto. O veredito sintético, porém, não libera nada sozinho: a estimativa só chega ao público geral depois de aprovada no fechamento mensal com dados reais, e até lá fica disponível apenas para a coorte do beta, apresentada como experimental e com critério de desligamento escrito.
+O ritmo robusto venceu com folga: empata com o ritmo atual nas séries sem dia atípico e erra muito menos nas demais, como no cenário do aluguel (0,8\% contra 71,9\%). Nas séries reais de três titulares internos, obtidas pela exportação da LGPD, os meses comuns passaram no critério (WAPE de 12,6\%), e o erro se concentrou nos meses com compra grande fora do padrão, que nenhum histórico antecipa; um candidato que decompõe o mês em compromissos conhecidos e gasto variável roda em sombra no registro de previsões como possível substituto. O veredito sintético, porém, não libera nada sozinho: a estimativa só chega ao público geral depois de aprovada no fechamento mensal com dados reais, e até lá fica disponível apenas para os usuários do beta, apresentada como experimental e com critério de desligamento escrito.
 
-O saldo livre do fim do mês foi avaliado da mesma forma. No dado real de um titular interno, com nove meses de histórico, o desenho final errou na mediana 1,7\% da renda mensal, com viés de $-$1,9\% e faixa cobrindo todos os meses; o desenho anterior, que somava apenas a renda regular, tinha viés de $-$9,1\% e cobertura nula, e foi descartado. Em uma base bancária pública com 4.500 contas e 162 mil origens, contar toda entrada em conta, em vez de só a renda, reduziu o viés de +4,5\% para +1,3\% da renda e elevou a cobertura da faixa de 31\% para 58\%, ainda abaixo da régua de 70\% a 90\%, o que mantém a liberação condicionada ao primeiro fechamento da coorte. A abstenção continua sendo uma escolha deliberada: um assistente que mostra ``R\$ 4.312,57'' com duas casas decimais transmite uma confiança que os dados não sustentam, e a pesquisa mostrou que a confiança em assistentes de IA para finanças ainda é frágil.
+O saldo livre do fim do mês foi avaliado da mesma forma. No dado real de um titular interno, com nove meses de histórico, o desenho final errou na mediana 1,7\% da renda mensal, com viés de $-$1,9\% e faixa cobrindo todos os meses; o desenho anterior, que somava apenas a renda regular, tinha viés de $-$9,1\% e cobertura nula, e foi descartado. Em uma base bancária pública com 4.500 contas e 162 mil origens, contar toda entrada em conta, em vez de só a renda, reduziu o viés de +4,5\% para +1,3\% da renda e elevou a cobertura da faixa de 31\% para 58\%, ainda abaixo da régua de 70\% a 90\%, o que mantém a liberação condicionada ao primeiro fechamento mensal com os usuários do beta. A abstenção continua sendo uma escolha deliberada: um assistente que mostra ``R\$ 4.312,57'' com duas casas decimais transmite uma confiança que os dados não sustentam, e a pesquisa mostrou que a confiança em assistentes de IA para finanças ainda é frágil.
 
 \subsection{Custo de Operação}
 
 O custo de cada resposta passou a ser medido pelo próprio sistema: os serviços publicam as unidades consumidas (\textit{tokens}, mensagens cobradas, conexões bancárias e cobranças de cartão) e o \textit{Billing Service} converte esses valores em reais pela cotação do Banco Central. A infraestrutura completa, com quatorze serviços, bancos, \textit{broker} e observabilidade, custou cerca de 12 euros por mês. Cada chamada ao planejador custou entre R\$~0,016 e R\$~0,019, e o modelo de juízo dos \textit{guardrails} acumulou R\$~0,30 em pouco mais de duas semanas de uso, o que corresponde a um custo estimado de US\$~0,0009 por usuário por mês no \textit{guardrail} de conselho regulado.
 
-A medição também corrigiu uma premissa da análise de viabilidade. O maior custo variável não é a infraestrutura nem o modelo de linguagem, mas a conexão bancária, cobrada por conexão ativa, e as mensagens do \textit{WhatsApp}, cobradas uma a uma. A regra de uma mensagem por interação reduziu diretamente esse custo, e a decisão de manter o \textit{Telegram} como canal alternativo ganhou também um argumento econômico, já que o envio de mensagens por ele não é cobrado. Em contrapartida, um caso real de consumo mostrou o risco de usar modelos onde uma regra basta: o julgamento do nome do estabelecimento de cada transação gerou 124 mil chamadas e 103 milhões de \textit{tokens} de entrada em duas horas, e foi substituído por uma regra determinística.
-
-\section{Impacto para o titular}
-
-Por estar em beta fechado, o EIGAM ainda não tem uma base de usuários que permita medir impacto com significância estatística, nem pesquisa de satisfação aplicada. O mecanismo de avaliação existe, com nota de 1 a 5 e comentário, mas não houve volume de respostas para relatar. O impacto observado vem do uso real pelo grupo do beta, que inclui integrantes da equipe com contas bancárias reais conectadas, e dos defeitos que esse uso revelou.
-
-O primeiro impacto é a consolidação. Um titular do beta conectou cinco instituições financeiras, entre bancos digitais e tradicionais, uma corretora e uma emissora de cartão, e passou a consultar o conjunto em uma única conversa, inclusive faturas, recorrências e empréstimos. Esse é exatamente o problema identificado na pesquisa, em que 83\% dos respondentes tinham duas ou mais contas.
-
-O segundo impacto é a correção dos números. O uso real revelou que o extrato bancário conta duas vezes o mesmo dinheiro: o pagamento da fatura aparece como saída da conta, e as compras que ele quita aparecem de novo no cartão. O mesmo ocorre com transferências entre contas do próprio titular e com estornos. Sem o pareamento dessas pernas, implementado a partir dessa observação, o gasto do mês seria superestimado justamente para quem tem várias contas. Em outro caso, uma pergunta sobre um mercado local ausente do catálogo de marcas teve a resposta errada por um fator de 125, porque nenhum filtro foi aplicado. A correção criou uma busca cifrada por palavra do nome do estabelecimento, que funciona para qualquer comércio sem enviar o nome em claro ao banco de dados.
-
-O terceiro impacto é a segurança percebida. A pesquisa apresentada no Capítulo~3 mostrou alta preocupação com privacidade, e o EIGAM respondeu com mecanismos que o titular vê funcionar: valores mascarados até o PIN, a mesma regra no painel, o comprovante de cada conexão com prazo de validade e direitos exercidos por uma frase. A exclusão de conta, por exemplo, revoga as conexões no agregador, anonimiza as transações, apaga conversas, metas e sessões e envia a confirmação pelo canal do pedido, sem intervenção da equipe.
+A medição também corrigiu uma premissa da análise de viabilidade. O maior custo variável não é a infraestrutura nem o modelo de linguagem, mas a conexão bancária, cobrada por conexão ativa, e as mensagens do \textit{WhatsApp}, cobradas uma a uma. A regra de uma mensagem por interação reduziu diretamente esse custo, e a decisão de manter o \textit{Telegram} como canal alternativo ganhou também um argumento econômico, já que o envio de mensagens por ele não é cobrado.
 
 \section{Limitações}
 
-Os resultados devem ser lidos com as seguintes limitações. O beta tem poucos titulares e poucos meses de histórico, o que impede medir satisfação, retenção e o efeito do produto sobre o comportamento financeiro. O sistema roda em um único servidor, chamado de ambiente de desenvolvimento, mas usado como produção; a separação em servidores dedicados está planejada e não foi executada. Os \textit{golden sets} ainda não bloqueiam a integração contínua. As projeções foram aprovadas nas séries de avaliação, mas a liberação ao público geral depende dos fechamentos mensais com dados reais, que exigem mais meses de coorte; a cobertura da faixa do saldo livre ainda está abaixo da régua definida. Os alertas de vencimento e de saldo insuficiente não foram entregues como avisos, e a jornada completa de metas e alertas em canal real permanece como portão final de liberação. A integração com assistentes externos aguarda as revisões jurídica e de segurança dedicadas antes da divulgação ampla. Por fim, a latência mediana das perguntas complexas ficou acima da meta de 4 segundos, e os conjuntos de perguntas foram, em parte, escritos pela mesma equipe que ajustou o sistema. O conjunto nunca usado para correções atenua, mas não elimina, esse viés.
+Os resultados devem ser lidos com as seguintes limitações. O beta tem poucos titulares e poucos meses de histórico, o que impede medir satisfação, retenção e o efeito do produto sobre o comportamento financeiro. O sistema roda em um único servidor, chamado de ambiente de desenvolvimento, mas usado como produção; a separação em servidores dedicados está planejada e não foi executada.

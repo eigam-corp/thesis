@@ -1,10 +1,10 @@
 \chapter{Modelagem do sistema}
 
-A modelagem do sistema representa uma etapa fundamental no processo de desenvolvimento de \textit{software}, pois permite estruturar os requisitos, identificar restrições e representar de forma clara as responsabilidades, interações e funcionalidades esperadas da solução. No contexto deste projeto, essa etapa assume especial relevância em razão da integração com dados financeiros sensíveis, da utilização de serviços externos, da comunicação por serviços de mensageria e dos requisitos relacionados à segurança, privacidade e conformidade com a Lei Geral de Proteção de Dados (LGPD).
+A modelagem do sistema representa uma etapa fundamental no processo de desenvolvimento de \textit{software}, pois permite estruturar os requisitos, identificar restrições e representar de forma clara as responsabilidades, interações e funcionalidades esperadas da solução. Essa etapa assume especial relevância em razão da integração com dados financeiros sensíveis, da utilização de serviços externos, da comunicação por serviços de mensageria e dos requisitos relacionados à segurança, privacidade e conformidade com a Lei Geral de Proteção de Dados (LGPD).
 
-O EIGAM é uma solução de assistência financeira inteligente, preditiva e conversacional, integrada ao ecossistema de \textit{Open Finance} e capaz de interagir com os usuários por meio de diferentes serviços de mensageria. O \textit{WhatsApp} é o principal canal de comunicação, e o \textit{Telegram} e a conversa no painel \textit{web} do titular foram incorporados como canais adicionais, o que comprovou na prática que o núcleo funcional está desacoplado do provedor de mensageria.
+O EIGAM é uma solução de assistência financeira inteligente, preditiva e conversacional, integrada ao ecossistema de \textit{Open Finance} e capaz de interagir com os usuários por meio de diferentes serviços de mensageria. O \textit{WhatsApp} é o principal canal de comunicação, e o \textit{Telegram} e a conversa no painel \textit{web} do titular funcionam como canais adicionais, o que demonstra que o núcleo funcional está desacoplado do provedor de mensageria.
 
-Neste capítulo são apresentadas a fronteira sistêmica, as restrições da solução, a arquitetura da camada de inteligência artificial, os requisitos funcionais e não funcionais, os diagramas de casos de uso e suas respectivas descrições. Esses elementos delimitam o escopo do sistema, estabelecem as responsabilidades dos componentes internos e dos serviços externos envolvidos em seu funcionamento e explicitam como os mecanismos conversacionais e preditivos são distribuídos entre os serviços da aplicação. A modelagem foi elaborada na fase de projeto e revista ao final do desenvolvimento, para refletir o sistema como foi implementado; as diferenças em relação à proposta original são discutidas no Capítulo~\ref{chap:resultados}.
+Neste capítulo são apresentadas a fronteira sistêmica, as restrições da solução, a arquitetura da camada de inteligência artificial, os requisitos funcionais e não funcionais, os diagramas de casos de uso e suas respectivas descrições. Esses elementos delimitam o escopo do sistema, estabelecem as responsabilidades dos componentes internos e dos serviços externos envolvidos em seu funcionamento e explicitam como os mecanismos conversacionais e preditivos são distribuídos entre os serviços da aplicação.
 
 \section{Fronteira sistêmica}
 
@@ -18,7 +18,7 @@ O armazenamento é distribuído de acordo com as características de cada tipo d
 
 Dessa forma, a fronteira sistêmica evidencia que as regras de negócio e os mecanismos de inteligência financeira permanecem independentes dos provedores externos utilizados. Essa característica permitiu que o \textit{WhatsApp} fosse o canal principal sem constituir uma dependência estrutural da solução.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \caption{Fronteira sistêmica da solução}
     \label{fig:fronteira}
@@ -56,7 +56,7 @@ O acesso às informações financeiras depende da disponibilidade e das condiç�
 
 Externa &
 Dependência de serviços de mensageria &
-A comunicação com o usuário depende de APIs e serviços fornecidos por serviços externos de mensageria. O \textit{WhatsApp} é o canal principal, e alterações em políticas, preços, limites de utilização ou disponibilidade do provedor podem afetar o funcionamento desse canal, como ocorreu com a cobrança de mensagens de serviço durante o desenvolvimento.
+A comunicação com o usuário depende de APIs e serviços fornecidos por serviços externos de mensageria. O \textit{WhatsApp} é o canal principal, e alterações em políticas, preços, limites de utilização ou disponibilidade do provedor podem afetar o funcionamento desse canal.
 \\ \hline
 
 Técnica &
@@ -146,7 +146,7 @@ Regras determinísticas do turno, validação e execução do plano produzido pe
 \\ \hline
 
 \textit{Finance Service} &
-Categorização das transações pela taxonomia do conector, pareamento de lançamentos, detecção de recorrências, cálculo do gasto canônico e da posição de caixa, simulação de compra e geração dos sinais financeiros: limites de gasto, risco de estouro, cobranças duplicadas, transações atípicas e aumento de gasto por categoria.
+Tradução da categoria atribuída pelo agregador para a taxonomia do EIGAM, pareamento de lançamentos, detecção de recorrências, cálculo do gasto canônico e da posição de caixa, simulação de compra e geração dos sinais financeiros: limites de gasto, risco de estouro, cobranças duplicadas, transações atípicas e aumento de gasto por categoria.
 \\ \hline
 
 \textit{Analytics Service} &
@@ -164,19 +164,17 @@ Essa distribuição permite que o \textit{AI Service} concentre a interpretaçã
 
 \subsection{Leitura da Frase e Planejamento das Consultas}
 
-A leitura da mensagem do titular ocorre em camadas. Antes de qualquer modelo, o \textit{Chat Service} verifica, por expressões regulares, os comandos relacionados aos direitos do titular, como consulta, exportação, revogação e exclusão de dados. Dessa forma, a execução de operações com impacto sobre os dados pessoais não depende de uma classificação probabilística. Em seguida, regras determinísticas tratam o cadastro, a troca de PIN, a conexão e a remoção de bancos, as metas, os investimentos, os empréstimos, as recorrências, a assinatura, a desconexão de assistentes externos, a simulação de compra e o saldo livre do fim do mês; nas duas últimas, a resposta também é montada pelo servidor, sem o modelo de redação, para que o resultado numérico nunca se converta em recomendação.
+A leitura da mensagem do titular ocorre em camadas. Antes de qualquer modelo, o \textit{Chat Service} verifica, por expressões regulares, os comandos relacionados aos direitos do titular, como consulta, exportação, revogação e exclusão de dados. Dessa forma, a execução de operações com impacto sobre os dados pessoais não depende de uma classificação probabilística. Em seguida, regras determinísticas tratam o cadastro, a troca de PIN, a conexão e a remoção de bancos, as metas, os investimentos, os empréstimos, as recorrências, a assinatura e a desconexão de assistentes externos.
 
 As demais frases seguem para o planejador do \textit{AI Service}, que utiliza chamada de funções (\textit{function calling}) com um contrato versionado de sete funções: consulta de dados financeiros, faturas de cartão, saldos, instituições conectadas, atualização dos dados, pedido de esclarecimento e indicação de que a frase não é financeira. O modelo apenas escolhe as funções e os argumentos, como período, instituição, categoria, estabelecimento, forma de pagamento e agrupamento, e nunca responde diretamente ao titular nessa etapa. O resultado pode ser a execução das consultas, uma pergunta de esclarecimento com até três botões, uma resposta sem consulta, por exemplo para uma saudação, ou a indisponibilidade da leitura.
 
 O \textit{Chat Service} revalida o plano com os mesmos esquemas utilizados pelos demais serviços e vincula o identificador do titular, que nunca é argumento do modelo. O planejador tem até 4,5 segundos, com uma segunda tentativa, e o \textit{Chat Service} desiste em 4,7 segundos. Nesse caso, a resposta é uma recusa sem número, e não uma estimativa.
 
-A modelagem inicial previa um classificador de intenções com limiares de confiança de 0,85 e 0,65. Esse classificador foi implementado e utilizado durante parte do desenvolvimento, mas foi substituído pelo planejador, porque duas leituras da mesma frase podiam divergir e cobravam duas chamadas ao modelo por mensagem. A qualidade da leitura passou a ser medida pelo Macro-F1 do motivo devolvido pelo planejador, com mínimo de 0,88.
+A qualidade da leitura é medida pelo Macro-F1 do motivo devolvido pelo planejador, com mínimo de 0,88.
 
 \subsection{Recuperação de Contexto}
 
 O contexto fornecido ao modelo na redação da resposta tem três origens. A primeira são os fatos financeiros consultados no turno, enviados como dados estruturados e tratados como a única fonte autorizada de valores. Para as consultas mais frequentes, o servidor monta as linhas com os números exatos, e o modelo escreve apenas a abertura, a leitura e a oferta do próximo passo. A segunda é o histórico recente da conversa, que permite responder a perguntas de continuação, como ``e no mês passado?''. A terceira é uma base de conhecimento sobre o produto, com textos escritos pela equipe sobre planos, segurança, \textit{Open Finance} e direitos do titular, recuperados por palavras-chave.
-
-A modelagem inicial previa um mecanismo de \textit{Retrieval-Augmented Generation} (RAG) com busca vetorial sobre o histórico financeiro de cada usuário, com \textit{embeddings} armazenados no \textit{pgvector}. Durante o desenvolvimento, as perguntas sobre o histórico financeiro passaram a ser respondidas pelas consultas estruturadas escolhidas pelo planejador, que devolvem o valor exato em vez de um trecho semanticamente parecido. As perguntas sobre o produto, por sua vez, utilizam um conjunto pequeno de textos escritos pela equipe, igual para todos os titulares, para o qual a recuperação por palavras-chave mostrou-se suficiente. A extensão \textit{pgvector} e a tabela de \textit{embeddings} permanecem no banco como ponto de extensão.
 
 Os dados recuperados são tratados como contexto da resposta, e não como instruções. Descrições de transações, nomes de metas e de estabelecimentos entram no prompt neutralizados, sem quebras de linha, delimitadores ou contatos, o que reduz a superfície para tentativas de manipulação.
 
@@ -184,11 +182,11 @@ Os dados recuperados são tratados como contexto da resposta, e não como instru
 
 A camada preditiva do EIGAM não depende de modelos generativos. Para tarefas numéricas e de séries temporais, são utilizados métodos estatísticos, e a geração textual permanece separada do cálculo dos resultados.
 
-A modelagem inicial previa duas camadas de previsão: EWMA para usuários com pouco histórico e Prophet para os demais. Medido sobre a série real de um titular com seis meses de histórico, o Prophet produziu intervalos de previsão de três a dez vezes mais largos que os da EWMA, porque o gasto pessoal por categoria é esparso, com muitos dias sem nenhum lançamento. Por isso, a projeção passou a estimar o gasto até o fim do mês corrente, no total ou por categoria, sob uma política de modelos explícita: todos os candidatos, inclusive o ritmo atual do mês, são avaliados por teste retrospectivo no corte do dia 15, com erro percentual absoluto ponderado de até 20\%, viés de até 5\% e cobertura do intervalo de 80\% entre 70\% e 90\%; candidatos que não são o método de referência precisam ainda de ganho mínimo de 10\% sobre ele. ``Nenhum método'' é um veredito válido, e nesse caso o sistema informa que ainda não há dados suficientes para uma projeção confiável, em vez de apresentar um número com aparência de precisão. O modelo servido é o ritmo robusto, que estende aos dias restantes apenas o gasto típico, e os candidatos reprovados continuam calculados em sombra em um registro de previsões, fechado mensalmente contra o valor real.
+A projeção estima o gasto até o fim do mês corrente, no total ou por categoria. O modelo servido é o ritmo robusto, que estende aos dias restantes apenas o gasto típico, e os demais candidatos continuam calculados em sombra em um registro de previsões, fechado mensalmente contra o valor real.
 
 Duas estimativas complementares integram a mesma camada. O saldo livre do fim do mês opera em regime de caixa: parte do saldo disponível das contas correntes, desconta faturas a vencer, recorrentes em conta e agendamentos, e estima o movimento líquido restante pela mediana dos seis meses anteriores, cuja amplitude define a faixa da resposta; a resposta recusa com motivo declarado quando falta histórico ou quando alguma conexão está desatualizada. A simulação de compra aplica uma compra hipotética, à vista ou parcelada e com o calendário de fechamento do cartão, sobre a estimativa do fim do mês, a folga das metas e os compromissos dos doze meses seguintes, sem emitir juízo sobre a compra.
 
-A detecção de transações atípicas compara o valor de cada transação recente com o histórico de gastos da mesma categoria por meio de um escore-z robusto, calculado sobre o logaritmo do valor com a mediana e o desvio absoluto mediano, menos sensíveis a valores extremos do que a média e o desvio-padrão. O sinal é emitido a partir de 3,5, exige pelo menos dez transações e noventa dias de histórico, e recebe confiança alta a partir de 5 com vinte transações. Além disso, o \textit{Finance Service} detecta possíveis cobranças duplicadas, aumento de gasto em uma categoria em relação ao padrão do titular e a travessia de 80\% e de 100\% dos limites de gasto definidos nas metas, bem como o risco de ultrapassá-los até o fim do período. O algoritmo PELT, previsto para mudanças estruturais persistentes, não foi implementado.
+A detecção de transações atípicas compara o valor de cada transação recente com o histórico de gastos da mesma categoria por meio de um escore-z robusto, calculado sobre o logaritmo do valor com a mediana e o desvio absoluto mediano, menos sensíveis a valores extremos do que a média e o desvio-padrão. O sinal é emitido a partir de 3,5, exige pelo menos dez transações e noventa dias de histórico, e recebe confiança alta a partir de 5 com vinte transações. Além disso, o \textit{Finance Service} detecta possíveis cobranças duplicadas, aumento de gasto em uma categoria em relação ao padrão do titular e a travessia de 80\% e de 100\% dos limites de gasto definidos nas metas, bem como o risco de ultrapassá-los até o fim do período.
 
 Os limiares são parâmetros configuráveis. Sempre que não há histórico suficiente para determinada análise, o sistema evita apresentar conclusões e informa ao usuário que são necessários mais dados.
 
@@ -267,11 +265,11 @@ A confiabilidade dessa camada foi avaliada por testes específicos, incluindo a 
 
 \section{Requisitos e diagramas}
 
-A definição dos requisitos é uma das etapas centrais do desenvolvimento de \textit{software}, pois estabelece com precisão o que a solução deve ser capaz de realizar e sob quais condições deve operar. De acordo com Washizaki, em ``\textit{Guide to the Software Engineering Body of Knowledge}'' (SWEBOK), a engenharia de requisitos integra uma das áreas de conhecimento fundamentais da engenharia de \textit{software}, sendo responsável por apoiar a identificação, documentação e comunicação das necessidades do sistema. Complementarmente, o uso de diagramas de casos de uso auxilia na representação visual das interações entre os usuários e o sistema, facilitando a compreensão do escopo e a comunicação entre os envolvidos no projeto.
+A definição dos requisitos é uma das etapas centrais do desenvolvimento de \textit{software}, pois estabelece com precisão o que a solução deve ser capaz de realizar e sob quais condições deve operar. De acordo com Washizaki (2024), no \textit{Guide to the Software Engineering Body of Knowledge} (SWEBOK), a engenharia de requisitos integra uma das áreas de conhecimento fundamentais da engenharia de \textit{software}, sendo responsável por apoiar a identificação, documentação e comunicação das necessidades do sistema. Complementarmente, o uso de diagramas de casos de uso auxilia na representação visual das interações entre os usuários e o sistema, facilitando a compreensão do escopo e a comunicação entre os envolvidos no projeto.
 
 \subsection{Requisitos Funcionais}
 
-O Quadro \ref{frame:rf} apresenta os requisitos funcionais do projeto, isto é, as funcionalidades e comportamentos que o sistema deve oferecer para atender às necessidades dos usuários. Esses requisitos abrangem desde o cadastro e a vinculação de contas bancárias até a consulta de informações financeiras, a geração de análises e previsões, o envio de alertas, o gerenciamento de metas e o gerenciamento de consentimentos, refletindo os principais fluxos de interação da solução. O requisito RF013 foi incorporado durante o desenvolvimento, quando o uso real mostrou a necessidade de uma interface para consulta longa e gestão.
+O Quadro \ref{frame:rf} apresenta os requisitos funcionais do projeto, isto é, as funcionalidades e comportamentos que o sistema deve oferecer para atender às necessidades dos usuários. Esses requisitos abrangem desde o cadastro e a vinculação de contas bancárias até a consulta de informações financeiras, a geração de análises e previsões, o envio de alertas, o gerenciamento de metas e o gerenciamento de consentimentos, refletindo os principais fluxos de interação da solução.
 
 \begin{longtable}{|L{1.5cm}|L{3.2cm}|L{7.3cm}|L{2.1cm}|}
 \caption{Requisitos Funcionais} \label{frame:rf} \\
@@ -342,7 +340,7 @@ Os diagramas de caso de uso são utilizados para representar, de forma visual, a
 
 A solução foi modelada em quatro grupos funcionais de casos de uso: acesso e consulta financeira, análise preditiva e alertas, metas financeiras e resumos periódicos, e direitos do titular conforme a LGPD (Art.\ 18). As Figuras \ref{fig:uc01}, \ref{fig:uc02}, \ref{fig:uc03} e \ref{fig:uc04} apresentam os diagramas correspondentes a cada grupo.
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \caption{Diagrama de Casos de Uso - Acesso e Consulta Financeira}
     \label{fig:uc01}
@@ -350,7 +348,7 @@ A solução foi modelada em quatro grupos funcionais de casos de uso: acesso e c
     \authorssource
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \caption{Diagrama de Casos de Uso - Análise Preditiva e Alertas}
     \label{fig:uc02}
@@ -358,7 +356,7 @@ A solução foi modelada em quatro grupos funcionais de casos de uso: acesso e c
     \authorssource
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \caption{Diagrama de Casos de Uso - Metas Financeiras e Resumos Periódicos}
     \label{fig:uc03}
@@ -366,7 +364,7 @@ A solução foi modelada em quatro grupos funcionais de casos de uso: acesso e c
     \authorssource
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     \caption{Diagrama de Casos de Uso - Direitos do Titular (LGPD Art.\ 18)}
     \label{fig:uc04}
@@ -478,7 +476,7 @@ b. O usuário não conclui a autorização no banco:\newline
 2. O usuário digita o PIN;\newline
 3. O sistema valida o PIN utilizando \textit{bcrypt};\newline
 4. O sistema emite o token de privilégio ([UC009]);\newline
-5. Os valores monetários passam a ser exibidos na conversa, nas imagens e no painel.
+5. Os valores monetários passam a ser exibidos na conversa e no painel, e as respostas passam a poder incluir imagens.
 \\ \hline
 \textbf{Fluxo Alternativo} &
 a. O PIN informado está incorreto:\newline
@@ -775,10 +773,10 @@ b. A família de aviso está desativada ou o horário está fora da janela:\newl
 \endlastfoot
 \textbf{Caso de uso} & [UC011] Receber alerta de limite de gasto \\ \hline
 \textbf{Ator(es)} & Usuário, Sistema (\textit{Scheduler}) \\ \hline
-\textbf{Motivação} & Notificar o usuário quando o gasto atingir 80% ou 100% de um limite definido em meta, ou quando houver risco de ultrapassá-lo até o fim do período (inclui [UC016]). \\ \hline
+\textbf{Motivação} & Notificar o usuário quando o gasto atingir 80\% ou 100\% de um limite definido em meta, ou quando houver risco de ultrapassá-lo até o fim do período (inclui [UC016]). \\ \hline
 \textbf{Fluxo Principal} &
 1. Após a sincronização ([UC016]), o sistema calcula o gasto do período para cada limite ativo;\newline
-2. O sistema identifica a travessia de 80% ou de 100%, ou o risco de estouro;\newline
+2. O sistema identifica a travessia de 80\% ou de 100\%, ou o risco de estouro;\newline
 3. O sistema gera o sinal financeiro cifrado;\newline
 4. O sistema envia o aviso ao usuário, respeitando preferências e janela de horário.
 \\ \hline
@@ -895,18 +893,22 @@ a. Nenhum padrão recorrente encontrado:\newline
 \sourcerow{2} \\
 \endlastfoot
 \textbf{Caso de uso} & [UC015] Categorizar transações \\ \hline
-\textbf{Ator(es)} & Sistema \\ \hline
-\textbf{Motivação} & Atribuir uma categoria a cada transação a partir da taxonomia do conector, com 95 categorias em 17 grupos, sem uso de modelo de linguagem (incluso em [UC016]). \\ \hline
+\textbf{Ator(es)} & Sistema, Agregador (\textit{Open Finance}) \\ \hline
+\textbf{Motivação} & Associar a cada transação uma categoria e o tipo de movimento que ela representa, aproveitando a classificação detalhada e de qualidade que o agregador de \textit{Open Finance} já entrega, organizada na taxonomia do EIGAM (incluso em [UC016]). \\ \hline
 \textbf{Fluxo Principal} &
-1. O sistema recebe uma transação sincronizada;\newline
-2. O sistema traduz o rótulo do conector para a categoria e o grupo do EIGAM;\newline
-3. O sistema guarda também o rótulo original, que permite recategorizar sem nova sincronização;\newline
-4. O resultado é retornado ao caso de uso solicitante ([UC016]).
+1. O agregador entrega cada transação sincronizada com o rótulo de categoria atribuído por ele;\newline
+2. O sistema traduz o rótulo, por uma tabela fixa, para uma das 95 categorias do EIGAM, organizadas em 17 grupos;\newline
+3. O sistema guarda também o rótulo original, o que permite reaplicar a tradução sem nova sincronização;\newline
+4. A partir da categoria e do tipo de operação, o sistema define o tipo da transação: consumo ou renda, movimentação entre contas próprias ou pagamento de fatura, investimento, empréstimo ou estorno;\newline
+5. Nas consultas e nos gráficos, os gastos são agrupados pelo grupo, e a categoria aparece no detalhe e nos filtros;\newline
+6. O resultado é retornado ao caso de uso solicitante ([UC016]).
 \\ \hline
 \textbf{Fluxo Alternativo} &
-a. O rótulo do conector é desconhecido:\newline
+a. O rótulo do agregador não consta da tabela de tradução:\newline
 \hspace*{1em}i. A transação é classificada como sem categoria;\newline
-\hspace*{1em}ii. O rótulo é registrado para ampliar o mapeamento.
+\hspace*{1em}ii. O rótulo é registrado com o nome exato, para ampliar a tabela.\newline
+b. A transação chega sem rótulo do agregador:\newline
+\hspace*{1em}i. A transação é classificada como sem categoria.
 \\ \hline
 \end{longtable}
 }
@@ -992,10 +994,10 @@ a. O par corresponde a um estorno ou a parcelas:\newline
 \textbf{Motivação} & Responder, em regime de caixa, quanto deve sobrar nas contas correntes conectadas no último dia do mês, a partir dos dados sincronizados (inclui [UC016]). \\ \hline
 \textbf{Fluxo Principal} &
 1. O usuário pergunta quanto sobra ou quanto pode gastar até o fim do mês;\newline
-2. O sistema reconhece a pergunta por regra, sem o modelo de linguagem;\newline
+2. O sistema identifica a pergunta;\newline
 3. O sistema parte do saldo disponível das contas correntes e desconta as faturas a vencer, as recorrências em conta e os agendamentos;\newline
 4. O sistema soma a parte estimada: a mediana do movimento líquido restante dos seis meses anteriores, cuja amplitude define a faixa;\newline
-5. O sistema monta a resposta no servidor, como faixa de valores, sem formulação de licença para gastar.
+5. O sistema responde com uma faixa de valores, sem formulação de licença para gastar.
 \\ \hline
 \textbf{Fluxo Alternativo} &
 a. Há menos de três meses de histórico, conexão desatualizada ou lançamento ilegível:\newline
@@ -1024,10 +1026,10 @@ b. O usuário está sem o token de privilégio:\newline
 \textbf{Motivação} & Mostrar o efeito de uma compra hipotética, à vista ou parcelada, sobre o que o sistema já mede, sem emitir recomendação de compra (inclui [UC013]). \\ \hline
 \textbf{Fluxo Principal} &
 1. O usuário descreve a compra (``e se eu comprar X de R\$~Y em Nx?''), podendo citar o cartão;\newline
-2. O sistema lê a frase por regra e calcula as parcelas, que sempre somam o total informado;\newline
+2. O sistema interpreta a compra e calcula as parcelas, que sempre somam o total informado;\newline
 3. Com o cartão citado, as parcelas seguem o fechamento da fatura; sem cartão, cada parcela cai no mês correspondente;\newline
 4. O sistema apresenta a estimativa do fim do mês antes e depois ([UC013]), a folga das metas de limite afetadas e os compromissos dos doze meses seguintes com a parcela somada;\newline
-5. A resposta é montada no servidor, sem o modelo de linguagem, e nada é gravado.
+5. A simulação não é gravada e não altera metas nem projeções.
 \\ \hline
 \textbf{Fluxo Alternativo} &
 a. O titular informa juros (parcelas que somam mais que o total):\newline
