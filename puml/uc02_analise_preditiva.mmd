@@ -24,7 +24,7 @@ config:
     .usecase-actor div { white-space: nowrap !important; max-width: none !important; }
     .usecase-element ellipse { fill: #EEFBB8 !important; stroke: #203825 !important; stroke-width: 2px !important; }
     .usecase-element .nodeLabel { color: #203825 !important; }
-    .usecase-ellipse div { white-space: nowrap !important; max-width: none !important; padding: 9px 18px !important; }
+    .usecase-ellipse div { white-space: nowrap !important; max-width: none !important; padding: 14px 30px !important; }
     .usecase-note path { fill: #FFFFFF !important; stroke: #4A5A4D !important; stroke-width: 1.8px !important; }
     .usecase-note .nodeLabel { color: #203825 !important; font-size: 23px !important; text-align: left; }
     .usecase-note div { white-space: nowrap !important; max-width: none !important; }
@@ -43,7 +43,8 @@ usecase-beta
   actor SYS("`«sistema»
   Scheduler`")
   actor PL("`«sistema externo»
-  Agregador de Open Finance`")
+  Agregador
+  (Open Finance)`")
 
   systemBoundary S("Análise Preditiva e Alertas")
     UC10("`Receber
@@ -89,12 +90,14 @@ usecase-beta
   ≥ 3,5 ou aumento
   por categoria`" -- UC10
   SYS -- "`80%, 100% ou
-  risco de estouro`" -- UC11
+  risco de
+  ultrapassagem`" -- UC11
   SYS -- "`mesmo valor e
-  estabelecimento`" -- UC17
+  contraparte`" -- UC17
 
   UC16 -- "`varredura
-  a cada 6h`" -- PL
+  a cada 6 h`" -- PL
+  UC15 -- PL
   UC16 ..> : include UC15
   UC16 ..> : include UC14
   UC12 ..> : include UC14

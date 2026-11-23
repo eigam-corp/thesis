@@ -24,7 +24,7 @@ config:
     .usecase-actor div { white-space: nowrap !important; max-width: none !important; }
     .usecase-element ellipse { fill: #EEFBB8 !important; stroke: #203825 !important; stroke-width: 2px !important; }
     .usecase-element .nodeLabel { color: #203825 !important; }
-    .usecase-ellipse div { white-space: nowrap !important; max-width: none !important; padding: 9px 18px !important; }
+    .usecase-ellipse div { white-space: nowrap !important; max-width: none !important; padding: 14px 30px !important; }
     .usecase-note path { fill: #FFFFFF !important; stroke: #4A5A4D !important; stroke-width: 1.8px !important; }
     .usecase-note .nodeLabel { color: #203825 !important; font-size: 23px !important; text-align: left; }
     .usecase-note div { white-space: nowrap !important; max-width: none !important; }
@@ -41,9 +41,11 @@ usecase-beta
   direction TB
   actor U(Usuário)
   actor PL("`«sistema externo»
-  Agregador de Open Finance`")
+  Agregador
+  (Open Finance)`")
   actor AI("`«sistema externo»
-  Provedor de LLM`")
+  Provedor do modelo
+  de linguagem`")
 
   systemBoundary S("Acesso e Consulta Financeira")
     UC01("`Realizar
@@ -72,7 +74,7 @@ usecase-beta
     gastos`")
     UC09("`Obter token
     de privilégio
-    (8h)`")
+    (8 h)`")
     UC28("`Acessar o
     painel do
     titular`")
@@ -96,4 +98,7 @@ usecase-beta
   UC03 ..> : include UC09
 
   UC02 -- PL
+  UC04 -- PL
+  UC05 -- PL
+  UC06 -- PL
   UC07 -- planeja e redige -- AI

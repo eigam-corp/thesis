@@ -24,7 +24,7 @@ config:
     .usecase-actor div { white-space: nowrap !important; max-width: none !important; }
     .usecase-element ellipse { fill: #EEFBB8 !important; stroke: #203825 !important; stroke-width: 2px !important; }
     .usecase-element .nodeLabel { color: #203825 !important; }
-    .usecase-ellipse div { white-space: nowrap !important; max-width: none !important; padding: 9px 18px !important; }
+    .usecase-ellipse div { white-space: nowrap !important; max-width: none !important; padding: 14px 30px !important; }
     .usecase-note path { fill: #FFFFFF !important; stroke: #4A5A4D !important; stroke-width: 1.8px !important; }
     .usecase-note .nodeLabel { color: #203825 !important; font-size: 23px !important; text-align: left; }
     .usecase-note div { white-space: nowrap !important; max-width: none !important; }
@@ -43,7 +43,7 @@ usecase-beta
   actor SYS("`«sistema»
   Scheduler`")
 
-  systemBoundary S("Metas e Resumos Periódicos")
+  systemBoundary S("Metas Financeiras e Resumos Periódicos")
     UC18("`Definir
     meta
     financeira`")
@@ -81,8 +81,8 @@ usecase-beta
   U -- UC26
   U -- UC27
 
-  SYS -- segunda-feira, 9h -- UC22
-  SYS -- dia 1, 9h -- UC23
+  SYS -- segunda-feira, 9 h -- UC22
+  SYS -- dia 1, 9 h -- UC23
 
   UC20 ..> : extend UC18
   UC21 ..> : extend UC18

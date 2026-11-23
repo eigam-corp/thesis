@@ -54,11 +54,13 @@ sequenceDiagram
   U-)CH: "quanto gastei<br/>no mercado<br/>este mês?"
   CH->>GW: webhook
   GW->>GW: valida HMAC e deduplica
-  GW-)KF: produz evento<br/>cifrado
+  GW-)KF: webhooks.messages<br/>(evento cifrado)
   GW--)CH: 200 OK<br/>(milissegundos)
-  KF-)CS: messages.inbound
+  KF-)GW: consome
+  GW-)KF: messages.inbound<br/>(titular resolvido)
+  KF-)CS: consome
   CS-)KF: indicador<br/>de digitação
-  CS->>CS: comandos da LGPD e regras<br/>determinísticas (regex)
+  CS->>CS: comandos da LGPD e regras<br/>determinísticas<br/>(expressões regulares)
   CS->>ID: titular e passo<br/>do cadastro
   ID--)CS: estado<br/>do titular
   CS->>AI: planejador: lê a frase<br/>(sem CPF, PIN ou e-mail)
@@ -69,8 +71,8 @@ sequenceDiagram
   CS->>AI: redação da resposta<br/>(fatos estruturados)
   AI->>AI: guardrails de saída
   AI--)CS: resposta
-  CS->>CS: mascaramento por regex<br/>(sem token: R$ •••••)
+  CS->>CS: mascaramento por<br/>expressão regular<br/>(sem token: R$ •••••)
   CS-)KF: messages.outbound<br/>(um evento)
   KF-)OW: consome
   OW->>CH: envia uma mensagem
-  CH-)U: resposta com<br/>texto e imagem
+  CH-)U: resposta em texto<br/>(imagem só com token)

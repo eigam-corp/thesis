@@ -24,7 +24,7 @@ config:
     .usecase-actor div { white-space: nowrap !important; max-width: none !important; }
     .usecase-element ellipse { fill: #EEFBB8 !important; stroke: #203825 !important; stroke-width: 2px !important; }
     .usecase-element .nodeLabel { color: #203825 !important; }
-    .usecase-ellipse div { white-space: nowrap !important; max-width: none !important; padding: 9px 18px !important; }
+    .usecase-ellipse div { white-space: nowrap !important; max-width: none !important; padding: 14px 30px !important; }
     .usecase-note path { fill: #FFFFFF !important; stroke: #4A5A4D !important; stroke-width: 1.8px !important; }
     .usecase-note .nodeLabel { color: #203825 !important; font-size: 23px !important; text-align: left; }
     .usecase-note div { white-space: nowrap !important; max-width: none !important; }
@@ -39,13 +39,15 @@ config:
 %% Renderização (mermaid-cli 12): mmdc -i uc04_direitos_lgpd.mmd -o "../images/uml/UC04 - Direitos do Titular (LGPD Art. 18).png" --size 3600 -b "#F6F8F1"
 usecase-beta
   direction LR
-  actor U(Titular)
+  actor U("`Usuário
+  (Titular)`")
   actor PL("`«sistema externo»
-  Agregador de Open Finance`")
+  Agregador
+  (Open Finance)`")
   actor AUD("`«sistema»
   Audit Service`")
 
-  systemBoundary S("Direitos do Titular - LGPD Art. 18")
+  systemBoundary S("Direitos do Titular (LGPD Art. 18)")
     LC01("`Consultar
     quais dados
     são tratados
@@ -66,7 +68,7 @@ usecase-beta
     de dados
     (Art. 18, VI)`")
     LC06("`Consultar com
-    quem dados são
+    quem os dados são
     compartilhados
     (Art. 18, VII)`")
     LC07("`Registrar
@@ -100,4 +102,10 @@ usecase-beta
   LC04 ..> : include LC09
 
   LC09 -- PL
+  LC04 -- PL
+  LC05 -- PL
   LC07 -- AUD
+  LC02 -- AUD
+  LC03 -- AUD
+  LC04 -- AUD
+  LC05 -- AUD

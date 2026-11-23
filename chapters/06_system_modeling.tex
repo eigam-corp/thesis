@@ -1,22 +1,22 @@
-\chapter{Modelagem do sistema}
+\chapter{Modelagem do sistema}\label{chap:modelagem}
 
-A modelagem do sistema representa uma etapa fundamental no processo de desenvolvimento de \textit{software}, pois permite estruturar os requisitos, identificar restrições e representar de forma clara as responsabilidades, interações e funcionalidades esperadas da solução. Essa etapa assume especial relevância em razão da integração com dados financeiros sensíveis, da utilização de serviços externos, da comunicação por serviços de mensageria e dos requisitos relacionados à segurança, privacidade e conformidade com a Lei Geral de Proteção de Dados (LGPD).
+A modelagem do sistema representa uma etapa fundamental no processo de desenvolvimento de \textit{software}, pois permite estruturar os requisitos, identificar restrições e representar de forma clara as responsabilidades, interações e funcionalidades esperadas da solução. Essa etapa assume especial relevância em razão da integração com dados financeiros sensíveis, da utilização de serviços externos, da comunicação por serviços de mensageria e dos requisitos relacionados à segurança, privacidade e conformidade com a LGPD.
 
-O EIGAM é uma solução de assistência financeira inteligente, preditiva e conversacional, integrada ao ecossistema de \textit{Open Finance} e capaz de interagir com os usuários por meio de diferentes serviços de mensageria. O \textit{WhatsApp} é o principal canal de comunicação, e o \textit{Telegram} e a conversa no painel \textit{web} do titular funcionam como canais adicionais, o que demonstra que o núcleo funcional está desacoplado do provedor de mensageria.
+O EIGAM é uma solução de assistência financeira inteligente, preditiva e conversacional, integrada ao ecossistema de Open Finance e capaz de interagir com os usuários por meio de diferentes serviços de mensageria. O WhatsApp é o principal canal de comunicação, e o Telegram e a conversa no painel \textit{web} do titular funcionam como canais adicionais, o que demonstra que o núcleo funcional está desacoplado do provedor de mensageria.
 
 Neste capítulo são apresentadas a fronteira sistêmica, as restrições da solução, a arquitetura da camada de inteligência artificial, os requisitos funcionais e não funcionais, os diagramas de casos de uso e suas respectivas descrições. Esses elementos delimitam o escopo do sistema, estabelecem as responsabilidades dos componentes internos e dos serviços externos envolvidos em seu funcionamento e explicitam como os mecanismos conversacionais e preditivos são distribuídos entre os serviços da aplicação.
 
 \section{Fronteira sistêmica}
 
-A Figura \ref{fig:fronteira} apresenta a fronteira sistêmica do EIGAM, evidenciando a separação entre os componentes pertencentes à solução e os serviços externos necessários ao seu funcionamento. Essa representação permite identificar as responsabilidades internas da aplicação, bem como os pontos de integração com sistemas de terceiros.
+A Figura~\ref{fig:fronteira} apresenta a fronteira sistêmica do EIGAM, evidenciando a separação entre os componentes pertencentes à solução e os serviços externos necessários ao seu funcionamento. Essa representação permite identificar as responsabilidades internas da aplicação, bem como os pontos de integração com sistemas de terceiros.
 
-Externamente, a solução se comunica com seis grupos de serviços. O primeiro corresponde aos serviços de mensageria: as APIs oficiais do \textit{WhatsApp} e do \textit{Telegram}. O acesso a esses canais é intermediado por adaptadores, de modo que novos canais possam ser incorporados sem alterar o núcleo funcional da solução. O segundo é o agregador de dados de \textit{Open Finance}, por meio do qual, mediante consentimento do titular, a solução acessa e sincroniza as informações financeiras das instituições vinculadas. O terceiro corresponde aos serviços de inteligência artificial: o provedor do modelo de linguagem, utilizado no planejamento das consultas, na redação das respostas e na transcrição de áudio, e o provedor do modelo de juízo tipado que apoia os \textit{guardrails}. O quarto é o provedor de pagamentos, responsável pelas assinaturas do plano Pro. O quinto é o serviço de borda, que protege o perímetro, publica os painéis por um túnel e autentica a equipe de operação. O sexto são os assistentes de inteligência artificial do próprio titular que, mediante autorização OAuth concedida pelo titular, leem dados da solução pelo servidor MCP.
+Externamente, a solução se comunica com seis grupos de serviços. O primeiro corresponde aos serviços de mensageria: as APIs oficiais do WhatsApp e do Telegram. O acesso a esses canais é intermediado por adaptadores, de modo que novos canais possam ser incorporados sem alterar o núcleo funcional da solução. O segundo é o agregador de dados de Open Finance, por meio do qual, mediante consentimento do titular, a solução acessa e sincroniza as informações financeiras das instituições vinculadas. O terceiro corresponde aos serviços de inteligência artificial: o provedor do modelo de linguagem, utilizado no planejamento das consultas, na redação das respostas e na transcrição de áudio, e o provedor do modelo de juízo tipado que apoia os mecanismos de controle das respostas (\textit{guardrails}). O quarto é o provedor de pagamentos, responsável pelas assinaturas do plano Pro. O quinto é o serviço de borda, que protege o perímetro, publica os painéis por um túnel e autentica a equipe de operação. O sexto são os assistentes de inteligência artificial do próprio titular que, mediante autorização concedida por meio do protocolo de autorização aberta (\textit{Open Authorization}, OAuth), leem dados da solução pelo servidor MCP.
 
-Internamente, a arquitetura separa as responsabilidades de entrada, conversa, finanças, comunicação e dados. O \textit{API Gateway} recebe os \textit{webhooks} externos; o \textit{Chat Service}, o \textit{AI Service} e o \textit{Identity Service} conduzem a conversa, a leitura da frase e a identidade do titular; o \textit{Finance Service} e o \textit{Analytics Service} processam os dados financeiros e as projeções; o \textit{Notification Service}, o \textit{Render Service} e o \textit{Outbound Worker} cuidam dos avisos, das imagens e do envio das mensagens; o \textit{Billing Service} e o \textit{Audit Service} tratam da cobrança e da auditoria. Os painéis do titular e de operação e o \textit{MCP Service}, servidor somente de leitura para os assistentes externos, completam a fronteira como interfaces expostas.
+Internamente, a arquitetura organiza os serviços em cinco subsistemas: entrada e painéis; conversa e IA; finanças; comunicação, cobrança e auditoria; e dados. O API Gateway recebe os \textit{webhooks} externos e, com os painéis do titular e de operação e o MCP Service, servidor somente de leitura para os assistentes externos, forma as interfaces expostas; o Chat Service, o AI Service e o Identity Service tratam da conversa, da leitura da frase e da identidade do titular; o Finance Service e o Analytics Service processam os dados financeiros e as projeções; o Notification Service, o Render Service e o Outbound Worker cuidam dos avisos, das imagens e do envio das mensagens, e o Billing Service e o Audit Service, da cobrança e da auditoria.
 
 O armazenamento é distribuído de acordo com as características de cada tipo de dado. O PostgreSQL guarda as informações estruturadas e relacionais, o MongoDB atende os dados de natureza documental, o Redis gerencia sessões, estado de conversa, \textit{cache} e filas, e um \textit{broker} compatível com a API do Kafka atua como barramento de eventos entre os serviços.
 
-Dessa forma, a fronteira sistêmica evidencia que as regras de negócio e os mecanismos de inteligência financeira permanecem independentes dos provedores externos utilizados. Essa característica permitiu que o \textit{WhatsApp} fosse o canal principal sem constituir uma dependência estrutural da solução.
+Dessa forma, a fronteira sistêmica evidencia que as regras de negócio e os mecanismos de inteligência financeira permanecem independentes dos provedores externos utilizados. Essa característica permite que o WhatsApp seja o canal principal sem constituir uma dependência estrutural da solução.
 
 \begin{figure}[H]
     \centering
@@ -28,13 +28,13 @@ Dessa forma, a fronteira sistêmica evidencia que as regras de negócio e os mec
 
 \section{Lista de restrições}
 
-Durante a definição e a modelagem do EIGAM, foram identificadas restrições que condicionam seu funcionamento, sua arquitetura e sua capacidade de integração. Por se tratar de uma solução que depende de serviços externos, do compartilhamento autorizado de dados financeiros, de serviços de mensageria e de mecanismos de inteligência artificial, parte dessas limitações decorre de fatores que não estão sob controle direto da aplicação.
+Durante a definição e a modelagem do EIGAM, foram identificadas restrições que condicionam seu funcionamento, sua arquitetura e sua capacidade de integração. Por se tratar de uma solução que depende de serviços externos, do compartilhamento autorizado de dados financeiros, de serviços de mensageria e de mecanismos de inteligência artificial, parte dessas restrições decorre de fatores que não estão sob controle direto da aplicação.
 
-Além disso, o tratamento de dados pessoais e informações financeiras exige a observância de requisitos regulatórios e de segurança, enquanto a adoção de uma arquitetura multicanal impõe a necessidade de considerar diferenças técnicas entre os provedores de mensageria. As principais restrições identificadas são apresentadas no Quadro \ref{frame:restricoes}.
+Além disso, o tratamento de dados pessoais e informações financeiras exige a observância de requisitos regulatórios e de segurança, enquanto a adoção de uma arquitetura multicanal impõe a necessidade de considerar diferenças técnicas entre os provedores de mensageria. As principais restrições identificadas são apresentadas no Quadro~\ref{frame:restricoes}.
 
 {\small
 \begin{longtable}{|L{2.3cm}|L{4.0cm}|L{8.2cm}|}
-\caption{Lista de Restrições} \label{frame:restricoes} \\
+\caption{Lista de restrições} \label{frame:restricoes} \\
 \continuesmark
 
 \hline
@@ -50,13 +50,13 @@ Além disso, o tratamento de dados pessoais e informações financeiras exige a 
 \endlastfoot
 
 Externa &
-Integração com o \textit{Open Finance} &
-O acesso às informações financeiras depende da disponibilidade e das condições de funcionamento dos serviços utilizados para integração com o ecossistema de \textit{Open Finance}. No projeto, essa comunicação é intermediada por um agregador de dados, cuja indisponibilidade ou alteração em suas APIs pode afetar operações de vinculação e sincronização de dados.
+Integração com o Open Finance &
+O acesso às informações financeiras depende da disponibilidade e das condições de funcionamento dos serviços utilizados para integração com o ecossistema de Open Finance. No projeto, essa comunicação é intermediada por um agregador de dados, cuja indisponibilidade ou alteração em suas APIs pode afetar operações de vinculação e sincronização de dados.
 \\ \hline
 
 Externa &
 Dependência de serviços de mensageria &
-A comunicação com o usuário depende de APIs e serviços fornecidos por serviços externos de mensageria. O \textit{WhatsApp} é o canal principal, e alterações em políticas, preços, limites de utilização ou disponibilidade do provedor podem afetar o funcionamento desse canal.
+A comunicação com o usuário depende de APIs fornecidas por provedores externos de mensageria. O WhatsApp é o canal principal, e alterações em políticas, preços, limites de utilização ou disponibilidade do provedor podem afetar o funcionamento desse canal.
 \\ \hline
 
 Técnica &
@@ -71,12 +71,12 @@ Determinados recursos visuais ou interativos disponíveis em aplicações \texti
 
 Regulatória &
 Consentimento para acesso aos dados financeiros &
-O acesso e a sincronização das informações compartilhadas por meio do \textit{Open Finance} dependem da existência de consentimento válido do titular. A revogação ou expiração desse consentimento impede novas sincronizações dos dados associados à respectiva instituição.
+O acesso e a sincronização das informações compartilhadas por meio do Open Finance dependem da existência de consentimento válido do titular. A revogação ou expiração desse consentimento impede novas sincronizações dos dados associados à respectiva instituição.
 \\ \hline
 
 Regulatória &
 Conformidade com a LGPD &
-O tratamento de dados pessoais deve observar os princípios, direitos e obrigações previstos na Lei Geral de Proteção de Dados, incluindo finalidade, necessidade, transparência, segurança e atendimento às solicitações do titular.
+O tratamento de dados pessoais deve observar os princípios, direitos e obrigações previstos na LGPD, incluindo finalidade, necessidade, transparência, segurança e atendimento às solicitações do titular.
 \\ \hline
 
 Técnica &
@@ -105,8 +105,8 @@ A solução depende de infraestrutura computacional disponível para processamen
 \\ \hline
 
 Infraestrutura &
-Disponibilidade de conexão com a \textit{internet} &
-A comunicação entre o usuário, os serviços de mensageria, os serviços do EIGAM e os provedores externos depende de conectividade com a \textit{internet}. A indisponibilidade da conexão pode impedir ou atrasar consultas, sincronizações e notificações.
+Disponibilidade de conexão com a internet &
+A comunicação entre o usuário, os serviços de mensageria, os serviços do EIGAM e os provedores externos depende de conectividade com a internet. A indisponibilidade da conexão pode impedir ou atrasar consultas, sincronizações e notificações.
 \\ \hline
 
 \end{longtable}
@@ -120,7 +120,7 @@ Os valores monetários, saldos, transações, agregações e resultados numéric
 
 \subsection{Distribuição das Responsabilidades de Inteligência Artificial}
 
-A camada cognitiva do EIGAM é distribuída entre o \textit{AI Service}, o \textit{Chat Service}, o \textit{Finance Service}, o \textit{Analytics Service} e o \textit{Notification Service}. Cada serviço utiliza técnicas de inteligência artificial ou de estatística apenas nas atividades compatíveis com sua responsabilidade de domínio, conforme apresentado no Quadro \ref{frame:ia_responsabilidades}.
+A camada cognitiva do EIGAM é distribuída entre o AI Service, o Chat Service, o Finance Service, o Analytics Service e o Notification Service. Cada serviço utiliza técnicas de inteligência artificial, de estatística ou regras determinísticas apenas nas atividades compatíveis com sua responsabilidade de domínio, conforme apresentado no Quadro~\ref{frame:ia_responsabilidades}.
 
 {\small
 \begin{longtable}{|L{3.3cm}|L{11.0cm}|}
@@ -137,64 +137,73 @@ A camada cognitiva do EIGAM é distribuída entre o \textit{AI Service}, o \text
 \sourcerow{2} \\
 \endlastfoot
 
-\textit{AI Service} &
-Planejador que lê a frase do titular e escolhe as consultas financeiras, redação da resposta, \textit{guardrails} de saída, leitura das respostas do cadastro, base de conhecimento sobre o produto e transcrição de notas de voz.
+AI Service &
+Planejamento das consultas financeiras a partir da frase do titular, redação da resposta, \textit{guardrails} de saída, leitura das respostas do cadastro, base de conhecimento sobre o produto e transcrição de notas de voz.
 \\ \hline
 
-\textit{Chat Service} &
+Chat Service &
 Regras determinísticas do turno, validação e execução do plano produzido pelo modelo, cálculo dos valores em centavos e mascaramento condicional antes do envio da resposta.
 \\ \hline
 
-\textit{Finance Service} &
-Tradução da categoria atribuída pelo agregador para a taxonomia do EIGAM, pareamento de lançamentos, detecção de recorrências, cálculo do gasto canônico e da posição de caixa, simulação de compra e geração dos sinais financeiros: limites de gasto, risco de estouro, cobranças duplicadas, transações atípicas e aumento de gasto por categoria.
+Finance Service &
+Tradução da categoria atribuída pelo agregador para a taxonomia do EIGAM, pareamento de lançamentos, detecção de recorrências, cálculo do gasto canônico e da posição de caixa, simulação de compra e geração dos sinais financeiros: atingimento de 80\% e de 100\% do limite de gasto, risco de ultrapassagem do limite, cobranças duplicadas, transações atípicas e aumento de gasto por categoria.
 \\ \hline
 
-\textit{Analytics Service} &
-Projeção do gasto até o fim do mês, estimativa do gasto dos meses seguintes e composição do saldo livre do fim do mês, com os métodos avaliados por teste retrospectivo em um registro de previsões, candidatos em sombra e abstenção quando nenhum método atinge o critério de aprovação.
+Analytics Service &
+Projeção do gasto até o fim do mês, estimativa do gasto dos meses seguintes e composição do saldo livre do fim do mês, com os métodos avaliados por teste retrospectivo, os candidatos não usados nas respostas calculados em paralelo e gravados em um registro de previsões, e abstenção quando nenhum método atinge o critério de aprovação.
 \\ \hline
 
-\textit{Notification Service} &
+Notification Service &
 Decisão de quando avisar: preferências do titular, janela de horário, agrupamento, deduplicação e descarte de sinais que deixaram de valer. As regras que determinam se um aviso deve ser enviado não dependem do modelo de linguagem.
 \\ \hline
 
 \end{longtable}
 }
 
-Essa distribuição permite que o \textit{AI Service} concentre a interpretação da linguagem, que o \textit{Finance Service} e o \textit{Analytics Service} permaneçam responsáveis pelos cálculos e análises sobre os dados financeiros e que o \textit{Notification Service} trate a comunicação proativa. Assim, uma resposta conversacional utiliza resultados produzidos por diferentes serviços sem transferir ao modelo de linguagem a responsabilidade por calcular ou inferir valores financeiros que podem ser obtidos de maneira determinística.
+Essa distribuição permite que o AI Service concentre a interpretação da linguagem, que o Finance Service e o Analytics Service permaneçam responsáveis pelos cálculos e análises sobre os dados financeiros e que o Notification Service trate a comunicação proativa, de modo que uma resposta conversacional combine resultados produzidos por diferentes serviços.
 
 \subsection{Leitura da Frase e Planejamento das Consultas}
 
-A leitura da mensagem do titular ocorre em camadas. Antes de qualquer modelo, o \textit{Chat Service} verifica, por expressões regulares, os comandos relacionados aos direitos do titular, como consulta, exportação, revogação e exclusão de dados. Dessa forma, a execução de operações com impacto sobre os dados pessoais não depende de uma classificação probabilística. Em seguida, regras determinísticas tratam o cadastro, a troca de PIN, a conexão e a remoção de bancos, as metas, os investimentos, os empréstimos, as recorrências, a assinatura e a desconexão de assistentes externos.
+A leitura da mensagem do titular ocorre em camadas. Os comandos relacionados aos direitos do titular são reconhecidos por expressões regulares antes de acionar qualquer modelo, de modo que operações com impacto sobre os dados pessoais não dependam de uma classificação probabilística; em seguida, regras determinísticas tratam o cadastro, a troca de PIN, os bancos, as metas, os investimentos, os empréstimos, as recorrências, a assinatura e a desconexão de assistentes externos.
 
-As demais frases seguem para o planejador do \textit{AI Service}, que utiliza chamada de funções (\textit{function calling}) com um contrato versionado de sete funções: consulta de dados financeiros, faturas de cartão, saldos, instituições conectadas, atualização dos dados, pedido de esclarecimento e indicação de que a frase não é financeira. O modelo apenas escolhe as funções e os argumentos, como período, instituição, categoria, estabelecimento, forma de pagamento e agrupamento, e nunca responde diretamente ao titular nessa etapa. O resultado pode ser a execução das consultas, uma pergunta de esclarecimento com até três botões, uma resposta sem consulta, por exemplo para uma saudação, ou a indisponibilidade da leitura.
+As demais frases seguem para o planejador do AI Service, baseado em chamada de funções (\textit{function calling}): o modelo apenas escolhe as consultas necessárias e os seus argumentos, sem responder diretamente ao titular nessa etapa, e o Chat Service revalida o plano antes de executá-lo. O resultado pode ser a execução das consultas, uma pergunta de esclarecimento com até três botões, uma resposta sem consulta, por exemplo para uma saudação, ou a indisponibilidade da leitura.
 
-O \textit{Chat Service} revalida o plano com os mesmos esquemas utilizados pelos demais serviços e vincula o identificador do titular, que nunca é argumento do modelo. O planejador tem até 4,5 segundos, com uma segunda tentativa, e o \textit{Chat Service} desiste em 4,7 segundos. Nesse caso, a resposta é uma recusa sem número, e não uma estimativa.
+O contrato de funções, a revalidação do plano e os prazos de leitura são detalhados no Capítulo~\ref{chap:desenvolvimento}; esgotado o prazo, a resposta é uma recusa sem valores, e não um valor possivelmente incorreto.
 
-A qualidade da leitura é medida pelo Macro-F1 do motivo devolvido pelo planejador, com mínimo de 0,88.
+A qualidade da leitura é medida pelo Macro-F1 do motivo (a intenção identificada na frase) devolvido pelo planejador, com mínimo de 0,88. A métrica é a média simples do F1 de cada uma das $K$ classes de motivo, e o F1 de cada classe combina a sua precisão (\textit{precision}) $P_k$ e a sua revocação (\textit{recall}) $R_k$, conforme a Equação~\ref{eq:macrof1}:
+
+\begin{equation}
+F_{1,k} = \frac{2\, P_k\, R_k}{P_k + R_k},
+\qquad
+\text{Macro-F1} = \frac{1}{K} \sum_{k=1}^{K} F_{1,k}
+\label{eq:macrof1}
+\end{equation}
+
+\noindent em que $P_k$ é a fração das frases atribuídas à classe $k$ que de fato pertencem a ela e $R_k$ é a fração das frases da classe $k$ reconhecidas como tal. Por dar o mesmo peso a todas as classes, a métrica não esconde erros em motivos pouco frequentes.
 
 \subsection{Recuperação de Contexto}
 
-O contexto fornecido ao modelo na redação da resposta tem três origens. A primeira são os fatos financeiros consultados no turno, enviados como dados estruturados e tratados como a única fonte autorizada de valores. Para as consultas mais frequentes, o servidor monta as linhas com os números exatos, e o modelo escreve apenas a abertura, a leitura e a oferta do próximo passo. A segunda é o histórico recente da conversa, que permite responder a perguntas de continuação, como ``e no mês passado?''. A terceira é uma base de conhecimento sobre o produto, com textos escritos pela equipe sobre planos, segurança, \textit{Open Finance} e direitos do titular, recuperados por palavras-chave.
+O contexto fornecido ao modelo na redação da resposta tem três origens: os fatos financeiros consultados no turno, enviados como dados estruturados e tratados como a única fonte autorizada de valores; o histórico recente da conversa, que permite responder a perguntas de continuação, como ``e no mês passado?''; e uma base de conhecimento sobre o produto, com textos escritos pela equipe sobre planos, segurança, Open Finance e direitos do titular, recuperados por palavras-chave.
 
-Os dados recuperados são tratados como contexto da resposta, e não como instruções. Descrições de transações, nomes de metas e de estabelecimentos entram no prompt neutralizados, sem quebras de linha, delimitadores ou contatos, o que reduz a superfície para tentativas de manipulação.
+Os dados recuperados são tratados como contexto da resposta, e não como instruções: descrições de transações, nomes de metas e de estabelecimentos são neutralizados antes de entrar no \textit{prompt}, conforme detalhado no Capítulo~\ref{chap:desenvolvimento}, o que reduz a superfície para tentativas de manipulação.
 
 \subsection{Análise Preditiva e Detecção de Anomalias}
 
 A camada preditiva do EIGAM não depende de modelos generativos. Para tarefas numéricas e de séries temporais, são utilizados métodos estatísticos, e a geração textual permanece separada do cálculo dos resultados.
 
-A projeção estima o gasto até o fim do mês corrente, no total ou por categoria. O modelo servido é o ritmo robusto, que estende aos dias restantes apenas o gasto típico, e os demais candidatos continuam calculados em sombra em um registro de previsões, fechado mensalmente contra o valor real.
+A projeção estima o gasto até o fim do mês corrente, no total ou por categoria, com o método escolhido por teste retrospectivo; os demais candidatos são calculados em paralelo, sem exibição ao titular, gravados em um registro de previsões e confrontados mensalmente com o valor real.
 
-Duas estimativas complementares integram a mesma camada. O saldo livre do fim do mês opera em regime de caixa: parte do saldo disponível das contas correntes, desconta faturas a vencer, recorrentes em conta e agendamentos, e estima o movimento líquido restante pela mediana dos seis meses anteriores, cuja amplitude define a faixa da resposta; a resposta recusa com motivo declarado quando falta histórico ou quando alguma conexão está desatualizada. A simulação de compra aplica uma compra hipotética, à vista ou parcelada e com o calendário de fechamento do cartão, sobre a estimativa do fim do mês, a folga das metas e os compromissos dos doze meses seguintes, sem emitir juízo sobre a compra.
+Duas capacidades complementares integram a mesma camada. O saldo livre do fim do mês estima, em regime de caixa, quanto deve sobrar nas contas correntes no último dia do mês. A simulação de compra aplica uma compra hipotética, à vista ou parcelada e com o calendário de fechamento do cartão, sobre a projeção do gasto até o fim do mês, a folga das metas e os compromissos dos doze meses seguintes, sem emitir juízo sobre a compra. O método, a faixa e as condições de abstenção do saldo livre, assim como as regras da simulação, são detalhados no Capítulo~\ref{chap:desenvolvimento}.
 
-A detecção de transações atípicas compara o valor de cada transação recente com o histórico de gastos da mesma categoria por meio de um escore-z robusto, calculado sobre o logaritmo do valor com a mediana e o desvio absoluto mediano, menos sensíveis a valores extremos do que a média e o desvio-padrão. O sinal é emitido a partir de 3,5, exige pelo menos dez transações e noventa dias de histórico, e recebe confiança alta a partir de 5 com vinte transações. Além disso, o \textit{Finance Service} detecta possíveis cobranças duplicadas, aumento de gasto em uma categoria em relação ao padrão do titular e a travessia de 80\% e de 100\% dos limites de gasto definidos nas metas, bem como o risco de ultrapassá-los até o fim do período.
+A detecção de transações atípicas compara o valor de cada transação recente com o histórico de gastos da mesma categoria por meio de um escore-z robusto, menos sensível a valores extremos do que o escore convencional, com valor mínimo, histórico mínimo e confiança graduada detalhados no Capítulo~\ref{chap:desenvolvimento}. Além disso, o Finance Service detecta possíveis cobranças duplicadas, aumento de gasto em uma categoria em relação ao padrão do titular e o atingimento de 80\% e de 100\% dos limites de gasto definidos nas metas, bem como o risco de ultrapassagem do limite até o fim do período.
 
-Os limiares são parâmetros configuráveis. Sempre que não há histórico suficiente para determinada análise, o sistema evita apresentar conclusões e informa ao usuário que são necessários mais dados.
+Os valores de corte desses sinais são constantes da aplicação, e cada sinal pode ser ligado ou desligado pelo painel de operação. Sempre que não há histórico suficiente para determinada análise, o sistema evita apresentar conclusões: nas consultas, informa ao usuário que são necessários mais dados; nos avisos, o sinal não é emitido.
 
 \subsection{Mecanismos de Controle e Confiabilidade}
 
-Por operar em um domínio que envolve informações financeiras, o EIGAM adota mecanismos de controle adicionais sobre as respostas produzidas pelos modelos de linguagem. Esses controles, também denominados \textit{guardrails}, atuam antes da entrega da resposta ao usuário e reduzem os riscos relacionados à exposição indevida de valores, à geração de informações sem origem verificável, às solicitações fora do escopo e às tentativas de manipulação das instruções do sistema.
+Por operar em um domínio que envolve informações financeiras, o EIGAM adota mecanismos de controle adicionais sobre as respostas produzidas pelos modelos de linguagem. Esses controles, os \textit{guardrails}, atuam antes da entrega da resposta ao usuário e reduzem os riscos relacionados à exposição indevida de valores, à geração de informações sem origem verificável, às solicitações fora do escopo e às tentativas de manipulação das instruções do sistema.
 
-O Quadro \ref{frame:guardrails_ia} apresenta os controles implementados na camada conversacional.
+O Quadro~\ref{frame:guardrails_ia} apresenta os controles implementados na camada conversacional.
 
 {\small
 \begin{longtable}{|L{3.7cm}|L{5.2cm}|L{5.4cm}|}
@@ -212,7 +221,7 @@ O Quadro \ref{frame:guardrails_ia} apresenta os controles implementados na camad
 \endlastfoot
 
 Exposição de valores não autorizados &
-Verifica se o titular possui token de privilégio válido para exibição de valores monetários. &
+Verifica se o titular possui \textit{token} de privilégio válido para exibição de valores monetários. &
 Aplica mascaramento determinístico por expressão regular no servidor, depois do modelo, e indica que o PIN libera os valores.
 \\ \hline
 
@@ -227,7 +236,7 @@ Substitui a resposta por um texto fixo; a pergunta de alocação explícita é r
 \\ \hline
 
 Pedido de credencial &
-Identifica resposta que solicite senha bancária, CPF, código ou dados de cartão. &
+Identifica resposta que solicite senha bancária, número do Cadastro de Pessoas Físicas (CPF), código ou dados de cartão. &
 Substitui a resposta por um texto fixo, sem depender do modelo.
 \\ \hline
 
@@ -237,7 +246,7 @@ Recusa por \textit{template}, sem chamar o modelo de redação.
 \\ \hline
 
 Exposição de instruções internas &
-Busca trechos do prompt ou marcadores internos na resposta. &
+Busca trechos do \textit{prompt} ou marcadores internos na resposta. &
 Substitui a resposta por um texto fixo.
 \\ \hline
 
@@ -259,20 +268,20 @@ Corta a resposta, usa o \textit{template} de contingência ou troca a oferta por
 \end{longtable}
 }
 
-O mascaramento de valores financeiros é executado de maneira determinística pela aplicação, e não pelo modelo de linguagem. Da mesma forma, o modelo não recebe autoridade para validar autenticação, alterar consentimentos, executar exclusões ou decidir quais dados podem ser apresentados. A separação entre geração textual e regras de autorização garante que falhas de interpretação do modelo não resultem diretamente em exposição indevida de informações ou execução de operações sensíveis. Com o provedor do modelo de juízo indisponível, o \textit{guardrail} de conselho falha de forma fechada: respostas que comparem produtos financeiros são recusadas em vez de liberadas.
+A separação entre geração textual e regras de autorização garante que falhas de interpretação do modelo não resultem diretamente em exposição indevida de informações ou execução de operações sensíveis. Com o provedor do modelo de juízo indisponível, o \textit{guardrail} de conselho adota a recusa como padrão: respostas que comparem produtos financeiros são recusadas em vez de liberadas.
 
-A confiabilidade dessa camada foi avaliada por testes específicos, incluindo a leitura da frase pelo planejador, a consistência das informações numéricas, a robustez diante de entradas adversariais e o desempenho dos modelos preditivos. Os critérios e os resultados dessas medições são apresentados nos Capítulos \ref{chap:desenvolvimento} e \ref{chap:resultados}.
+A confiabilidade dessa camada foi avaliada por testes específicos, incluindo a leitura da frase pelo planejador, a consistência das informações numéricas, a robustez diante de entradas adversariais e o desempenho dos modelos preditivos. Os critérios e os resultados dessas medições são apresentados nos Capítulos~\ref{chap:desenvolvimento} e~\ref{chap:resultados}.
 
 \section{Requisitos e diagramas}
 
-A definição dos requisitos é uma das etapas centrais do desenvolvimento de \textit{software}, pois estabelece com precisão o que a solução deve ser capaz de realizar e sob quais condições deve operar. De acordo com Washizaki (2024), no \textit{Guide to the Software Engineering Body of Knowledge} (SWEBOK), a engenharia de requisitos integra uma das áreas de conhecimento fundamentais da engenharia de \textit{software}, sendo responsável por apoiar a identificação, documentação e comunicação das necessidades do sistema. Complementarmente, o uso de diagramas de casos de uso auxilia na representação visual das interações entre os usuários e o sistema, facilitando a compreensão do escopo e a comunicação entre os envolvidos no projeto.
+A definição dos requisitos é uma das etapas centrais do desenvolvimento de \textit{software}, pois estabelece com precisão o que a solução deve ser capaz de realizar e sob quais condições deve operar. De acordo com Washizaki (2024), no \textit{Guide to the Software Engineering Body of Knowledge} (SWEBOK), a engenharia de requisitos constitui uma das áreas de conhecimento fundamentais da engenharia de \textit{software}, sendo responsável por apoiar a identificação, documentação e comunicação das necessidades do sistema. Complementarmente, o uso de diagramas de casos de uso auxilia na representação visual das interações entre os usuários e o sistema, facilitando a compreensão do escopo e a comunicação entre os envolvidos no projeto.
 
 \subsection{Requisitos Funcionais}
 
-O Quadro \ref{frame:rf} apresenta os requisitos funcionais do projeto, isto é, as funcionalidades e comportamentos que o sistema deve oferecer para atender às necessidades dos usuários. Esses requisitos abrangem desde o cadastro e a vinculação de contas bancárias até a consulta de informações financeiras, a geração de análises e previsões, o envio de alertas, o gerenciamento de metas e o gerenciamento de consentimentos, refletindo os principais fluxos de interação da solução.
+O Quadro~\ref{frame:rf} apresenta os requisitos funcionais do projeto, isto é, as funcionalidades e comportamentos que o sistema deve oferecer para atender às necessidades dos usuários. Esses requisitos abrangem desde o cadastro e a vinculação de contas bancárias até a consulta de informações financeiras, a geração de análises e previsões, o envio de alertas, o gerenciamento de metas e o gerenciamento de consentimentos, refletindo os principais fluxos de interação da solução.
 
 \begin{longtable}{|L{1.5cm}|L{3.2cm}|L{7.3cm}|L{2.1cm}|}
-\caption{Requisitos Funcionais} \label{frame:rf} \\
+\caption{Requisitos funcionais} \label{frame:rf} \\
 \continuesmark
 \hline
 \textbf{Código} & \textbf{Requisito} & \textbf{Descrição} & \textbf{Prioridade} \\ \hline
@@ -284,26 +293,26 @@ O Quadro \ref{frame:rf} apresenta os requisitos funcionais do projeto, isto é, 
 \sourcerow{4} \\
 \endlastfoot
 {[RF001]} & Realizar cadastro & O usuário deve ser capaz de iniciar seu cadastro na solução por meio do WhatsApp ou de outro canal de mensageria, fornecendo as informações necessárias para criação de sua conta. & Obrigatório \\ \hline
-{[RF002]} & Vincular conta ao \textit{Open Finance} & O usuário deve ser capaz de autorizar e vincular suas contas bancárias por meio do \textit{Open Finance}, permitindo o compartilhamento de dados financeiros com a solução. & Obrigatório \\ \hline
+{[RF002]} & Vincular conta ao Open Finance & O usuário deve ser capaz de autorizar e vincular suas contas bancárias por meio do Open Finance, permitindo o compartilhamento de dados financeiros com a solução. & Obrigatório \\ \hline
 {[RF003]} & Consultar informações financeiras & O usuário deve ser capaz de consultar, por meio da conversa, informações como saldo, transações, histórico financeiro, movimentações recentes e resumos financeiros periódicos com visão consolidada de receitas, despesas e saldo. & Obrigatório \\ \hline
 {[RF004]} & Gerar análises financeiras & O sistema deve ser capaz de analisar os dados financeiros do usuário e apresentar interpretações sobre gastos, receitas e comportamento financeiro. & Obrigatório \\ \hline
 {[RF005]} & Gerar previsões financeiras & O sistema deve ser capaz de produzir previsões com base no histórico financeiro do usuário, indicando possíveis cenários futuros relacionados a gastos e saldo. & Obrigatório \\ \hline
 {[RF006]} & Emitir alertas financeiros & O sistema deve ser capaz de enviar alertas ao usuário sobre situações relevantes, como vencimentos, gastos acima do padrão ou risco de saldo insuficiente. & Obrigatório \\ \hline
-{[RF007]} & Fornecer recomendações personalizadas & O sistema deve ser capaz de gerar orientações e recomendações financeiras personalizadas com base no perfil e no histórico do usuário. & Obrigatório \\ \hline
+{[RF007]} & Fornecer recomendações personalizadas & O sistema deve ser capaz de gerar orientações financeiras personalizadas de organização do orçamento, com base no perfil e no histórico do usuário, sem recomendação de investimento. & Obrigatório \\ \hline
 {[RF008]} & Definir metas financeiras & O usuário deve ser capaz de cadastrar metas financeiras, como economizar determinado valor ou controlar gastos em categorias específicas. & Desejável \\ \hline
 {[RF009]} & Acompanhar metas financeiras & O usuário deve ser capaz de consultar o andamento de suas metas financeiras por meio da conversa. & Desejável \\ \hline
 {[RF010]} & Gerenciar consentimento & O usuário deve ser capaz de conceder, visualizar e revogar o consentimento de acesso aos seus dados financeiros compartilhados, incluindo a desvinculação de contas bancárias da solução. & Obrigatório \\ \hline
 {[RF011]} & Gerenciar perfil & O usuário deve ser capaz de visualizar e atualizar suas informações cadastrais e preferências de uso da solução. & Desejável \\ \hline
-{[RF012]} & Disponibilizar painel administrativo & O sistema deve fornecer uma área administrativa para acompanhamento técnico e gerenciamento geral da solução. & Desejável \\ \hline
+{[RF012]} & Disponibilizar painel de operação & O sistema deve fornecer uma área administrativa para acompanhamento técnico e gerenciamento geral da solução. & Desejável \\ \hline
 {[RF013]} & Disponibilizar painel do titular & O usuário deve ser capaz de acessar, por um navegador, uma extensão da conversa para consultar o mês, as transações, os bancos conectados, a assinatura e a privacidade, com os mesmos controles de mascaramento da conversa. & Desejável \\ \hline
 \end{longtable}
 
 \subsection{Requisitos Não Funcionais e de Qualidade}
 
-Além dos requisitos funcionais, a solução deve atender a requisitos não funcionais e de qualidade que assegurem seu funcionamento adequado em um contexto de alta sensibilidade de dados. Dado que a solução lida com informações financeiras e pessoais de usuários, aspectos como segurança, privacidade, confiabilidade e desempenho são tratados como prioridades estruturais. O detalhamento desses requisitos é apresentado no Quadro \ref{frame:rnf}.
+Além dos requisitos funcionais, a solução deve atender a requisitos não funcionais e de qualidade que assegurem seu funcionamento adequado em um contexto de alta sensibilidade de dados. Dado que a solução lida com informações financeiras e pessoais de usuários, aspectos como segurança, privacidade, confiabilidade e desempenho são tratados como prioridades estruturais. O detalhamento desses requisitos é apresentado no Quadro~\ref{frame:rnf}.
 
 \begin{longtable}{|L{1.8cm}|L{3.2cm}|L{7.0cm}|L{2.1cm}|}
-\caption{Requisitos Não Funcionais e de Qualidade} \label{frame:rnf} \\
+\caption{Requisitos não funcionais e de qualidade} \label{frame:rnf} \\
 \continuesmark
 \hline
 \textbf{Código} & \textbf{Requisito} & \textbf{Descrição} & \textbf{Prioridade} \\ \hline
@@ -318,31 +327,31 @@ Além dos requisitos funcionais, a solução deve atender a requisitos não func
 {[RNF002]} & Privacidade das informações & O sistema deve tratar os dados do usuário em conformidade com a LGPD, garantindo consentimento, transparência e controle sobre o uso das informações. & Obrigatório \\ \hline
 {[RNF003]} & Disponibilidade do sistema & O sistema deve permanecer disponível para uso na maior parte do tempo, permitindo o acesso contínuo às funcionalidades essenciais. & Obrigatório \\ \hline
 {[RNF004]} & Desempenho nas respostas & O sistema deve fornecer respostas ao usuário em tempo adequado, de modo a manter a interação conversacional fluida e eficiente. & Obrigatório \\ \hline
-{[RNF005]} & Usabilidade & O sistema deve apresentar interações em linguagem natural, simples, claras e de fácil compreensão, adequadas ao uso por meio de interface conversacional no WhatsApp. & Obrigatório \\ \hline
+{[RNF005]} & Usabilidade & O sistema deve apresentar interações em linguagem natural, simples, claras e de fácil compreensão, adequadas ao uso por meio de interface conversacional nos canais de mensageria. & Obrigatório \\ \hline
 {[RNF006]} & Confiabilidade das informações & O sistema deve apresentar dados financeiros, análises e alertas de forma consistente e confiável, reduzindo o risco de interpretações incorretas. & Obrigatório \\ \hline
 {[RNF007]} & Escalabilidade & O sistema deve ser capaz de suportar o aumento do número de usuários e interações sem comprometer seu funcionamento. & Desejável \\ \hline
-{[RNF008]} & Integração com serviços externos & O sistema deve ser compatível com APIs e serviços externos necessários para integração com \textit{Open Finance}, WhatsApp e demais recursos utilizados. & Obrigatório \\ \hline
+{[RNF008]} & Integração com serviços externos & O sistema deve ser compatível com APIs e serviços externos necessários para integração com Open Finance, WhatsApp e demais recursos utilizados. & Obrigatório \\ \hline
 {[RNF009]} & Manutenibilidade & O sistema deve ser desenvolvido de forma organizada e modular, facilitando correções, ajustes e futuras evoluções. & Obrigatório \\ \hline
-{[RNF010]} & Portabilidade & O sistema deve funcionar adequadamente em diferentes dispositivos que suportem o WhatsApp ou o Telegram e, no caso do painel do titular, em navegadores web de computadores e celulares. & Desejável \\ \hline
+{[RNF010]} & Portabilidade & O sistema deve funcionar adequadamente em diferentes dispositivos que suportem o WhatsApp ou o Telegram e, no caso do painel do titular, em navegadores \textit{web} de computadores e celulares. & Desejável \\ \hline
 {[RNF011]} & Autenticação segura & O sistema deve utilizar mecanismos seguros de autenticação e validação de identidade para acesso às informações financeiras do usuário. & Obrigatório \\ \hline
 {[RNF012]} & Auditabilidade & O sistema deve ser capaz de registrar ações relevantes e eventos importantes para fins de monitoramento, rastreabilidade e suporte. & Desejável \\ \hline
 {[RNF013]} & Clareza na comunicação & O sistema deve apresentar mensagens e respostas em linguagem clara, objetiva e compreensível para o usuário final. & Obrigatório \\ \hline
 {[RNF014]} & Precisão das previsões e recomendações & O sistema deve buscar manter nível adequado de precisão nas previsões e recomendações geradas com base nos dados financeiros do usuário. & Obrigatório \\ \hline
 {[RNF015]} & Recuperação de falhas & O sistema deve ser capaz de lidar com falhas de integração, indisponibilidade de serviços externos ou erros de processamento sem comprometer totalmente sua operação. & Desejável \\ \hline
-{[RNF016]} & Compatibilidade com o canal conversacional & O sistema deve respeitar as limitações e diretrizes de operação do \textit{WhatsApp Business}. & Obrigatório \\ \hline
+{[RNF016]} & Compatibilidade com o canal conversacional & O sistema deve respeitar as limitações e diretrizes de operação do WhatsApp Business. & Obrigatório \\ \hline
 {[RNF017]} & Acessibilidade textual & O sistema deve priorizar mensagens objetivas e bem estruturadas, facilitando a compreensão por diferentes perfis de usuários. & Desejável \\ \hline
 {[RNF018]} & Atualização de dados & O sistema deve manter as informações financeiras do usuário sincronizadas com frequência adequada, de acordo com a disponibilidade das integrações. & Obrigatório \\ \hline
 \end{longtable}
 
-\subsection{Diagrama de Casos de Uso}
+\subsection{Diagramas de Casos de Uso}
 
-Os diagramas de caso de uso são utilizados para representar, de forma visual, as interações entre os atores externos e o sistema, evidenciando as funcionalidades oferecidas e os objetivos que podem ser alcançados por meio dessas interações (Object Management Group, 2017). Dessa forma, esses diagramas auxiliam na compreensão do escopo do sistema e na comunicação dos requisitos levantados durante o projeto.
+Os diagramas de casos de uso são utilizados para representar, de forma visual, as interações entre os atores externos e o sistema, evidenciando as funcionalidades oferecidas e os objetivos que podem ser alcançados por meio dessas interações (OBJECT MANAGEMENT GROUP, 2017). Dessa forma, esses diagramas auxiliam na compreensão do escopo do sistema e na comunicação dos requisitos levantados durante o projeto.
 
-A solução foi modelada em quatro grupos funcionais de casos de uso: acesso e consulta financeira, análise preditiva e alertas, metas financeiras e resumos periódicos, e direitos do titular conforme a LGPD (Art.\ 18). As Figuras \ref{fig:uc01}, \ref{fig:uc02}, \ref{fig:uc03} e \ref{fig:uc04} apresentam os diagramas correspondentes a cada grupo.
+A solução foi modelada em quatro grupos funcionais de casos de uso: acesso e consulta financeira, análise preditiva e alertas, metas financeiras e resumos periódicos, e direitos do titular previstos no art.\ 18 da LGPD. As Figuras~\ref{fig:uc01}, \ref{fig:uc02}, \ref{fig:uc03} e~\ref{fig:uc04} apresentam os diagramas correspondentes a cada grupo.
 
 \begin{figure}[H]
     \centering
-    \caption{Diagrama de Casos de Uso - Acesso e Consulta Financeira}
+    \caption{Diagrama de Casos de Uso: Acesso e Consulta Financeira}
     \label{fig:uc01}
     \includegraphics[width=1\textwidth]{"images/uml/UC01 - Acesso e Consulta Financeira.png"}
     \authorssource
@@ -350,7 +359,7 @@ A solução foi modelada em quatro grupos funcionais de casos de uso: acesso e c
 
 \begin{figure}[H]
     \centering
-    \caption{Diagrama de Casos de Uso - Análise Preditiva e Alertas}
+    \caption{Diagrama de Casos de Uso: Análise Preditiva e Alertas}
     \label{fig:uc02}
     \includegraphics[width=1\textwidth]{"images/uml/UC02 - Analise Preditiva e Alertas.png"}
     \authorssource
@@ -358,7 +367,7 @@ A solução foi modelada em quatro grupos funcionais de casos de uso: acesso e c
 
 \begin{figure}[H]
     \centering
-    \caption{Diagrama de Casos de Uso - Metas Financeiras e Resumos Periódicos}
+    \caption{Diagrama de Casos de Uso: Metas Financeiras e Resumos Periódicos}
     \label{fig:uc03}
     \includegraphics[width=1\textwidth]{"images/uml/UC03 - Metas Financeiras e Resumos Periodicos.png"}
     \authorssource
@@ -366,7 +375,7 @@ A solução foi modelada em quatro grupos funcionais de casos de uso: acesso e c
 
 \begin{figure}[H]
     \centering
-    \caption{Diagrama de Casos de Uso - Direitos do Titular (LGPD Art.\ 18)}
+    \caption{Diagrama de Casos de Uso: Direitos do Titular (LGPD Art.\ 18)}
     \label{fig:uc04}
     \includegraphics[width=1\textwidth]{"images/uml/UC04 - Direitos do Titular (LGPD Art. 18).png"}
     \authorssource
@@ -376,11 +385,9 @@ A solução foi modelada em quatro grupos funcionais de casos de uso: acesso e c
 
 A seguir são apresentadas as descrições textuais dos casos de uso identificados nos diagramas, organizadas conforme os quatro grupos funcionais da solução.
 
-\noindent\textbf{Grupo 1 - Acesso e Consulta Financeira}
+\subsubsection{Grupo 1: Acesso e Consulta Financeira}
 
-\vspace{4pt}
-
-Os quadros \ref{frame:uc001} a \ref{frame:uc028} descrevem os casos de uso relativos ao acesso e à consulta financeira, abrangendo o cadastro do usuário, a vinculação de contas bancárias via \textit{Open Finance}, a autenticação pelo PIN de 6 dígitos, as operações de consulta de saldo, extrato e resumo financeiro e o acesso ao painel do titular.
+Os Quadros~\ref{frame:uc001} a~\ref{frame:uc028} descrevem os casos de uso relativos ao acesso e à consulta financeira, abrangendo o cadastro do usuário, a vinculação de contas bancárias via Open Finance, a autenticação pelo PIN de seis dígitos, as operações de consulta de saldo, extrato e resumo financeiro e o acesso ao painel do titular.
 
 \vspace{4pt}
 
@@ -397,26 +404,28 @@ Os quadros \ref{frame:uc001} a \ref{frame:uc028} descrevem os casos de uso relat
 \endlastfoot
 \textbf{Caso de uso} & [UC001] Realizar cadastro pela conversa \\ \hline
 \textbf{Ator(es)} & Usuário \\ \hline
-\textbf{Motivação} & Permitir que um novo usuário crie sua conta pela conversa no \textit{WhatsApp} ou no \textit{Telegram}, ou pelo formulário do canal, definindo suas credenciais de acesso. \\ \hline
+\textbf{Motivação} & Permitir que um novo usuário crie sua conta pela conversa no WhatsApp ou no Telegram, ou pelo formulário do canal, definindo suas credenciais de acesso. \\ \hline
+\textbf{Pré-condição} & O usuário ainda não possui cadastro concluído. \\ \hline
 \textbf{Fluxo Principal} &
 1. O usuário envia uma mensagem inicial ao assistente;\newline
-2. O sistema se apresenta e oferece o aceite dos termos de uso e da política de privacidade; antes disso, o usuário pode tirar dúvidas sobre o produto ou experimentar o assistente com dados de demonstração;\newline
+2. O sistema se apresenta e oferece o aceite dos termos de uso e da política de privacidade; antes do aceite, o usuário pode esclarecer dúvidas sobre o produto ou experimentar o assistente com a conta de demonstração;\newline
 3. O usuário aceita os termos e informa nome, CPF e e-mail;\newline
-4. O sistema solicita a criação de um PIN de 6 dígitos;\newline
+4. O sistema solicita a criação de um PIN de seis dígitos;\newline
 5. O usuário define e confirma o PIN;\newline
-6. O sistema armazena o PIN com \textit{bcrypt} (12 \textit{salt rounds}), cifra os dados pessoais e conclui o cadastro;\newline
+6. O sistema armazena o PIN com bcrypt (fator de custo 12), cifra os dados pessoais e conclui o cadastro;\newline
 7. O sistema confirma o cadastro e oferece a conexão de uma conta bancária.
 \\ \hline
 \textbf{Fluxo Alternativo} &
 a. Os PINs digitados não coincidem:\newline
 \hspace*{1em}i. O sistema informa que os PINs não coincidem;\newline
-\hspace*{1em}ii. O processo retorna à fase 4 do fluxo principal.\newline
+\hspace*{1em}ii. O processo retorna ao passo 4 do fluxo principal.\newline
 b. O CPF informado é inválido:\newline
 \hspace*{1em}i. O sistema informa o erro e solicita o CPF novamente.\newline
 c. O usuário recusa os termos:\newline
 \hspace*{1em}i. O sistema não cria a conta;\newline
 \hspace*{1em}ii. O usuário continua podendo fazer perguntas sobre o produto.
 \\ \hline
+\textbf{Pós-condição} & A conta do usuário é criada, com os termos aceitos, os dados pessoais cifrados e o PIN armazenado com bcrypt. \\ \hline
 \end{longtable}
 }
 
@@ -424,7 +433,7 @@ c. O usuário recusa os termos:\newline
 
 {\small
 \begin{longtable}{|L{3.5cm}|L{11.0cm}|}
-\caption{[UC002] Vincular conta ao \textit{Open Finance}} \label{frame:uc002} \\
+\caption{[UC002] Vincular conta ao Open Finance} \label{frame:uc002} \\
 \continuesmark
 \hline
 \endfirsthead
@@ -433,25 +442,27 @@ c. O usuário recusa os termos:\newline
 \endfoot
 \sourcerow{2} \\
 \endlastfoot
-\textbf{Caso de uso} & [UC002] Vincular conta ao \textit{Open Finance} \\ \hline
-\textbf{Ator(es)} & Usuário, Agregador (\textit{Open Finance}) \\ \hline
-\textbf{Motivação} & Permitir ao usuário autorizar o acesso a seus dados bancários via \textit{Open Finance} por meio da integração com o agregador de dados, escolhendo por quanto tempo o compartilhamento deve valer. \\ \hline
+\textbf{Caso de uso} & [UC002] Vincular conta ao Open Finance \\ \hline
+\textbf{Ator(es)} & Usuário, Agregador (Open Finance) \\ \hline
+\textbf{Motivação} & Permitir ao usuário autorizar o acesso a seus dados bancários via Open Finance por meio da integração com o agregador de dados, escolhendo por quanto tempo o compartilhamento deve valer. \\ \hline
+\textbf{Pré-condição} & O usuário possui conta em instituição financeira e acesso ao ambiente do próprio banco. \\ \hline
 \textbf{Fluxo Principal} &
 1. O usuário solicita a vinculação de conta bancária;\newline
-2. O sistema solicita a escolha da instituição e do prazo do consentimento (3, 6 ou 12 meses, ou até cancelar);\newline
-3. O sistema gera o link de autorização do agregador e o envia ao usuário;\newline
+2. O sistema solicita a escolha da instituição e do prazo do consentimento (3, 6 ou 12 meses, ou por prazo indeterminado, até a revogação);\newline
+3. O sistema gera o \textit{link} de autorização do agregador e o envia ao usuário;\newline
 4. O usuário autoriza o compartilhamento no ambiente do próprio banco;\newline
 5. O agregador notifica o sistema por \textit{webhook};\newline
-6. O sistema registra o consentimento e envia o comprovante da conexão em imagem;\newline
+6. O sistema registra o consentimento e envia o comprovante da conexão em imagem, sem valores;\newline
 7. O sistema realiza a primeira sincronização dos dados.
 \\ \hline
 \textbf{Fluxo Alternativo} &
 a. O usuário não aceitou os termos:\newline
-\hspace*{1em}i. O sistema solicita o aceite antes de gerar o link.\newline
+\hspace*{1em}i. O sistema solicita o aceite antes de gerar o \textit{link}.\newline
 b. O usuário não conclui a autorização no banco:\newline
 \hspace*{1em}i. A vinculação não é realizada;\newline
 \hspace*{1em}ii. O sistema informa que a vinculação está pendente.
 \\ \hline
+\textbf{Pós-condição} & O consentimento é registrado com o prazo escolhido, o comprovante da conexão, sem valores, é enviado ao usuário e a primeira sincronização dos dados é realizada. \\ \hline
 \end{longtable}
 }
 
@@ -470,22 +481,24 @@ b. O usuário não conclui a autorização no banco:\newline
 \endlastfoot
 \textbf{Caso de uso} & [UC003] Autenticar via PIN de 6 dígitos \\ \hline
 \textbf{Ator(es)} & Usuário \\ \hline
-\textbf{Motivação} & Garantir a autenticação do titular antes da exibição de valores monetários, emitindo um token de privilégio (inclui [UC009]). \\ \hline
+\textbf{Motivação} & Garantir a autenticação do titular antes da exibição de valores monetários, emitindo um \textit{token} de privilégio (inclui [UC009]; é incluído por [UC004], [UC005] e [UC006]). \\ \hline
+\textbf{Pré-condição} & O usuário possui cadastro concluído, com PIN de seis dígitos definido. \\ \hline
 \textbf{Fluxo Principal} &
-1. O sistema solicita ao usuário o PIN de 6 dígitos;\newline
+1. O sistema verifica se há \textit{token} de privilégio ativo; sem ele, solicita ao usuário o PIN de seis dígitos;\newline
 2. O usuário digita o PIN;\newline
-3. O sistema valida o PIN utilizando \textit{bcrypt};\newline
-4. O sistema emite o token de privilégio ([UC009]);\newline
-5. Os valores monetários passam a ser exibidos na conversa e no painel, e as respostas passam a poder incluir imagens.
+3. O sistema valida o PIN utilizando bcrypt;\newline
+4. O sistema emite o \textit{token} de privilégio ([UC009]);\newline
+5. Os valores monetários passam a ser exibidos na conversa e no painel, e as respostas podem incluir imagens com valores, como gráficos.
 \\ \hline
 \textbf{Fluxo Alternativo} &
 a. O PIN informado está incorreto:\newline
 \hspace*{1em}i. O sistema notifica o usuário e solicita nova tentativa;\newline
-\hspace*{1em}ii. Após 5 tentativas incorretas, o sistema bloqueia o acesso por 30 minutos.\newline
+\hspace*{1em}ii. Após cinco tentativas incorretas, o sistema bloqueia o acesso por 30 minutos.\newline
 b. O usuário envia o PIN por nota de voz:\newline
 \hspace*{1em}i. O áudio não é transcrito;\newline
 \hspace*{1em}ii. O sistema pede que o PIN seja digitado.
 \\ \hline
+\textbf{Pós-condição} & O \textit{token} de privilégio é emitido, e os valores monetários passam a ser exibidos na conversa e no painel. \\ \hline
 \end{longtable}
 }
 
@@ -503,23 +516,25 @@ b. O usuário envia o PIN por nota de voz:\newline
 \sourcerow{2} \\
 \endlastfoot
 \textbf{Caso de uso} & [UC004] Consultar saldo e extrato \\ \hline
-\textbf{Ator(es)} & Usuário, Agregador (\textit{Open Finance}) \\ \hline
+\textbf{Ator(es)} & Usuário, Agregador (Open Finance) \\ \hline
 \textbf{Motivação} & Permitir ao usuário consultar o saldo atual e o extrato de forma conversacional, com os dados da última sincronização das instituições conectadas (inclui [UC003] e [UC007]). \\ \hline
+\textbf{Pré-condição} & O usuário possui cadastro concluído e ao menos uma instituição conectada via Open Finance. \\ \hline
 \textbf{Fluxo Principal} &
 1. O usuário solicita saldo ou extrato ao assistente;\newline
 2. O sistema interpreta a pergunta e consulta os dados sincronizados;\newline
-3. O sistema verifica o token de privilégio;\newline
+3. O sistema verifica o \textit{token} de privilégio emitido pela autenticação por PIN ([UC003]);\newline
 4. O sistema gera uma resposta em linguagem natural ([UC007]);\newline
 5. O sistema apresenta o saldo e/ou o extrato ao usuário.
 \\ \hline
 \textbf{Fluxo Alternativo} &
-a. O token de privilégio não está ativo:\newline
+a. O \textit{token} de privilégio não está ativo:\newline
 \hspace*{1em}i. O sistema exibe os valores mascarados (R\$ •••••);\newline
-\hspace*{1em}ii. O sistema informa que o PIN libera os valores ([UC003]).\newline
+\hspace*{1em}ii. O sistema informa que o PIN libera os valores; após a autenticação ([UC003]), os valores são exibidos.\newline
 b. A sincronização com o agregador está atrasada ou indisponível:\newline
 \hspace*{1em}i. O sistema informa a data da última atualização;\newline
 \hspace*{1em}ii. O sistema apresenta os últimos dados sincronizados.
 \\ \hline
+\textbf{Pós-condição} & O saldo e/ou o extrato são apresentados ao usuário, com os valores visíveis ou mascarados, conforme o \textit{token} de privilégio. \\ \hline
 \end{longtable}
 }
 
@@ -537,22 +552,24 @@ b. A sincronização com o agregador está atrasada ou indisponível:\newline
 \sourcerow{2} \\
 \endlastfoot
 \textbf{Caso de uso} & [UC005] Consultar histórico de transações \\ \hline
-\textbf{Ator(es)} & Usuário, Agregador (\textit{Open Finance}) \\ \hline
+\textbf{Ator(es)} & Usuário, Agregador (Open Finance) \\ \hline
 \textbf{Motivação} & Permitir ao usuário consultar o histórico de transações por período, banco, categoria, estabelecimento ou forma de pagamento (inclui [UC003] e [UC007]). \\ \hline
+\textbf{Pré-condição} & O usuário possui cadastro concluído e ao menos uma instituição conectada via Open Finance. \\ \hline
 \textbf{Fluxo Principal} &
 1. O usuário solicita o histórico de transações ao assistente;\newline
 2. O sistema identifica o recorte pedido e consulta as transações sincronizadas;\newline
-3. O sistema verifica o token de privilégio;\newline
+3. O sistema verifica o \textit{token} de privilégio emitido pela autenticação por PIN ([UC003]);\newline
 4. O sistema gera uma resposta em linguagem natural ([UC007]);\newline
 5. O sistema apresenta o histórico ao usuário.
 \\ \hline
 \textbf{Fluxo Alternativo} &
-a. O token de privilégio não está ativo:\newline
+a. O \textit{token} de privilégio não está ativo:\newline
 \hspace*{1em}i. O sistema exibe os valores mascarados (R\$ •••••);\newline
-\hspace*{1em}ii. O sistema informa que o PIN libera os valores ([UC003]).\newline
+\hspace*{1em}ii. O sistema informa que o PIN libera os valores; após a autenticação ([UC003]), os valores são exibidos.\newline
 b. O banco citado não está conectado:\newline
 \hspace*{1em}i. O sistema informa que o banco não está conectado e oferece a conexão.
 \\ \hline
+\textbf{Pós-condição} & O histórico do recorte pedido é apresentado ao usuário, com os valores visíveis ou mascarados, conforme o \textit{token} de privilégio. \\ \hline
 \end{longtable}
 }
 
@@ -570,22 +587,24 @@ b. O banco citado não está conectado:\newline
 \sourcerow{2} \\
 \endlastfoot
 \textbf{Caso de uso} & [UC006] Consultar resumo financeiro \\ \hline
-\textbf{Ator(es)} & Usuário, Agregador (\textit{Open Finance}) \\ \hline
-\textbf{Motivação} & Permitir ao usuário obter um resumo consolidado de suas finanças, com gráfico quando a resposta pede uma visão de conjunto (inclui [UC003] e [UC007]; estende [UC008]). \\ \hline
+\textbf{Ator(es)} & Usuário, Agregador (Open Finance) \\ \hline
+\textbf{Motivação} & Permitir ao usuário obter um resumo consolidado de suas finanças, com gráfico quando a resposta pede uma visão de conjunto (inclui [UC003] e [UC007]; é estendido por [UC008]). \\ \hline
+\textbf{Pré-condição} & O usuário possui cadastro concluído e ao menos uma instituição conectada via Open Finance. \\ \hline
 \textbf{Fluxo Principal} &
 1. O usuário solicita o resumo financeiro ao assistente;\newline
 2. O sistema consulta os dados financeiros consolidados do período;\newline
-3. O sistema verifica o token de privilégio;\newline
+3. O sistema verifica o \textit{token} de privilégio emitido pela autenticação por PIN ([UC003]);\newline
 4. O sistema gera uma resposta em linguagem natural com o resumo ([UC007]);\newline
 5. O sistema exibe o resumo ao usuário, acompanhado do gráfico quando aplicável ([UC008]).
 \\ \hline
 \textbf{Fluxo Alternativo} &
-a. O token de privilégio não está ativo:\newline
+a. O \textit{token} de privilégio não está ativo:\newline
 \hspace*{1em}i. O sistema exibe os valores mascarados (R\$ •••••);\newline
-\hspace*{1em}ii. O gráfico é gerado sem valores absolutos.\newline
-b. Não há dados suficientes no período:\newline
+\hspace*{1em}ii. O sistema não envia o gráfico, pois nenhuma imagem com valores é enviada sem o \textit{token} de privilégio.\newline
+b. Não há movimentações no período:\newline
 \hspace*{1em}i. O sistema informa a ausência de movimentações.
 \\ \hline
+\textbf{Pós-condição} & O resumo do período é exibido ao usuário, com os valores visíveis ou mascarados, conforme o \textit{token} de privilégio.\newline O gráfico acompanha o resumo quando aplicável e apenas com o \textit{token} ativo. \\ \hline
 \end{longtable}
 }
 
@@ -603,8 +622,9 @@ b. Não há dados suficientes no período:\newline
 \sourcerow{2} \\
 \endlastfoot
 \textbf{Caso de uso} & [UC007] Receber resposta em linguagem natural \\ \hline
-\textbf{Ator(es)} & Sistema, Provedor de LLM \\ \hline
-\textbf{Motivação} & Gerar respostas compreensíveis a partir dos dados financeiros consultados, com o modelo de linguagem lendo a pergunta e redigindo a resposta, sem ser fonte dos valores (incluso em [UC004], [UC005] e [UC006]). \\ \hline
+\textbf{Ator(es)} & Provedor do modelo de linguagem \\ \hline
+\textbf{Motivação} & Gerar respostas compreensíveis a partir dos dados financeiros consultados, com o modelo de linguagem lendo a pergunta e redigindo a resposta, sem ser fonte dos valores (é incluído por [UC004], [UC005] e [UC006]). \\ \hline
+\textbf{Pré-condição} & A pergunta do usuário, feita em [UC004], [UC005] ou [UC006], não corresponde a um comando tratado por regra determinística. \\ \hline
 \textbf{Fluxo Principal} &
 1. O sistema recebe a pergunta, já sem CPF, PIN, telefone ou e-mail;\newline
 2. O planejador escolhe as consultas necessárias;\newline
@@ -620,6 +640,7 @@ a. O modelo de linguagem está indisponível ou excede o prazo:\newline
 b. A pergunta pede conselho de investimento:\newline
 \hspace*{1em}i. O sistema recusa com texto fixo e explica o escopo do produto.
 \\ \hline
+\textbf{Pós-condição} & O usuário recebe, em uma única mensagem, a resposta redigida a partir dos fatos consultados, com os \textit{guardrails} e o mascaramento aplicados. \\ \hline
 \end{longtable}
 }
 
@@ -637,8 +658,9 @@ b. A pergunta pede conselho de investimento:\newline
 \sourcerow{2} \\
 \endlastfoot
 \textbf{Caso de uso} & [UC008] Visualizar gráfico de gastos \\ \hline
-\textbf{Ator(es)} & Sistema \\ \hline
-\textbf{Motivação} & Complementar respostas com representação visual dos gastos, gerada pelo \textit{Render Service}, com a forma do gráfico escolhida pelos dados (estendido de [UC006]). \\ \hline
+\textbf{Ator(es)} & Usuário \\ \hline
+\textbf{Motivação} & Complementar respostas com representação visual dos gastos, gerada pelo Render Service, com a forma do gráfico definida conforme os dados (estende [UC006]). \\ \hline
+\textbf{Pré-condição} & O resumo financeiro foi solicitado ([UC006]) e a resposta pede uma visão de conjunto.\newline O \textit{token} de privilégio está ativo. \\ \hline
 \textbf{Fluxo Principal} &
 1. O sistema obtém os dados agregados do período;\newline
 2. O sistema escolhe a forma do gráfico de acordo com os dados;\newline
@@ -650,6 +672,7 @@ a. Não há dados no período:\newline
 \hspace*{1em}i. O sistema omite o gráfico;\newline
 \hspace*{1em}ii. O sistema informa que não foram encontradas movimentações no período.
 \\ \hline
+\textbf{Pós-condição} & A imagem do gráfico é enviada ao usuário, com o texto da resposta na legenda. \\ \hline
 \end{longtable}
 }
 
@@ -657,7 +680,7 @@ a. Não há dados no período:\newline
 
 {\small
 \begin{longtable}{|L{3.5cm}|L{11.0cm}|}
-\caption{[UC009] Obter token de privilégio (8h)} \label{frame:uc009} \\
+\caption{[UC009] Obter \textit{token} de privilégio (8~h)} \label{frame:uc009} \\
 \continuesmark
 \hline
 \endfirsthead
@@ -666,22 +689,24 @@ a. Não há dados no período:\newline
 \endfoot
 \sourcerow{2} \\
 \endlastfoot
-\textbf{Caso de uso} & [UC009] Obter token de privilégio (8h) \\ \hline
-\textbf{Ator(es)} & Sistema \\ \hline
-\textbf{Motivação} & Emitir um token temporário que autoriza a exibição de valores monetários, válido para todos os canais e para o painel do titular (incluso em [UC003]). \\ \hline
+\textbf{Caso de uso} & [UC009] Obter \textit{token} de privilégio (8~h) \\ \hline
+\textbf{Ator(es)} & Usuário \\ \hline
+\textbf{Motivação} & Emitir um \textit{token} temporário que autoriza a exibição de valores monetários, válido para todos os canais e para o painel do titular (é incluído por [UC003]). \\ \hline
+\textbf{Pré-condição} & O usuário foi autenticado com sucesso pelo PIN ([UC003]). \\ \hline
 \textbf{Fluxo Principal} &
 1. O sistema verifica que a autenticação foi bem-sucedida;\newline
-2. O sistema gera um token aleatório de 256 bits;\newline
-3. O sistema armazena o token com validade de 8 horas, ajustável entre 1 e 24 horas pelo painel de operação;\newline
-4. O token é retornado ao caso de uso solicitante.
+2. O sistema gera um \textit{token} aleatório de 256 bits;\newline
+3. O sistema armazena o \textit{token} com validade de 8 horas, ajustável entre 1 e 24 horas pelo painel de operação;\newline
+4. O \textit{token} é retornado ao caso de uso solicitante.
 \\ \hline
 \textbf{Fluxo Alternativo} &
 a. O titular escolhe ocultar os valores no painel:\newline
-\hspace*{1em}i. O sistema passa a mascarar os valores como se não houvesse token.\newline
-b. Erro na geração do token:\newline
+\hspace*{1em}i. O sistema passa a mascarar os valores como se não houvesse \textit{token}.\newline
+b. Erro na geração do \textit{token}:\newline
 \hspace*{1em}i. O sistema registra o erro;\newline
 \hspace*{1em}ii. Os valores permanecem mascarados.
 \\ \hline
+\textbf{Pós-condição} & O \textit{token} de privilégio fica armazenado com a validade configurada e autoriza a exibição de valores monetários em todos os canais e no painel do titular. \\ \hline
 \end{longtable}
 }
 
@@ -700,30 +725,30 @@ b. Erro na geração do token:\newline
 \endlastfoot
 \textbf{Caso de uso} & [UC028] Acessar o painel do titular \\ \hline
 \textbf{Ator(es)} & Usuário \\ \hline
-\textbf{Motivação} & Permitir ao titular acessar o painel \textit{web} para consulta longa e gestão, com entrada pelo \textit{WhatsApp}. \\ \hline
+\textbf{Motivação} & Permitir ao titular acessar o painel \textit{web} para consulta detalhada e gestão, com entrada pelo número do WhatsApp ou por \textit{link} de uso único enviado na conversa. \\ \hline
+\textbf{Pré-condição} & O usuário dispõe de um navegador \textit{web} e de acesso ao próprio WhatsApp ou à conversa com o assistente. \\ \hline
 \textbf{Fluxo Principal} &
-1. O usuário informa o número do \textit{WhatsApp} no painel ou pede ``abrir painel'' na conversa;\newline
-2. O sistema envia um código de 6 dígitos ao \textit{WhatsApp} do titular ou um link de uso único na conversa;\newline
-3. O usuário informa o código ou abre o link;\newline
-4. O sistema abre uma sessão válida por até 12 horas sem uso e 7 dias no máximo;\newline
+1. O usuário informa o número do WhatsApp no painel ou pede ``abrir painel'' na conversa;\newline
+2. O sistema envia um código de seis dígitos ao WhatsApp do titular ou um \textit{link} de uso único na conversa;\newline
+3. O usuário informa o código ou abre o \textit{link};\newline
+4. O sistema abre uma sessão válida por até 12 horas sem uso e sete dias no máximo;\newline
 5. O painel exibe os dados do titular, com valores mascarados até o PIN.
 \\ \hline
 \textbf{Fluxo Alternativo} &
-a. O código é informado incorretamente 5 vezes:\newline
+a. O código é informado incorretamente cinco vezes:\newline
 \hspace*{1em}i. O pedido é invalidado e um novo código deve ser solicitado.\newline
 b. O cadastro não foi concluído:\newline
 \hspace*{1em}i. O painel informa que falta terminar o cadastro pela conversa.
 \\ \hline
+\textbf{Pós-condição} & Uma sessão do painel é aberta, válida por até 12 horas sem uso e sete dias no máximo, com os dados do titular exibidos e os valores mascarados até o PIN. \\ \hline
 \end{longtable}
 }
 
 
 \vspace{10pt}
-\noindent\textbf{Grupo 2 - Análise Preditiva e Alertas}
+\subsubsection{Grupo 2: Análise Preditiva e Alertas}
 
-\vspace{4pt}
-
-Os quadros \ref{frame:uc010} a \ref{frame:uc030} descrevem os casos de uso relativos à análise preditiva e aos alertas automáticos, abrangendo a sincronização de transações, a categorização, a detecção de recorrências, a projeção de gastos, os avisos sobre gastos atípicos, limites de gasto e cobranças duplicadas, o saldo livre do fim do mês e a simulação de compra.
+Os Quadros~\ref{frame:uc010} a~\ref{frame:uc030} descrevem os casos de uso relativos à análise preditiva e aos alertas automáticos, abrangendo a sincronização de transações, a categorização, a detecção de recorrências, a projeção de gastos, os avisos sobre gastos atípicos, limites de gasto e cobranças duplicadas, o saldo livre do fim do mês e a simulação de compra.
 
 \vspace{4pt}
 
@@ -739,11 +764,12 @@ Os quadros \ref{frame:uc010} a \ref{frame:uc030} descrevem os casos de uso relat
 \sourcerow{2} \\
 \endlastfoot
 \textbf{Caso de uso} & [UC010] Receber alerta de gasto atípico \\ \hline
-\textbf{Ator(es)} & Usuário, Sistema (\textit{Scheduler}) \\ \hline
+\textbf{Ator(es)} & Usuário, \textit{Scheduler} \\ \hline
 \textbf{Motivação} & Notificar o usuário quando uma transação apresentar valor muito acima do histórico da categoria ou quando o gasto de uma categoria aumentar de forma relevante (inclui [UC016]). \\ \hline
+\textbf{Pré-condição} & O usuário possui ao menos uma instituição conectada via Open Finance, com consentimento ativo. \\ \hline
 \textbf{Fluxo Principal} &
 1. Após a sincronização ([UC016]), o sistema avalia as transações recentes;\newline
-2. O sistema detecta transação com escore-z robusto igual ou superior a 3,5, ou aumento relevante de gasto em uma categoria;\newline
+2. O sistema detecta transação com escore-z robusto igual ou superior a 3,5 e valor de pelo menos R\$~100,00 e de três vezes a mediana da categoria, ou aumento relevante de gasto em uma categoria;\newline
 3. O sistema gera o sinal financeiro cifrado;\newline
 4. O sistema verifica as preferências do titular e a janela de horário;\newline
 5. O sistema envia o aviso ao usuário pelo canal preferido.
@@ -753,8 +779,11 @@ a. O histórico é insuficiente (menos de dez transações ou de noventa dias):\
 \hspace*{1em}i. O sistema não emite o aviso.\newline
 b. A família de aviso está desativada ou o horário está fora da janela:\newline
 \hspace*{1em}i. O aviso não é enviado ou aguarda a janela;\newline
-\hspace*{1em}ii. Se o sinal deixar de valer, o aviso é descartado.
+\hspace*{1em}ii. Se o sinal deixar de valer, o aviso é descartado.\newline
+c. O titular não tem assinatura Pro nem período de teste ativo:\newline
+\hspace*{1em}i. O aviso é suprimido.
 \\ \hline
+\textbf{Pós-condição} & O sinal financeiro cifrado é gerado e o aviso de gasto atípico é enviado ao usuário pelo canal preferido, dentro da janela de horário. \\ \hline
 \end{longtable}
 }
 
@@ -772,20 +801,22 @@ b. A família de aviso está desativada ou o horário está fora da janela:\newl
 \sourcerow{2} \\
 \endlastfoot
 \textbf{Caso de uso} & [UC011] Receber alerta de limite de gasto \\ \hline
-\textbf{Ator(es)} & Usuário, Sistema (\textit{Scheduler}) \\ \hline
+\textbf{Ator(es)} & Usuário, \textit{Scheduler} \\ \hline
 \textbf{Motivação} & Notificar o usuário quando o gasto atingir 80\% ou 100\% de um limite definido em meta, ou quando houver risco de ultrapassá-lo até o fim do período (inclui [UC016]). \\ \hline
+\textbf{Pré-condição} & O usuário possui ao menos uma instituição conectada via Open Finance, com consentimento ativo. \\ \hline
 \textbf{Fluxo Principal} &
 1. Após a sincronização ([UC016]), o sistema calcula o gasto do período para cada limite ativo;\newline
-2. O sistema identifica a travessia de 80\% ou de 100\%, ou o risco de estouro;\newline
+2. O sistema identifica o atingimento de 80\% ou de 100\% do limite, ou o risco de ultrapassagem do limite;\newline
 3. O sistema gera o sinal financeiro cifrado;\newline
 4. O sistema envia o aviso ao usuário, respeitando preferências e janela de horário.
 \\ \hline
 \textbf{Fluxo Alternativo} &
 a. O usuário não possui limites de gasto ativos:\newline
 \hspace*{1em}i. O sistema não emite avisos de limite.\newline
-b. O plano do usuário deixou de incluir metas:\newline
+b. O titular não tem assinatura Pro nem período de teste ativo:\newline
 \hspace*{1em}i. O aviso é suprimido.
 \\ \hline
+\textbf{Pós-condição} & O sinal financeiro cifrado é gerado e o aviso de limite de gasto é enviado ao usuário, respeitando as preferências e a janela de horário. \\ \hline
 \end{longtable}
 }
 
@@ -805,6 +836,7 @@ b. O plano do usuário deixou de incluir metas:\newline
 \textbf{Caso de uso} & [UC012] Consultar pagamentos recorrentes \\ \hline
 \textbf{Ator(es)} & Usuário \\ \hline
 \textbf{Motivação} & Permitir ao usuário consultar seus pagamentos recorrentes, a próxima cobrança, mudanças de preço e o total mensal comprometido (inclui [UC014]). \\ \hline
+\textbf{Pré-condição} & O usuário possui ao menos uma instituição conectada via Open Finance, com transações sincronizadas. \\ \hline
 \textbf{Fluxo Principal} &
 1. O usuário pergunta, por exemplo, ``quais são minhas recorrências'';\newline
 2. O sistema reconhece a pergunta por regra determinística;\newline
@@ -814,9 +846,10 @@ b. O plano do usuário deixou de incluir metas:\newline
 \textbf{Fluxo Alternativo} &
 a. Nenhuma recorrência foi detectada:\newline
 \hspace*{1em}i. O sistema informa que não encontrou pagamentos recorrentes.\newline
-b. O token de privilégio não está ativo:\newline
+b. O \textit{token} de privilégio não está ativo:\newline
 \hspace*{1em}i. Os valores são exibidos mascarados (R\$ •••••).
 \\ \hline
+\textbf{Pós-condição} & As recorrências detectadas, a próxima cobrança e o total mensal são apresentados ao usuário, com os valores visíveis ou mascarados, conforme o \textit{token} de privilégio. \\ \hline
 \end{longtable}
 }
 
@@ -835,7 +868,8 @@ b. O token de privilégio não está ativo:\newline
 \endlastfoot
 \textbf{Caso de uso} & [UC013] Consultar projeção de gastos do mês \\ \hline
 \textbf{Ator(es)} & Usuário \\ \hline
-\textbf{Motivação} & Permitir ao usuário obter uma estimativa do gasto até o fim do mês, total ou por categoria, apenas quando o método de projeção for aprovado no teste retrospectivo (inclui [UC016]). \\ \hline
+\textbf{Motivação} & Permitir ao usuário obter uma estimativa do gasto até o fim do mês, total ou por categoria, apenas quando o método de projeção for aprovado no teste retrospectivo (inclui [UC016]; é incluído por [UC030]). \\ \hline
+\textbf{Pré-condição} & O usuário possui assinatura Pro ou período de teste ativo e ao menos uma instituição conectada via Open Finance, com transações sincronizadas. \\ \hline
 \textbf{Fluxo Principal} &
 1. O usuário solicita a projeção de gastos ao assistente;\newline
 2. O sistema obtém a projeção calculada a partir dos dados sincronizados ([UC016]);\newline
@@ -845,8 +879,11 @@ b. O token de privilégio não está ativo:\newline
 \textbf{Fluxo Alternativo} &
 a. O histórico é insuficiente ou nenhum método foi aprovado:\newline
 \hspace*{1em}i. O sistema informa que ainda não há dados suficientes para uma projeção confiável;\newline
-\hspace*{1em}ii. Nenhum número é apresentado.
+\hspace*{1em}ii. Nenhum número é apresentado.\newline
+b. O usuário está sem o \textit{token} de privilégio:\newline
+\hspace*{1em}i. O sistema informa que a estimativa está pronta e pede o PIN, sem apresentar valores.
 \\ \hline
+\textbf{Pós-condição} & A estimativa do gasto até o fim do mês, total ou por categoria, é apresentada ao usuário com o respectivo intervalo, desde que o \textit{token} de privilégio esteja ativo. \\ \hline
 \end{longtable}
 }
 
@@ -864,8 +901,9 @@ a. O histórico é insuficiente ou nenhum método foi aprovado:\newline
 \sourcerow{2} \\
 \endlastfoot
 \textbf{Caso de uso} & [UC014] Detectar transações recorrentes \\ \hline
-\textbf{Ator(es)} & Sistema \\ \hline
-\textbf{Motivação} & Identificar automaticamente pagamentos que se repetem, separando-os de parcelas, para apoiar as consultas de recorrências (incluso em [UC016]). \\ \hline
+\textbf{Ator(es)} & \textit{Scheduler} \\ \hline
+\textbf{Motivação} & Identificar automaticamente pagamentos que se repetem, separando-os de parcelas, para apoiar as consultas de recorrências (é incluído por [UC012] e [UC016]). \\ \hline
+\textbf{Pré-condição} & As transações do titular foram recebidas na sincronização ([UC016]). \\ \hline
 \textbf{Fluxo Principal} &
 1. O sistema recebe as transações sincronizadas;\newline
 2. O sistema identifica pagamentos que se repetem para a mesma contraparte;\newline
@@ -876,6 +914,7 @@ a. O histórico é insuficiente ou nenhum método foi aprovado:\newline
 a. Nenhum padrão recorrente encontrado:\newline
 \hspace*{1em}i. O sistema não registra recorrências para o titular.
 \\ \hline
+\textbf{Pós-condição} & As recorrências do titular ficam registradas com a frequência, a conta de origem e a próxima cobrança esperada, separadas das parcelas de compras. \\ \hline
 \end{longtable}
 }
 
@@ -893,14 +932,15 @@ a. Nenhum padrão recorrente encontrado:\newline
 \sourcerow{2} \\
 \endlastfoot
 \textbf{Caso de uso} & [UC015] Categorizar transações \\ \hline
-\textbf{Ator(es)} & Sistema, Agregador (\textit{Open Finance}) \\ \hline
-\textbf{Motivação} & Associar a cada transação uma categoria e o tipo de movimento que ela representa, aproveitando a classificação detalhada e de qualidade que o agregador de \textit{Open Finance} já entrega, organizada na taxonomia do EIGAM (incluso em [UC016]). \\ \hline
+\textbf{Ator(es)} & Agregador (Open Finance) \\ \hline
+\textbf{Motivação} & Associar a cada transação uma categoria e o tipo de movimento que ela representa, aproveitando a classificação detalhada e consistente que o agregador de Open Finance já entrega, organizada na taxonomia do EIGAM (é incluído por [UC016]). \\ \hline
+\textbf{Pré-condição} & As transações do titular foram recebidas do agregador de Open Finance na sincronização ([UC016]). \\ \hline
 \textbf{Fluxo Principal} &
 1. O agregador entrega cada transação sincronizada com o rótulo de categoria atribuído por ele;\newline
 2. O sistema traduz o rótulo, por uma tabela fixa, para uma das 95 categorias do EIGAM, organizadas em 17 grupos;\newline
 3. O sistema guarda também o rótulo original, o que permite reaplicar a tradução sem nova sincronização;\newline
 4. A partir da categoria e do tipo de operação, o sistema define o tipo da transação: consumo ou renda, movimentação entre contas próprias ou pagamento de fatura, investimento, empréstimo ou estorno;\newline
-5. Nas consultas e nos gráficos, os gastos são agrupados pelo grupo, e a categoria aparece no detalhe e nos filtros;\newline
+5. Nas consultas e nos gráficos, os gastos são reunidos por grupo de categorias, e a categoria aparece no detalhe e nos filtros;\newline
 6. O resultado é retornado ao caso de uso solicitante ([UC016]).
 \\ \hline
 \textbf{Fluxo Alternativo} &
@@ -910,6 +950,7 @@ a. O rótulo do agregador não consta da tabela de tradução:\newline
 b. A transação chega sem rótulo do agregador:\newline
 \hspace*{1em}i. A transação é classificada como sem categoria.
 \\ \hline
+\textbf{Pós-condição} & Cada transação fica associada a uma categoria do EIGAM e a um tipo de transação, com o rótulo original do agregador preservado. \\ \hline
 \end{longtable}
 }
 
@@ -927,8 +968,9 @@ b. A transação chega sem rótulo do agregador:\newline
 \sourcerow{2} \\
 \endlastfoot
 \textbf{Caso de uso} & [UC016] Sincronizar transações automaticamente \\ \hline
-\textbf{Ator(es)} & Sistema (\textit{Scheduler}), Agregador (\textit{Open Finance}) \\ \hline
-\textbf{Motivação} & Manter os dados financeiros atualizados por meio de uma varredura a cada 6 horas e dos avisos enviados pelo agregador, para conexões com consentimento ativo (inclui [UC014] e [UC015]). \\ \hline
+\textbf{Ator(es)} & \textit{Scheduler}, Agregador (Open Finance) \\ \hline
+\textbf{Motivação} & Manter os dados financeiros atualizados por meio de uma varredura a cada 6 horas e dos avisos enviados pelo agregador, para conexões com consentimento ativo (inclui [UC014] e [UC015]; é incluído por [UC010], [UC011], [UC013], [UC017] e [UC029]). \\ \hline
+\textbf{Pré-condição} & O titular possui ao menos uma conexão com consentimento de Open Finance ativo. \\ \hline
 \textbf{Fluxo Principal} &
 1. A varredura identifica as conexões com consentimento ativo;\newline
 2. O sistema solicita a atualização ao agregador quando necessário;\newline
@@ -942,8 +984,9 @@ a. O agregador está indisponível:\newline
 \hspace*{1em}i. O sistema registra a falha;\newline
 \hspace*{1em}ii. A atualização é tentada na próxima varredura.\newline
 b. O consentimento atingiu o prazo escolhido pelo titular:\newline
-\hspace*{1em}i. O sistema encerra a conexão no agregador e revoga o consentimento.
+\hspace*{1em}i. O sistema encerra a conexão no agregador e registra o consentimento como expirado.
 \\ \hline
+\textbf{Pós-condição} & Os dados financeiros do titular ficam atualizados e persistidos de forma cifrada, com transações categorizadas, lançamentos pareados e recorrências detectadas.\newline Os sinais financeiros são avaliados. \\ \hline
 \end{longtable}
 }
 
@@ -961,8 +1004,9 @@ b. O consentimento atingiu o prazo escolhido pelo titular:\newline
 \sourcerow{2} \\
 \endlastfoot
 \textbf{Caso de uso} & [UC017] Receber alerta de cobrança duplicada \\ \hline
-\textbf{Ator(es)} & Usuário, Sistema (\textit{Scheduler}) \\ \hline
+\textbf{Ator(es)} & Usuário, \textit{Scheduler} \\ \hline
 \textbf{Motivação} & Notificar o usuário quando duas cobranças de mesmo valor e mesma contraparte, em datas próximas, indicarem uma possível duplicidade (inclui [UC016]). \\ \hline
+\textbf{Pré-condição} & O usuário possui ao menos uma instituição conectada via Open Finance, com consentimento ativo. \\ \hline
 \textbf{Fluxo Principal} &
 1. Após a sincronização ([UC016]), o sistema compara as transações recentes;\newline
 2. O sistema identifica um possível par duplicado;\newline
@@ -971,8 +1015,11 @@ b. O consentimento atingiu o prazo escolhido pelo titular:\newline
 \\ \hline
 \textbf{Fluxo Alternativo} &
 a. O par corresponde a um estorno ou a parcelas:\newline
-\hspace*{1em}i. O sistema não emite o aviso.
+\hspace*{1em}i. O sistema não emite o aviso.\newline
+b. O titular não tem assinatura Pro nem período de teste ativo:\newline
+\hspace*{1em}i. O aviso é suprimido.
 \\ \hline
+\textbf{Pós-condição} & O sinal financeiro cifrado é gerado e o aviso de possível cobrança duplicada é enviado ao usuário, respeitando as preferências e a janela de horário. \\ \hline
 \end{longtable}
 }
 
@@ -992,19 +1039,23 @@ a. O par corresponde a um estorno ou a parcelas:\newline
 \textbf{Caso de uso} & [UC029] Consultar saldo livre do fim do mês \\ \hline
 \textbf{Ator(es)} & Usuário \\ \hline
 \textbf{Motivação} & Responder, em regime de caixa, quanto deve sobrar nas contas correntes conectadas no último dia do mês, a partir dos dados sincronizados (inclui [UC016]). \\ \hline
+\textbf{Pré-condição} & O usuário possui assinatura Pro ou período de teste ativo e ao menos uma conta corrente conectada via Open Finance. \\ \hline
 \textbf{Fluxo Principal} &
 1. O usuário pergunta quanto sobra ou quanto pode gastar até o fim do mês;\newline
 2. O sistema identifica a pergunta;\newline
 3. O sistema parte do saldo disponível das contas correntes e desconta as faturas a vencer, as recorrências em conta e os agendamentos;\newline
-4. O sistema soma a parte estimada: a mediana do movimento líquido restante dos seis meses anteriores, cuja amplitude define a faixa;\newline
-5. O sistema responde com uma faixa de valores, sem formulação de licença para gastar.
+4. O sistema soma a parte estimada: a mediana do movimento líquido restante nos até seis meses anteriores; com seis meses de histórico, o menor e o maior desses movimentos definem a faixa;\newline
+5. O sistema responde com uma faixa de valores, sem apresentar o valor como permissão para gastar.
 \\ \hline
 \textbf{Fluxo Alternativo} &
 a. Há menos de três meses de histórico, conexão desatualizada ou lançamento ilegível:\newline
 \hspace*{1em}i. O sistema recusa a estimativa e declara o motivo.\newline
-b. O usuário está sem o token de privilégio:\newline
+b. Há de três a cinco meses de histórico:\newline
+\hspace*{1em}i. O sistema responde apenas com o valor central, sem faixa.\newline
+c. O usuário está sem o \textit{token} de privilégio:\newline
 \hspace*{1em}i. O sistema pede o PIN e não calcula a estimativa.
 \\ \hline
+\textbf{Pós-condição} & O usuário recebe uma faixa de valores para o saldo livre no último dia do mês ou, com três a cinco meses de histórico, apenas o valor central, sem que o valor seja apresentado como permissão para gastar. \\ \hline
 \end{longtable}
 }
 
@@ -1023,30 +1074,30 @@ b. O usuário está sem o token de privilégio:\newline
 \endlastfoot
 \textbf{Caso de uso} & [UC030] Simular compra \\ \hline
 \textbf{Ator(es)} & Usuário \\ \hline
-\textbf{Motivação} & Mostrar o efeito de uma compra hipotética, à vista ou parcelada, sobre o que o sistema já mede, sem emitir recomendação de compra (inclui [UC013]). \\ \hline
+\textbf{Motivação} & Mostrar o efeito de uma compra hipotética, à vista ou parcelada, sobre os indicadores que o sistema já calcula, sem emitir recomendação de compra (inclui [UC013]). \\ \hline
+\textbf{Pré-condição} & O usuário possui assinatura Pro ou período de teste ativo e ao menos uma instituição conectada via Open Finance. \\ \hline
 \textbf{Fluxo Principal} &
 1. O usuário descreve a compra (``e se eu comprar X de R\$~Y em Nx?''), podendo citar o cartão;\newline
-2. O sistema interpreta a compra e calcula as parcelas, que sempre somam o total informado;\newline
-3. Com o cartão citado, as parcelas seguem o fechamento da fatura; sem cartão, cada parcela cai no mês correspondente;\newline
-4. O sistema apresenta a estimativa do fim do mês antes e depois ([UC013]), a folga das metas de limite afetadas e os compromissos dos doze meses seguintes com a parcela somada;\newline
+2. O sistema interpreta a compra e calcula as parcelas, que, sem juros informados, somam o total;\newline
+3. Com o cartão citado, as parcelas seguem o fechamento da fatura; sem cartão, cada parcela é alocada ao mês correspondente;\newline
+4. O sistema apresenta a projeção do gasto até o fim do mês antes e depois ([UC013]), a folga das metas de limite afetadas e os compromissos dos doze meses seguintes com a parcela somada;\newline
 5. A simulação não é gravada e não altera metas nem projeções.
 \\ \hline
 \textbf{Fluxo Alternativo} &
 a. O titular informa juros (parcelas que somam mais que o total):\newline
 \hspace*{1em}i. A diferença é tratada como juros informados e declarada na resposta.\newline
-b. O usuário está sem o token de privilégio:\newline
+b. O usuário está sem o \textit{token} de privilégio:\newline
 \hspace*{1em}i. O sistema pede o PIN antes de calcular.
 \\ \hline
+\textbf{Pós-condição} & O usuário recebe o efeito da compra sobre a projeção do gasto até o fim do mês, a folga das metas de limite afetadas e os compromissos dos doze meses seguintes.\newline A simulação não é gravada e não altera metas nem projeções. \\ \hline
 \end{longtable}
 }
 
 
 \vspace{10pt}
-\noindent\textbf{Grupo 3 - Metas Financeiras e Resumos Periódicos}
+\subsubsection{Grupo 3: Metas Financeiras e Resumos Periódicos}
 
-\vspace{4pt}
-
-Os quadros \ref{frame:uc018} a \ref{frame:uc027} descrevem os casos de uso relativos ao gerenciamento de metas financeiras, aos resumos periódicos e às preferências de aviso.
+Os Quadros~\ref{frame:uc018} a~\ref{frame:uc027} descrevem os casos de uso relativos ao gerenciamento de metas financeiras, aos resumos periódicos e às preferências de aviso.
 
 \vspace{4pt}
 
@@ -1063,9 +1114,10 @@ Os quadros \ref{frame:uc018} a \ref{frame:uc027} descrevem os casos de uso relat
 \endlastfoot
 \textbf{Caso de uso} & [UC018] Definir meta financeira \\ \hline
 \textbf{Ator(es)} & Usuário \\ \hline
-\textbf{Motivação} & Permitir ao usuário cadastrar uma meta: teto de gasto, saldo em conta, patrimônio ou valor guardado, com recortes por categoria, estabelecimento, banco ou forma de pagamento. \\ \hline
+\textbf{Motivação} & Permitir ao usuário cadastrar uma meta: limite de gasto, saldo em conta, patrimônio ou valor guardado, com recortes por categoria, estabelecimento, banco ou forma de pagamento (é estendido por [UC020] e [UC021]). \\ \hline
+\textbf{Pré-condição} & O usuário possui cadastro concluído. \\ \hline
 \textbf{Fluxo Principal} &
-1. O usuário descreve a meta, por exemplo, ``quero gastar no máximo 800 com delivery por mês'';\newline
+1. O usuário descreve a meta, por exemplo, ``quero gastar no máximo 800 com \textit{delivery} por mês'';\newline
 2. O sistema interpreta a meta por regras determinísticas;\newline
 3. O sistema apresenta a meta interpretada e pede confirmação por botões;\newline
 4. O usuário confirma;\newline
@@ -1074,9 +1126,10 @@ Os quadros \ref{frame:uc018} a \ref{frame:uc027} descrevem os casos de uso relat
 \textbf{Fluxo Alternativo} &
 a. Dados inválidos, como valor negativo ou prazo no passado:\newline
 \hspace*{1em}i. O sistema informa o erro e solicita correção.\newline
-b. O plano do titular atingiu o número de metas ativas permitido:\newline
-\hspace*{1em}i. O sistema informa o limite e apresenta o plano Pro.
+b. O titular não tem assinatura Pro nem período de teste ativo:\newline
+\hspace*{1em}i. O sistema informa que o recurso exige o plano Pro e apresenta a assinatura.
 \\ \hline
+\textbf{Pós-condição} & A meta confirmada é gravada de forma cifrada e passa a constar entre as metas ativas do usuário. \\ \hline
 \end{longtable}
 }
 
@@ -1096,6 +1149,7 @@ b. O plano do titular atingiu o número de metas ativas permitido:\newline
 \textbf{Caso de uso} & [UC019] Acompanhar progresso de meta \\ \hline
 \textbf{Ator(es)} & Usuário \\ \hline
 \textbf{Motivação} & Permitir ao usuário consultar o andamento de suas metas na conversa e no painel, com valores calculados a partir dos dados sincronizados. \\ \hline
+\textbf{Pré-condição} & O usuário possui cadastro concluído e ao menos uma instituição conectada via Open Finance. \\ \hline
 \textbf{Fluxo Principal} &
 1. O usuário solicita o progresso de suas metas;\newline
 2. O sistema recupera as metas ativas;\newline
@@ -1106,9 +1160,10 @@ b. O plano do titular atingiu o número de metas ativas permitido:\newline
 a. O usuário não possui metas ativas:\newline
 \hspace*{1em}i. O sistema informa que não há metas;\newline
 \hspace*{1em}ii. O sistema sugere a criação de uma nova meta ([UC018]).\newline
-b. O token de privilégio não está ativo:\newline
+b. O \textit{token} de privilégio não está ativo:\newline
 \hspace*{1em}i. O progresso é apresentado em percentual, sem valores.
 \\ \hline
+\textbf{Pós-condição} & O progresso de cada meta ativa é apresentado com o valor-alvo e o prazo restante, com valores ou apenas em percentual conforme o \textit{token} de privilégio. \\ \hline
 \end{longtable}
 }
 
@@ -1127,12 +1182,13 @@ b. O token de privilégio não está ativo:\newline
 \endlastfoot
 \textbf{Caso de uso} & [UC020] Editar meta financeira \\ \hline
 \textbf{Ator(es)} & Usuário \\ \hline
-\textbf{Motivação} & Permitir ao usuário ajustar os parâmetros de uma meta já cadastrada, como valor-alvo, prazo ou recorte, estendendo [UC018]. \\ \hline
+\textbf{Motivação} & Permitir ao usuário ajustar os parâmetros de uma meta já cadastrada, como valor-alvo, prazo ou recorte (estende [UC018]). \\ \hline
+\textbf{Pré-condição} & O usuário possui ao menos uma meta cadastrada ([UC018]). \\ \hline
 \textbf{Fluxo Principal} &
 1. O usuário indica a meta e o que deseja alterar;\newline
 2. O sistema apresenta a alteração e pede confirmação;\newline
 3. O usuário confirma;\newline
-4. O sistema valida o resultado contra o tipo da meta e grava a alteração.
+4. O sistema verifica se a alteração é compatível com o tipo da meta e a grava.
 \\ \hline
 \textbf{Fluxo Alternativo} &
 a. Alteração incompatível com o tipo da meta:\newline
@@ -1140,6 +1196,7 @@ a. Alteração incompatível com o tipo da meta:\newline
 b. Meta não encontrada:\newline
 \hspace*{1em}i. O sistema informa que a meta não existe ou foi encerrada.
 \\ \hline
+\textbf{Pós-condição} & A meta passa a vigorar com os parâmetros alterados, compatíveis com o seu tipo. \\ \hline
 \end{longtable}
 }
 
@@ -1158,7 +1215,8 @@ b. Meta não encontrada:\newline
 \endlastfoot
 \textbf{Caso de uso} & [UC021] Cancelar ou apagar meta financeira \\ \hline
 \textbf{Ator(es)} & Usuário \\ \hline
-\textbf{Motivação} & Permitir ao usuário encerrar uma meta, mantendo-a no histórico, ou apagá-la com seus lançamentos, estendendo [UC018]. \\ \hline
+\textbf{Motivação} & Permitir ao usuário encerrar uma meta, mantendo-a no histórico, ou apagá-la com seus lançamentos (estende [UC018]). \\ \hline
+\textbf{Pré-condição} & O usuário possui ao menos uma meta cadastrada ([UC018]). \\ \hline
 \textbf{Fluxo Principal} &
 1. O usuário pede para cancelar ou apagar uma meta;\newline
 2. O sistema exibe a confirmação com botões;\newline
@@ -1170,6 +1228,7 @@ b. Meta não encontrada:\newline
 a. O usuário cancela a operação:\newline
 \hspace*{1em}i. O sistema retorna sem realizar alterações.
 \\ \hline
+\textbf{Pós-condição} & A meta fica marcada como cancelada, mantida no histórico, ou é removida com seus lançamentos. \\ \hline
 \end{longtable}
 }
 
@@ -1187,21 +1246,23 @@ a. O usuário cancela a operação:\newline
 \sourcerow{2} \\
 \endlastfoot
 \textbf{Caso de uso} & [UC022] Receber resumo semanal \\ \hline
-\textbf{Ator(es)} & Sistema (\textit{Scheduler}) \\ \hline
-\textbf{Motivação} & Enviar ao usuário que aderiu ao resumo semanal um aviso, toda segunda-feira, de que o resumo dos sete dias anteriores está disponível, sem valores nem categorias no aviso. \\ \hline
+\textbf{Ator(es)} & \textit{Scheduler} \\ \hline
+\textbf{Motivação} & Enviar toda segunda-feira um aviso ao titular com o resumo semanal habilitado, informando que o resumo dos sete dias anteriores está disponível, sem valores no aviso (é estendido por [UC024]). \\ \hline
+\textbf{Pré-condição} & O titular possui cadastro concluído e assinatura Pro ou período de teste ativo. \\ \hline
 \textbf{Fluxo Principal} &
-1. Toda segunda-feira, às 9h, o sistema identifica os titulares com o resumo semanal habilitado, que é o padrão para cadastros concluídos;\newline
+1. Toda segunda-feira, dia padrão definido em configuração, às 9~h, o sistema identifica os titulares com o resumo semanal habilitado, que é o padrão para cadastros concluídos;\newline
 2. O sistema calcula entradas, despesas, as três principais categorias e a comparação com o período anterior;\newline
 3. O sistema guarda o resumo cifrado;\newline
 4. O sistema envia o aviso na janela de horário escolhida pelo titular;\newline
 5. O usuário pode abrir o resumo com valores ([UC024]).
 \\ \hline
 \textbf{Fluxo Alternativo} &
-a. O usuário não aderiu ou desativou o resumo semanal ([UC027]):\newline
+a. O usuário desativou o resumo semanal ([UC027]):\newline
 \hspace*{1em}i. O sistema não gera o aviso.\newline
 b. O titular não possui conexões ativas:\newline
 \hspace*{1em}i. O resumo informa a ausência de movimentações disponíveis.
 \\ \hline
+\textbf{Pós-condição} & O resumo dos sete dias anteriores fica guardado de forma cifrada, e o aviso, sem valores, é enviado na janela de horário escolhida pelo titular. \\ \hline
 \end{longtable}
 }
 
@@ -1219,19 +1280,21 @@ b. O titular não possui conexões ativas:\newline
 \sourcerow{2} \\
 \endlastfoot
 \textbf{Caso de uso} & [UC023] Receber resumo mensal \\ \hline
-\textbf{Ator(es)} & Sistema (\textit{Scheduler}) \\ \hline
-\textbf{Motivação} & Enviar ao usuário que aderiu ao fechamento mensal um aviso, no primeiro dia de cada mês, de que o resumo do mês anterior está disponível. \\ \hline
+\textbf{Ator(es)} & \textit{Scheduler} \\ \hline
+\textbf{Motivação} & Enviar no primeiro dia de cada mês um aviso ao titular com o fechamento mensal habilitado, informando que o resumo do mês anterior está disponível (é estendido por [UC024]). \\ \hline
+\textbf{Pré-condição} & O titular possui cadastro concluído e assinatura Pro ou período de teste ativo. \\ \hline
 \textbf{Fluxo Principal} &
-1. No dia 1, às 9h, o sistema identifica os titulares com o fechamento mensal habilitado, que é o padrão para cadastros concluídos;\newline
+1. No dia 1, às 9~h, o sistema identifica os titulares com o fechamento mensal habilitado, que é o padrão para cadastros concluídos;\newline
 2. O sistema calcula os números do mês anterior;\newline
 3. O sistema guarda o resumo cifrado;\newline
-4. O sistema envia o aviso; quando semanal e mensal ficam prontos no mesmo dia, saem em um único aviso;\newline
+4. O sistema envia o aviso; quando os resumos semanal e mensal ficam prontos no mesmo dia, são enviados em um único aviso;\newline
 5. O usuário pode abrir o resumo com valores ([UC024]).
 \\ \hline
 \textbf{Fluxo Alternativo} &
-a. O usuário não aderiu ou desativou o fechamento mensal ([UC027]):\newline
+a. O usuário desativou o fechamento mensal ([UC027]):\newline
 \hspace*{1em}i. O sistema não gera o aviso.
 \\ \hline
+\textbf{Pós-condição} & O resumo do mês anterior fica guardado de forma cifrada, e o aviso de disponibilidade é enviado ao titular. \\ \hline
 \end{longtable}
 }
 
@@ -1250,20 +1313,22 @@ a. O usuário não aderiu ou desativou o fechamento mensal ([UC027]):\newline
 \endlastfoot
 \textbf{Caso de uso} & [UC024] Abrir resumo com valores (PIN) \\ \hline
 \textbf{Ator(es)} & Usuário \\ \hline
-\textbf{Motivação} & Permitir ao usuário abrir o último resumo disponível com os valores, após a verificação do privilégio (estende [UC022] e [UC023]; inclui [UC003] e [UC025]). \\ \hline
+\textbf{Motivação} & Permitir ao usuário abrir o último resumo disponível com os valores, após a verificação do privilégio (inclui [UC025]; estende [UC022] e [UC023]). \\ \hline
+\textbf{Pré-condição} & Há um resumo semanal ou mensal disponível para o usuário ([UC022] ou [UC023]). \\ \hline
 \textbf{Fluxo Principal} &
 1. O usuário escreve ``ver resumo semanal'' ou ``ver fechamento mensal'';\newline
-2. O sistema verifica o token de privilégio;\newline
-3. Sem token, o sistema solicita o PIN ([UC003]);\newline
+2. O sistema verifica o \textit{token} de privilégio;\newline
+3. O sistema solicita o PIN ([UC003]);\newline
 4. O sistema gera o relatório do período ([UC025]);\newline
 5. O sistema entrega o relatório ao usuário.
 \\ \hline
 \textbf{Fluxo Alternativo} &
-a. Autenticação falha após 5 tentativas:\newline
+a. Autenticação falha após cinco tentativas:\newline
 \hspace*{1em}i. O sistema bloqueia o acesso por 30 minutos.\newline
-b. O token de privilégio já está ativo:\newline
+b. O \textit{token} de privilégio já está ativo:\newline
 \hspace*{1em}i. O sistema dispensa o PIN e entrega o relatório diretamente.
 \\ \hline
+\textbf{Pós-condição} & O relatório do período em formato de documento portátil (\textit{Portable Document Format}, PDF), com os valores, é entregue ao usuário ([UC025]). \\ \hline
 \end{longtable}
 }
 
@@ -1281,11 +1346,12 @@ b. O token de privilégio já está ativo:\newline
 \sourcerow{2} \\
 \endlastfoot
 \textbf{Caso de uso} & [UC025] Receber relatório do período em PDF \\ \hline
-\textbf{Ator(es)} & Sistema \\ \hline
-\textbf{Motivação} & Gerar o relatório do resumo em PDF, com indicadores, categorias e comparação com o período anterior, entregue como documento no canal do pedido (incluso em [UC024]). \\ \hline
+\textbf{Ator(es)} & Usuário \\ \hline
+\textbf{Motivação} & Gerar o relatório do resumo em PDF, com indicadores, categorias e comparação com o período anterior, entregue como documento no canal do pedido (é incluído por [UC024]). \\ \hline
+\textbf{Pré-condição} & A abertura do resumo com valores foi solicitada em [UC024], com o \textit{token} de privilégio ativo. \\ \hline
 \textbf{Fluxo Principal} &
 1. O sistema recebe o resumo decifrado do período;\newline
-2. O \textit{Render Service} gera o PDF a partir dos modelos do relatório;\newline
+2. O Render Service gera o PDF a partir dos modelos do relatório;\newline
 3. O sistema confere novamente a autorização;\newline
 4. O sistema envia o PDF como documento.
 \\ \hline
@@ -1293,6 +1359,7 @@ b. O token de privilégio já está ativo:\newline
 a. Não há histórico para comparação:\newline
 \hspace*{1em}i. O relatório informa a ausência de comparação.
 \\ \hline
+\textbf{Pós-condição} & O relatório do período em PDF, com indicadores, categorias e comparação com o período anterior, é entregue como documento no canal do pedido. \\ \hline
 \end{longtable}
 }
 
@@ -1311,11 +1378,12 @@ a. Não há histórico para comparação:\newline
 \endlastfoot
 \textbf{Caso de uso} & [UC026] Configurar preferências de aviso \\ \hline
 \textbf{Ator(es)} & Usuário \\ \hline
-\textbf{Motivação} & Permitir ao usuário escolher quais famílias de aviso deseja receber e em qual janela de horário, pela conversa ou pelo formulário do canal. \\ \hline
+\textbf{Motivação} & Permitir ao usuário escolher quais famílias de aviso deseja receber e em qual janela de horário, pela conversa ou pelo formulário do canal (é estendido por [UC027]). \\ \hline
+\textbf{Pré-condição} & O usuário possui cadastro concluído. \\ \hline
 \textbf{Fluxo Principal} &
 1. O usuário acessa as preferências pela conversa ou pelo formulário;\newline
 2. O sistema exibe a configuração atual;\newline
-3. O usuário marca resumos, limites de gasto, movimentação estranha, mudança por categoria e previsão do mês, e escolhe a janela (qualquer hora, manhã, tarde ou noite);\newline
+3. O usuário marca as famílias de aviso desejadas (resumos; limites de gasto; movimentações atípicas, que reúnem cobranças duplicadas e transações atípicas; mudança por categoria; e previsão do mês) e escolhe a janela de horário (o período inteiro permitido, das 9~h às 21~h, ou apenas manhã, tarde ou noite);\newline
 4. O sistema salva as preferências e registra a alteração na auditoria;\newline
 5. O sistema confirma as alterações.
 \\ \hline
@@ -1323,6 +1391,7 @@ a. Não há histórico para comparação:\newline
 a. Configuração inválida:\newline
 \hspace*{1em}i. O sistema informa o erro e mantém a configuração anterior.
 \\ \hline
+\textbf{Pós-condição} & As preferências de aviso e a janela de horário escolhidas ficam salvas, com a alteração registrada na auditoria. \\ \hline
 \end{longtable}
 }
 
@@ -1342,6 +1411,7 @@ a. Configuração inválida:\newline
 \textbf{Caso de uso} & [UC027] Ativar ou desativar tipo de resumo \\ \hline
 \textbf{Ator(es)} & Usuário \\ \hline
 \textbf{Motivação} & Permitir ao usuário ativar ou desativar cada tipo de resumo automático de forma independente (estende [UC026]). \\ \hline
+\textbf{Pré-condição} & O usuário está em conversa com o assistente por um dos canais de mensageria. \\ \hline
 \textbf{Fluxo Principal} &
 1. O usuário escreve, por exemplo, ``ativar resumo semanal'' ou ``desativar fechamento mensal'';\newline
 2. O sistema reconhece o comando por regra determinística;\newline
@@ -1352,16 +1422,15 @@ a. Configuração inválida:\newline
 a. O cadastro não foi concluído ou os termos não foram aceitos:\newline
 \hspace*{1em}i. O sistema informa que a adesão exige o cadastro concluído.
 \\ \hline
+\textbf{Pós-condição} & A preferência do tipo de resumo indicado é atualizada, sem alterar os demais tipos. \\ \hline
 \end{longtable}
 }
 
 
 \vspace{10pt}
-\noindent\textbf{Grupo 4 - Direitos do Titular (LGPD Art.\ 18)}
+\subsubsection{Grupo 4: Direitos do Titular (LGPD Art.\ 18)}
 
-\vspace{4pt}
-
-Os quadros \ref{frame:lc001} a \ref{frame:lc010} descrevem os casos de uso relativos aos direitos do titular previstos no Art.\ 18 da LGPD, abrangendo consulta, exportação, correção, revogação e exclusão de dados pessoais, bem como os casos de uso de suporte internos ao sistema (registro em \textit{audit log}, anonimização, revogação no agregador e exclusão de conversas, sessões e dados derivados).
+Os Quadros~\ref{frame:lc001} a~\ref{frame:lc010} descrevem os casos de uso relativos aos direitos do titular previstos no art.\ 18 da LGPD, abrangendo a consulta, a exportação e a correção de dados pessoais, a revogação do consentimento e a exclusão de dados, bem como os casos de uso de suporte internos ao sistema (registro em \textit{audit log}, anonimização, revogação no agregador e exclusão de conversas, sessões e dados derivados).
 
 \vspace{4pt}
 
@@ -1378,7 +1447,8 @@ Os quadros \ref{frame:lc001} a \ref{frame:lc010} descrevem os casos de uso relat
 \endlastfoot
 \textbf{Caso de uso} & [LC001] Consultar quais dados são tratados (Art.\ 18, I) \\ \hline
 \textbf{Ator(es)} & Usuário (Titular) \\ \hline
-\textbf{Motivação} & Permitir ao titular consultar quais categorias de dados pessoais e financeiros são coletados, armazenados e processados pela solução, em conformidade com o Art.\ 18, I da LGPD. \\ \hline
+\textbf{Motivação} & Permitir ao titular consultar quais categorias de dados pessoais e financeiros são coletadas, armazenadas e processadas pela solução, em conformidade com o art.\ 18, I, da LGPD. \\ \hline
+\textbf{Pré-condição} & O titular está em conversa com o assistente por um dos canais de mensageria. \\ \hline
 \textbf{Fluxo Principal} &
 1. O usuário solicita, por exemplo, ``meus dados'';\newline
 2. O sistema reconhece o comando por regra determinística;\newline
@@ -1387,6 +1457,7 @@ Os quadros \ref{frame:lc001} a \ref{frame:lc010} descrevem os casos de uso relat
 \textbf{Fluxo Alternativo} &
 Não se aplica.
 \\ \hline
+\textbf{Pós-condição} & O titular recebe as categorias de dados tratados, com as finalidades, os períodos de retenção e as bases legais. \\ \hline
 \end{longtable}
 }
 
@@ -1394,7 +1465,7 @@ Não se aplica.
 
 {\small
 \begin{longtable}{|L{3.5cm}|L{11.0cm}|}
-\caption{[LC002] Exportar dados - portabilidade (Art.\ 18, II e V)} \label{frame:lc002} \\
+\caption{[LC002] Exportar dados -- portabilidade (Art.\ 18, II e V)} \label{frame:lc002} \\
 \continuesmark
 \hline
 \endfirsthead
@@ -1403,23 +1474,29 @@ Não se aplica.
 \endfoot
 \sourcerow{2} \\
 \endlastfoot
-\textbf{Caso de uso} & [LC002] Exportar dados - portabilidade (Art.\ 18, II e V) \\ \hline
-\textbf{Ator(es)} & Usuário (Titular), Sistema (\textit{Audit Service}) \\ \hline
+\textbf{Caso de uso} & [LC002] Exportar dados -- portabilidade (Art.\ 18, II e V) \\ \hline
+\textbf{Ator(es)} & Usuário (Titular), Audit Service \\ \hline
 \textbf{Motivação} & Garantir ao titular o direito de exportar seus dados pessoais e financeiros em formato estruturado, entregue no próprio canal do pedido, com registro de auditoria (inclui [LC007]). \\ \hline
+\textbf{Pré-condição} & O titular possui cadastro concluído, com PIN definido. \\ \hline
 \textbf{Fluxo Principal} &
 1. O usuário solicita ``exportar meus dados'';\newline
 2. O sistema reconhece o comando por regra determinística e solicita o PIN;\newline
-3. O sistema registra o pedido;\newline
-4. O \textit{Identity Service} reúne os dados de cada serviço dono;\newline
-5. O sistema gera um arquivo JSON com os dados decifrados do titular;\newline
-6. O sistema entrega o arquivo como documento no canal do pedido;\newline
-7. O sistema registra a operação no \textit{audit log} ([LC007]).
+3. O usuário informa o PIN, e o sistema o valida ([UC003]);\newline
+4. O sistema registra o pedido;\newline
+5. O Identity Service reúne os dados junto a cada serviço responsável por eles;\newline
+6. O sistema gera um arquivo no formato de notação de objetos JavaScript (\textit{JavaScript Object Notation}, JSON) com os dados decifrados do titular;\newline
+7. O sistema entrega o arquivo como documento no canal do pedido;\newline
+8. O sistema registra a operação no \textit{audit log} ([LC007]).
 \\ \hline
 \textbf{Fluxo Alternativo} &
 a. Falha em um dos serviços durante a coleta:\newline
 \hspace*{1em}i. O pedido volta para a fila e é tentado novamente;\newline
-\hspace*{1em}ii. A falha é registrada.
+\hspace*{1em}ii. A falha é registrada.\newline
+b. O PIN informado está incorreto:\newline
+\hspace*{1em}i. O sistema solicita nova tentativa;\newline
+\hspace*{1em}ii. Após cinco tentativas incorretas, o sistema bloqueia o acesso por 30 minutos.
 \\ \hline
+\textbf{Pós-condição} & O arquivo JSON com os dados decifrados do titular é entregue como documento no canal do pedido, e a operação é registrada no \textit{audit log}. \\ \hline
 \end{longtable}
 }
 
@@ -1437,8 +1514,9 @@ a. Falha em um dos serviços durante a coleta:\newline
 \sourcerow{2} \\
 \endlastfoot
 \textbf{Caso de uso} & [LC003] Corrigir dados cadastrais (Art.\ 18, III) \\ \hline
-\textbf{Ator(es)} & Usuário (Titular), Sistema (\textit{Audit Service}) \\ \hline
-\textbf{Motivação} & Permitir ao titular corrigir informações cadastrais imprecisas ou desatualizadas, em conformidade com o Art.\ 18, III da LGPD, com registro de auditoria (inclui [LC007]). \\ \hline
+\textbf{Ator(es)} & Usuário (Titular), Audit Service \\ \hline
+\textbf{Motivação} & Permitir ao titular corrigir informações cadastrais imprecisas ou desatualizadas, em conformidade com o art.\ 18, III, da LGPD, com registro de auditoria (inclui [LC007]). \\ \hline
+\textbf{Pré-condição} & O titular possui cadastro concluído. \\ \hline
 \textbf{Fluxo Principal} &
 1. O usuário solicita a correção de dados cadastrais;\newline
 2. O usuário informa os novos valores;\newline
@@ -1450,6 +1528,7 @@ a. Falha em um dos serviços durante a coleta:\newline
 a. Dados inválidos informados:\newline
 \hspace*{1em}i. O sistema informa o erro e solicita revisão antes de prosseguir.
 \\ \hline
+\textbf{Pós-condição} & Os dados cadastrais são atualizados com os valores corrigidos, e a operação é registrada no \textit{audit log}. \\ \hline
 \end{longtable}
 }
 
@@ -1457,7 +1536,7 @@ a. Dados inválidos informados:\newline
 
 {\small
 \begin{longtable}{|L{3.5cm}|L{11.0cm}|}
-\caption{[LC004] Revogar consentimento \textit{Open Finance} (Art.\ 18, IX)} \label{frame:lc004} \\
+\caption{[LC004] Revogar consentimento Open Finance (Art.\ 18, IX)} \label{frame:lc004} \\
 \continuesmark
 \hline
 \endfirsthead
@@ -1466,9 +1545,10 @@ a. Dados inválidos informados:\newline
 \endfoot
 \sourcerow{2} \\
 \endlastfoot
-\textbf{Caso de uso} & [LC004] Revogar consentimento \textit{Open Finance} (Art.\ 18, IX) \\ \hline
-\textbf{Ator(es)} & Usuário (Titular), Agregador (\textit{Open Finance}), Sistema (\textit{Audit Service}) \\ \hline
-\textbf{Motivação} & Permitir ao titular revogar o consentimento de compartilhamento de dados via \textit{Open Finance}, encerrando a sincronização, conforme Art.\ 18, IX da LGPD (inclui [LC007] e [LC009]). \\ \hline
+\textbf{Caso de uso} & [LC004] Revogar consentimento Open Finance (Art.\ 18, IX) \\ \hline
+\textbf{Ator(es)} & Usuário (Titular), Agregador (Open Finance), Audit Service \\ \hline
+\textbf{Motivação} & Permitir ao titular revogar o consentimento de compartilhamento de dados via Open Finance, encerrando a sincronização, conforme o art.\ 18, IX, da LGPD (inclui [LC007] e [LC009]). \\ \hline
+\textbf{Pré-condição} & O titular possui ao menos uma conexão com consentimento de Open Finance ativo. \\ \hline
 \textbf{Fluxo Principal} &
 1. O usuário solicita ``revogar consentimento'' ou a remoção de um banco;\newline
 2. O sistema exibe as implicações e solicita confirmação por botões;\newline
@@ -1485,6 +1565,7 @@ b. Erro ao revogar o acesso no agregador:\newline
 \hspace*{1em}i. O sistema registra a falha;\newline
 \hspace*{1em}ii. O sistema tenta novamente.
 \\ \hline
+\textbf{Pós-condição} & O acesso no agregador é revogado, a sincronização da conexão é encerrada e a operação é registrada no \textit{audit log}. \\ \hline
 \end{longtable}
 }
 
@@ -1502,26 +1583,32 @@ b. Erro ao revogar o acesso no agregador:\newline
 \sourcerow{2} \\
 \endlastfoot
 \textbf{Caso de uso} & [LC005] Solicitar exclusão de dados (Art.\ 18, VI) \\ \hline
-\textbf{Ator(es)} & Usuário (Titular), Agregador (\textit{Open Finance}), Sistema (\textit{Audit Service}) \\ \hline
-\textbf{Motivação} & Garantir ao titular o direito de solicitar a exclusão de seus dados pessoais. A conta é desativada sem dados pessoais, e os registros de auditoria são mantidos por 5 anos conforme o Art.\ 16 da LGPD (inclui [LC007], [LC008], [LC009] e [LC010]). \\ \hline
+\textbf{Ator(es)} & Usuário (Titular), Agregador (Open Finance), Audit Service \\ \hline
+\textbf{Motivação} & Garantir ao titular o direito de solicitar a exclusão de seus dados pessoais. A conta é desativada sem dados pessoais, e os registros de auditoria são mantidos por cinco anos, com a conservação autorizada pelo art.\ 16, I, da LGPD (inclui [LC007], [LC008], [LC009] e [LC010]). \\ \hline
+\textbf{Pré-condição} & O titular possui cadastro concluído, com PIN definido. \\ \hline
 \textbf{Fluxo Principal} &
 1. O usuário solicita ``excluir meus dados'';\newline
 2. O sistema reconhece o comando por regra determinística e solicita o PIN;\newline
-3. O sistema exibe o que será apagado e o que será mantido e pede confirmação por botões, válida por 10 minutos;\newline
-4. O usuário confirma a exclusão;\newline
-5. O sistema revoga as conexões no agregador ([LC009]) e anonimiza as transações ([LC008]);\newline
-6. O sistema cancela a assinatura e apaga conversas, sessões e dados derivados ([LC010]);\newline
-7. O sistema remove nome, CPF, e-mail e PIN do cadastro;\newline
-8. O sistema envia a confirmação final pelo canal do pedido;\newline
-9. O sistema registra a operação no \textit{audit log} ([LC007]).
+3. O usuário informa o PIN, e o sistema o valida ([UC003]);\newline
+4. O sistema exibe o que será apagado e o que será mantido e pede confirmação por botões, válida por 10 minutos;\newline
+5. O usuário confirma a exclusão;\newline
+6. O sistema revoga as conexões no agregador ([LC009]) e anonimiza as transações ([LC008]);\newline
+7. O sistema cancela a assinatura e apaga conversas, sessões e dados derivados ([LC010]);\newline
+8. O sistema remove nome, CPF, e-mail e PIN do cadastro;\newline
+9. O sistema envia a confirmação final pelo canal do pedido;\newline
+10. O sistema registra a operação no \textit{audit log} ([LC007]).
 \\ \hline
 \textbf{Fluxo Alternativo} &
 a. O usuário cancela ou não confirma em 10 minutos:\newline
 \hspace*{1em}i. O sistema não realiza alterações.\newline
 b. Uma etapa falha:\newline
 \hspace*{1em}i. O pedido é tentado novamente em intervalos crescentes;\newline
-\hspace*{1em}ii. Após 5 falhas, o pedido é marcado como falho para atuação da equipe.
+\hspace*{1em}ii. Após cinco falhas, o pedido é marcado como falho para atuação da equipe.\newline
+c. O PIN informado está incorreto:\newline
+\hspace*{1em}i. O sistema solicita nova tentativa;\newline
+\hspace*{1em}ii. Após cinco tentativas incorretas, o sistema bloqueia o acesso por 30 minutos.
 \\ \hline
+\textbf{Pós-condição} & A conta é desativada sem dados pessoais, com a assinatura cancelada, as conexões revogadas, as transações anonimizadas e as conversas, sessões e dados derivados apagados.\newline Os registros de auditoria são mantidos por cinco anos, com a conservação autorizada pelo art.\ 16, I, da LGPD. \\ \hline
 \end{longtable}
 }
 
@@ -1529,7 +1616,7 @@ b. Uma etapa falha:\newline
 
 {\small
 \begin{longtable}{|L{3.5cm}|L{11.0cm}|}
-\caption{[LC006] Consultar com quem dados são compartilhados (Art.\ 18, VII)} \label{frame:lc006} \\
+\caption{[LC006] Consultar com quem os dados são compartilhados (Art.\ 18, VII)} \label{frame:lc006} \\
 \continuesmark
 \hline
 \endfirsthead
@@ -1538,9 +1625,10 @@ b. Uma etapa falha:\newline
 \endfoot
 \sourcerow{2} \\
 \endlastfoot
-\textbf{Caso de uso} & [LC006] Consultar com quem dados são compartilhados (Art.\ 18, VII) \\ \hline
+\textbf{Caso de uso} & [LC006] Consultar com quem os dados são compartilhados (Art.\ 18, VII) \\ \hline
 \textbf{Ator(es)} & Usuário (Titular) \\ \hline
-\textbf{Motivação} & Permitir ao titular consultar com quais entidades e serviços seus dados são compartilhados, em conformidade com o Art.\ 18, VII da LGPD. \\ \hline
+\textbf{Motivação} & Permitir ao titular consultar com quais entidades e serviços seus dados são compartilhados, em conformidade com o art.\ 18, VII, da LGPD. \\ \hline
+\textbf{Pré-condição} & O titular está em conversa com o assistente por um dos canais de mensageria. \\ \hline
 \textbf{Fluxo Principal} &
 1. O usuário solicita, por exemplo, ``quem tem meus dados'';\newline
 2. O sistema recupera a lista de operadores;\newline
@@ -1549,6 +1637,7 @@ b. Uma etapa falha:\newline
 \textbf{Fluxo Alternativo} &
 Não se aplica.
 \\ \hline
+\textbf{Pós-condição} & O titular recebe a lista de operadores, com a finalidade de cada um e os dados que recebe. \\ \hline
 \end{longtable}
 }
 
@@ -1566,19 +1655,21 @@ Não se aplica.
 \sourcerow{2} \\
 \endlastfoot
 \textbf{Caso de uso} & [LC007] Registrar operação em \textit{audit log} \\ \hline
-\textbf{Ator(es)} & Sistema (\textit{Audit Service}) \\ \hline
-\textbf{Motivação} & Garantir rastreabilidade das operações relacionadas aos direitos do titular. Os registros são encadeados por \textit{hash}, guardam apenas referências e são mantidos por 5 anos conforme o Art.\ 16 da LGPD. \\ \hline
+\textbf{Ator(es)} & Audit Service \\ \hline
+\textbf{Motivação} & Garantir rastreabilidade das operações relacionadas aos direitos do titular. Os registros são encadeados por \textit{hash}, guardam apenas referências e são mantidos por cinco anos, com a conservação autorizada pelo art.\ 16, I, da LGPD (é incluído por [LC002], [LC003], [LC004] e [LC005]). \\ \hline
+\textbf{Pré-condição} & Uma operação relacionada aos direitos do titular foi executada em [LC002], [LC003], [LC004] ou [LC005]. \\ \hline
 \textbf{Fluxo Principal} &
 1. O serviço solicitante publica o evento de auditoria;\newline
-2. O \textit{Audit Service} consome o evento;\newline
-3. O \textit{Audit Service} calcula o \textit{hash} do registro a partir do anterior;\newline
+2. O Audit Service consome o evento;\newline
+3. O Audit Service calcula o \textit{hash} do registro a partir do anterior;\newline
 4. O registro é gravado em tabela somente de inserção.
 \\ \hline
 \textbf{Fluxo Alternativo} &
-a. O \textit{Audit Service} está indisponível:\newline
+a. O Audit Service está indisponível:\newline
 \hspace*{1em}i. O evento permanece no barramento;\newline
-\hspace*{1em}ii. O registro é gravado quando o serviço volta.
+\hspace*{1em}ii. O registro é gravado quando o serviço é restabelecido.
 \\ \hline
+\textbf{Pós-condição} & O registro é gravado em tabela somente de inserção, encadeado por \textit{hash} ao registro anterior. \\ \hline
 \end{longtable}
 }
 
@@ -1596,11 +1687,12 @@ a. O \textit{Audit Service} está indisponível:\newline
 \sourcerow{2} \\
 \endlastfoot
 \textbf{Caso de uso} & [LC008] Anonimizar transações \\ \hline
-\textbf{Ator(es)} & Sistema \\ \hline
-\textbf{Motivação} & Remover das transações o vínculo com a pessoa durante a exclusão de dados, preservando apenas dados estatísticos (incluso em [LC005]). \\ \hline
+\textbf{Ator(es)} & Usuário (Titular) \\ \hline
+\textbf{Motivação} & Remover das transações o vínculo com a pessoa durante a exclusão de dados, preservando apenas dados estatísticos (é incluído por [LC005]). \\ \hline
+\textbf{Pré-condição} & A exclusão de dados foi confirmada pelo titular ([LC005]). \\ \hline
 \textbf{Fluxo Principal} &
 1. O sistema recebe a solicitação de anonimização;\newline
-2. O sistema remove o identificador do titular, a descrição, a contraparte, os valores, os HMACs de busca e os identificadores de conta e conexão;\newline
+2. O sistema remove o identificador do titular, a descrição, a contraparte, os valores, os índices de busca calculados com código de autenticação de mensagem baseado em \textit{hash} (\textit{Hash-based Message Authentication Code}, HMAC) e os identificadores de conta e conexão;\newline
 3. O sistema mantém apenas data, tipo, direção, categoria e forma de pagamento;\newline
 4. O sistema confirma a conclusão ao caso de uso solicitante ([LC005]).
 \\ \hline
@@ -1608,6 +1700,7 @@ a. O \textit{Audit Service} está indisponível:\newline
 a. Uma sincronização do titular está em andamento:\newline
 \hspace*{1em}i. O sistema não altera nada e o pedido é retomado depois.
 \\ \hline
+\textbf{Pós-condição} & As transações do titular mantêm apenas data, tipo, direção, categoria e forma de pagamento, sem vínculo com a pessoa. \\ \hline
 \end{longtable}
 }
 
@@ -1625,8 +1718,9 @@ a. Uma sincronização do titular está em andamento:\newline
 \sourcerow{2} \\
 \endlastfoot
 \textbf{Caso de uso} & [LC009] Revogar acesso no agregador \\ \hline
-\textbf{Ator(es)} & Sistema, Agregador (\textit{Open Finance}) \\ \hline
-\textbf{Motivação} & Encerrar o acesso da solução aos dados bancários do usuário junto ao agregador, desabilitando o consentimento de \textit{Open Finance} (incluso em [LC004] e [LC005]). \\ \hline
+\textbf{Ator(es)} & Agregador (Open Finance) \\ \hline
+\textbf{Motivação} & Encerrar o acesso da solução aos dados bancários do usuário junto ao agregador, desabilitando o consentimento de Open Finance (é incluído por [LC004] e [LC005]). \\ \hline
+\textbf{Pré-condição} & O titular confirmou a revogação do consentimento ([LC004]) ou a exclusão de dados ([LC005]). \\ \hline
 \textbf{Fluxo Principal} &
 1. O sistema envia a solicitação de encerramento à API do agregador;\newline
 2. O agregador encerra a conexão;\newline
@@ -1638,6 +1732,7 @@ a. O agregador está indisponível:\newline
 \hspace*{1em}ii. O sistema tenta novamente;\newline
 \hspace*{1em}iii. Na exclusão de conta, os dados locais são apagados mesmo assim.
 \\ \hline
+\textbf{Pós-condição} & A conexão é encerrada no agregador e o status do consentimento é atualizado. \\ \hline
 \end{longtable}
 }
 
@@ -1655,12 +1750,13 @@ a. O agregador está indisponível:\newline
 \sourcerow{2} \\
 \endlastfoot
 \textbf{Caso de uso} & [LC010] Apagar conversas, sessões e dados derivados \\ \hline
-\textbf{Ator(es)} & Sistema \\ \hline
-\textbf{Motivação} & Remover o histórico de conversa, as sessões e os dados derivados do titular durante a exclusão (incluso em [LC005]). \\ \hline
+\textbf{Ator(es)} & Usuário (Titular) \\ \hline
+\textbf{Motivação} & Remover o histórico de conversa, as sessões e os dados derivados do titular durante a exclusão (é incluído por [LC005]). \\ \hline
+\textbf{Pré-condição} & A exclusão de dados foi confirmada pelo titular ([LC005]). \\ \hline
 \textbf{Fluxo Principal} &
 1. O sistema apaga o histórico de conversa de todos os canais;\newline
 2. O sistema apaga as chaves de sessão e estado de conversa, inclusive as sessões do painel;\newline
-3. O sistema apaga metas, resumos, \textit{embeddings} e fotografias de saldo;\newline
+3. O sistema apaga metas, resumos, \textit{embeddings} e registros periódicos de saldo;\newline
 4. O sistema confirma a exclusão ao caso de uso solicitante ([LC005]).
 \\ \hline
 \textbf{Fluxo Alternativo} &
@@ -1668,6 +1764,7 @@ a. Erro ao apagar um dos dados:\newline
 \hspace*{1em}i. O sistema registra a falha;\newline
 \hspace*{1em}ii. A etapa é repetida, pois cada operação é idempotente.
 \\ \hline
+\textbf{Pós-condição} & O histórico de conversa de todos os canais, as sessões, inclusive as do painel, e os dados derivados do titular são apagados. \\ \hline
 \end{longtable}
 }
 

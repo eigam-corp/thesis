@@ -36,7 +36,8 @@ usecase-beta
   direction TB
 
   actor EQ("Equipe de operação")
-  actor TI(Titular)
+  actor TI("`Usuário
+  (Titular)`")
 
   ASSIST["Assistentes de IA do titular"] <<sistema externo>>
   BORDA["Serviço de borda"] <<sistema externo>>
@@ -49,14 +50,14 @@ usecase-beta
     Chat, AI e Identity Service`"] <<subsistema>>
     FIN["`**Finanças**
     Finance e Analytics Service`"] <<subsistema>>
-    COM["`**Comunicação**
+    COM["`**Comunicação, cobrança e auditoria**
     Outbound Worker, Notification, Render, Billing e Audit`"] <<subsistema>>
     DADOS["`**Dados**
-    broker de eventos, PostgreSQL, MongoDB e Redis`"] <<subsistema>>
+    *broker* de eventos, PostgreSQL, MongoDB e Redis`"] <<subsistema>>
   end
 
-  LLM["Provedor de LLM"] <<sistema externo>>
-  JUIZO["Modelo de juízo tipado"] <<sistema externo>>
+  LLM["Provedor do modelo de linguagem"] <<sistema externo>>
+  JUIZO["Provedor do modelo de juízo tipado"] <<sistema externo>>
   AGREG["Agregador de Open Finance"] <<sistema externo>>
   PAG["Provedor de pagamentos"] <<sistema externo>>
 
@@ -67,7 +68,7 @@ usecase-beta
   TI -- mensagens ---> MSG
 
   BORDA -- HTTPS --> ENT
-  MSG -- webhooks --> ENT
+  MSG -- "`*webhooks*`" --> BORDA
   MSG <-- respostas -- COM
 
   ENT -- DADOS

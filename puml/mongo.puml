@@ -131,6 +131,35 @@ entity predictions {
     expires_at : Date
 }
 
+entity prediction_log {
+    _id : ObjectId
+    user_id : string
+    prediction_type : string
+    category : string
+    period_start : Date
+    period_end : Date
+    cutoff_day : number
+    horizon : number
+    model_version : string
+    served : boolean
+    abstention_reason : string
+    result : cifrado
+    computed_at : Date
+    expires_at : Date
+}
+
+entity prediction_evaluations {
+    _id : ObjectId
+    month : string
+    segment : string
+    users : number
+    served : string
+    served_version : string
+    models : object
+    verdict : object
+    computed_at : Date
+}
+
 transactions -[hidden]right- balance_snapshots
 balance_snapshots -[hidden]right- card_bills
 card_bills -[hidden]right- investment_positions
@@ -138,4 +167,6 @@ transactions -[hidden]down- loan_contracts
 loan_contracts -[hidden]right- holding_coverage
 holding_coverage -[hidden]right- conversation_history
 conversation_history -[hidden]right- predictions
+predictions -[hidden]down- prediction_log
+prediction_log -[hidden]down- prediction_evaluations
 @enduml
