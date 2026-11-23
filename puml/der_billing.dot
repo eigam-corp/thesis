@@ -1,0 +1,44 @@
+// DER do PostgreSQL - BILLING SERVICE (gerado; notação do trabalho de banco de dados: losango = relacionamento,
+// linha dupla = entidade que depende do relacionamento, (mín,máx) junto de cada entidade).
+// Renderização: dot -Tsvg der_billing.dot (Graphviz 14), depois PNG pelo Chrome.
+graph DER {
+  graph [rankdir=LR, splines=ortho, newrank=true, nodesep=0.5, ranksep=0.95, pad=0.2, fontname="Arial", fontsize=13];
+  node [fontname="Arial", fontsize=15, penwidth=1.3, color=black, fontcolor=black];
+  edge [fontname="Arial", fontsize=13, penwidth=1.3, color=black, fontcolor=black, labeldistance=1.9, labelangle=28];
+  subgraph "cluster_ref" {
+    label=<<B>IDENTITY SERVICE</B>>; labeljust=l; style=dashed; color="#4D4D4D"; penwidth=1.2; margin=22;
+    users [shape=box, label=<<B>users</B>>, height=2.76, width=1.6, fixedsize=true];
+  }
+  subgraph "cluster_BILLING SERVICE" {
+    label=<<B>BILLING SERVICE</B>>; labeljust=l; style=dashed; color="#4D4D4D"; penwidth=1.2; margin=24;
+    subscriptions [shape=box, label=<<B>subscriptions</B>>, height=2.00, margin="0.36,0.12"];
+    billing_events [shape=box, label=<<B>billing_events</B>>, height=1.02, margin="0.36,0.12"];
+    usage_prices [shape=box, label=<<B>usage_prices</B>>, height=0.72, margin="0.36,0.12"];
+    exchange_rates [shape=box, label=<<B>exchange_rates</B>>, height=0.72, margin="0.36,0.12"];
+    usage_costs [shape=box, label=<<B>usage_costs</B>>, height=1.00, margin="0.36,0.12"];
+    plans [shape=box, label=<<B>plans</B>>, height=1.02, margin="0.36,0.12"];
+    plan_prices [shape=box, label=<<B>plan_prices</B>>, height=1.00, margin="0.36,0.12"];
+    r0 [shape=diamond, label=<<B>ASSINA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r1 [shape=diamond, label=<<B>ENQUADRA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r2 [shape=diamond, label=<<B>PRECIFICA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r3 [shape=diamond, label=<<B>GERA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r4 [shape=diamond, label=<<B>PAGA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r5 [shape=diamond, label=<<B>CONSOME</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r6 [shape=diamond, label=<<B>TARIFA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+  }
+  users -- r0 [taillabel=<<B>(0,n)</B>>];
+  r0 -- subscriptions [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  subscriptions -- r1 [color="black:invis:black", taillabel=<<B>(1,1)</B>>];
+  r1 -- plans [headlabel=<<B>(0,n)</B>>];
+  plan_prices -- r2 [color="black:invis:black", taillabel=<<B>(1,1)</B>>];
+  r2 -- plans [headlabel=<<B>(0,n)</B>>];
+  subscriptions -- r3 [taillabel=<<B>(0,n)</B>>];
+  r3 -- billing_events [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  users -- r4 [taillabel=<<B>(0,n)</B>>];
+  r4 -- billing_events [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  users -- r5 [taillabel=<<B>(0,n)</B>>];
+  r5 -- usage_costs [headlabel=<<B>(0,1)</B>>];
+  usage_costs -- r6 [taillabel=<<B>(0,1)</B>>];
+  r6 -- usage_prices [headlabel=<<B>(0,n)</B>>];
+  users -- exchange_rates [style=invis, minlen=2];
+}

@@ -1,0 +1,103 @@
+---
+config:
+  usecase:
+    wrappingWidth: 225
+    minNodeWidth: 0
+    nodeSpacing: 18
+    rankSpacing: 40
+    usecaseFontSize: 31
+    actorFontSize: 32
+  themeCSS: |
+    .marker.usecase .arrowMarkerPath { fill: none !important; stroke: #203825 !important; stroke-width: 2px !important; stroke-linejoin: miter; }
+    marker[id$="pointEnd-margin"] .arrowMarkerPath { stroke-dasharray: 26.93 14 !important; }
+    marker[id$="pointStart-margin"] .arrowMarkerPath { stroke-dasharray: 13.46 14 13.46 0 !important; }
+    .relationship { stroke: #203825 !important; stroke-width: 2.4px !important; }
+    .relationship-include, .relationship-extend { stroke-dasharray: 10 7 !important; }
+    .relationship-note { stroke: #4A5A4D !important; stroke-width: 1.8px !important; stroke-dasharray: 4 5 !important; }
+    .edgeLabel, .edgeLabel p { background-color: #F6F8F1 !important; color: #203825 !important; font-size: 27px !important; font-family: "Open Sans", sans-serif !important; font-weight: 600; }
+    .edgeLabel .label rect { fill: #F6F8F1 !important; }
+    .labelBkg { background-color: #F6F8F1 !important; max-width: none !important; }
+    .usecase-actor-glyph path { stroke: #203825 !important; stroke-width: 3px !important; fill: #DCFB67 !important; vector-effect: non-scaling-stroke; }
+    .usecase-actor-stick { transform-box: fill-box; transform-origin: 50% 0%; transform: scale(2.1); }
+    .usecase-actor .label div { padding-top: 74px !important; }
+    .usecase-actor .nodeLabel, .actor-label { color: #203825 !important; font-weight: 600; }
+    .usecase-actor div { white-space: nowrap !important; max-width: none !important; }
+    .usecase-element ellipse { fill: #EEFBB8 !important; stroke: #203825 !important; stroke-width: 2px !important; }
+    .usecase-element .nodeLabel { color: #203825 !important; }
+    .usecase-ellipse div { white-space: nowrap !important; max-width: none !important; padding: 9px 18px !important; }
+    .usecase-note path { fill: #FFFFFF !important; stroke: #4A5A4D !important; stroke-width: 1.8px !important; }
+    .usecase-note .nodeLabel { color: #203825 !important; font-size: 23px !important; text-align: left; }
+    .usecase-note div { white-space: nowrap !important; max-width: none !important; }
+    .system-boundary rect.boundary-body { fill: #FFFFFF !important; stroke: #203825 !important; stroke-width: 2.6px !important; }
+    .system-boundary-title .nodeLabel { color: #203825 !important; font-weight: 800; font-size: 33px !important; }
+    .system-boundary-title div { white-space: nowrap !important; max-width: none !important; }
+---
+%% UC04 - Direitos do Titular (LGPD Art. 18), em notação UML (diagrama de casos de uso do Mermaid 12).
+%%   Atores = boneco-palito (sistemas externos com «sistema externo» ou «sistema»);
+%%   casos de uso = elipses; «include» e «extend» tracejados, do caso que inclui/estende para o caso base.
+%%   Cores da paleta do EIGAM; fontes grandes para leitura impressa na largura do texto.
+%% Renderização (mermaid-cli 12): mmdc -i uc04_direitos_lgpd.mmd -o "../images/uml/UC04 - Direitos do Titular (LGPD Art. 18).png" --size 3600 -b "#F6F8F1"
+usecase-beta
+  direction LR
+  actor U(Titular)
+  actor PL("`«sistema externo»
+  Agregador de Open Finance`")
+  actor AUD("`«sistema»
+  Audit Service`")
+
+  systemBoundary S("Direitos do Titular - LGPD Art. 18")
+    LC01("`Consultar
+    quais dados
+    são tratados
+    (Art. 18, I)`")
+    LC02("`Exportar
+    dados –
+    portabilidade
+    (Art. 18, II e V)`")
+    LC03("`Corrigir dados
+    cadastrais
+    (Art. 18, III)`")
+    LC04("`Revogar
+    consentimento
+    Open Finance
+    (Art. 18, IX)`")
+    LC05("`Solicitar
+    exclusão
+    de dados
+    (Art. 18, VI)`")
+    LC06("`Consultar com
+    quem dados são
+    compartilhados
+    (Art. 18, VII)`")
+    LC07("`Registrar
+    operação em
+    audit log`")
+    LC08("`Anonimizar
+    transações`")
+    LC09("`Revogar
+    acesso no
+    agregador`")
+    LC10("`Apagar
+    conversas,
+    sessões e dados
+    derivados`")
+  end
+
+  U -- LC01
+  U -- LC02
+  U -- LC03
+  U -- LC04
+  U -- LC05
+  U -- LC06
+
+  LC02 ..> : include LC07
+  LC04 ..> : include LC07
+  LC05 ..> : include LC07
+  LC03 ..> : include LC07
+  LC05 ..> : include LC08
+  LC05 ..> : include LC09
+  LC05 ..> : include LC10
+  LC04 ..> : include LC09
+
+  LC09 -- PL
+  LC07 -- AUD

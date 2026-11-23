@@ -1,0 +1,80 @@
+// DER do PostgreSQL - NOTIFICATION SERVICE + AUDIT SERVICE (gerado; notação do trabalho de banco de dados: losango = relacionamento,
+// linha dupla = entidade que depende do relacionamento, (mín,máx) junto de cada entidade).
+// Renderização: dot -Tsvg der_notification.dot (Graphviz 14), depois PNG pelo Chrome.
+graph DER {
+  graph [rankdir=LR, splines=ortho, newrank=true, nodesep=0.5, ranksep=0.95, pad=0.2, fontname="Arial", fontsize=13];
+  node [fontname="Arial", fontsize=15, penwidth=1.3, color=black, fontcolor=black];
+  edge [fontname="Arial", fontsize=13, penwidth=1.3, color=black, fontcolor=black, labeldistance=1.9, labelangle=28];
+  subgraph "cluster_ref" {
+    label=<<B>IDENTITY SERVICE</B>>; labeljust=l; style=dashed; color="#4D4D4D"; penwidth=1.2; margin=22;
+    users [shape=box, label=<<B>users</B>>, height=9.20, width=1.6, fixedsize=true];
+  }
+  subgraph "cluster_NOTIFICATION SERVICE" {
+    label=<<B>NOTIFICATION SERVICE</B>>; labeljust=l; style=dashed; color="#4D4D4D"; penwidth=1.2; margin=24;
+    campaigns [shape=box, label=<<B>campaigns</B>>, height=2.00, margin="0.36,0.12"];
+    campaign_recipients [shape=box, label=<<B>campaign_<BR/>recipients</B>>, height=1.00, margin="0.36,0.12"];
+    periodic_summaries [shape=box, label=<<B>periodic_<BR/>summaries</B>>, height=1.00, margin="0.36,0.12"];
+    summary_documents [shape=box, label=<<B>summary_<BR/>documents</B>>, height=1.02, margin="0.36,0.12"];
+    summary_document_receipts [shape=box, label=<<B>summary_<BR/>document_receipts</B>>, height=0.72, margin="0.36,0.12"];
+    summary_activity [shape=box, label=<<B>summary_activity</B>>, height=0.72, margin="0.36,0.12"];
+    summary_conversations [shape=box, label=<<B>summary_<BR/>conversations</B>>, height=0.72, margin="0.36,0.12"];
+    summary_delivery_receipts [shape=box, label=<<B>summary_<BR/>delivery_receipts</B>>, height=0.72, margin="0.36,0.12"];
+    alert_signals [shape=box, label=<<B>alert_signals</B>>, height=1.02, margin="0.36,0.12"];
+    alert_notifications [shape=box, label=<<B>alert_<BR/>notifications</B>>, height=1.00, margin="0.36,0.12"];
+    alert_data_versions [shape=box, label=<<B>alert_data_<BR/>versions</B>>, height=0.72, margin="0.36,0.12"];
+    alert_delivery_receipts [shape=box, label=<<B>alert_delivery_<BR/>receipts</B>>, height=0.72, margin="0.36,0.12"];
+    campaign_button_taps [shape=box, label=<<B>campaign_<BR/>button_taps</B>>, height=1.02, margin="0.36,0.12"];
+    r0 [shape=diamond, label=<<B>RESUME</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r1 [shape=diamond, label=<<B>GERA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r2 [shape=diamond, label=<<B>PEDE</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r3 [shape=diamond, label=<<B>ABRE</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r4 [shape=diamond, label=<<B>ENVIA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r5 [shape=diamond, label=<<B>TOCA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r6 [shape=diamond, label=<<B>MEDE</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r7 [shape=diamond, label=<<B>REGISTRA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r8 [shape=diamond, label=<<B>CONVERSA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r9 [shape=diamond, label=<<B>RECEBE</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r10 [shape=diamond, label=<<B>DISPARA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r11 [shape=diamond, label=<<B>AGRUPA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r12 [shape=diamond, label=<<B>NOTIFICA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r13 [shape=diamond, label=<<B>VERSIONA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r14 [shape=diamond, label=<<B>CONFIRMA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+  }
+  subgraph "cluster_AUDIT SERVICE" {
+    label=<<B>AUDIT SERVICE</B>>; labeljust=l; style=dashed; color="#4D4D4D"; penwidth=1.2; margin=24;
+    audit_logs [shape=box, label=<<B>audit_logs</B>>, height=0.72, margin="0.36,0.12"];
+  }
+  users -- r0 [taillabel=<<B>(0,n)</B>>];
+  r0 -- periodic_summaries [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  periodic_summaries -- r1 [taillabel=<<B>(0,n)</B>>];
+  r1 -- summary_documents [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  users -- r2 [taillabel=<<B>(0,n)</B>>];
+  r2 -- summary_documents [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  users -- r3 [taillabel=<<B>(0,n)</B>>];
+  r3 -- summary_document_receipts [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  campaigns -- r4 [taillabel=<<B>(0,n)</B>>];
+  r4 -- campaign_recipients [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  campaign_recipients -- r5 [taillabel=<<B>(0,n)</B>>];
+  r5 -- campaign_button_taps [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  campaigns -- r6 [taillabel=<<B>(0,n)</B>>];
+  r6 -- campaign_button_taps [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  users -- r7 [taillabel=<<B>(0,n)</B>>];
+  r7 -- summary_activity [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  users -- r8 [taillabel=<<B>(0,n)</B>>];
+  r8 -- summary_conversations [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  users -- r9 [taillabel=<<B>(0,n)</B>>];
+  r9 -- summary_delivery_receipts [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  users -- r10 [taillabel=<<B>(0,n)</B>>];
+  r10 -- alert_signals [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  alert_notifications -- r11 [taillabel=<<B>(0,n)</B>>];
+  r11 -- alert_signals [headlabel=<<B>(0,1)</B>>];
+  users -- r12 [taillabel=<<B>(0,n)</B>>];
+  r12 -- alert_notifications [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  users -- r13 [taillabel=<<B>(0,1)</B>>];
+  r13 -- alert_data_versions [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  users -- r14 [taillabel=<<B>(0,n)</B>>];
+  r14 -- alert_delivery_receipts [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  users -- campaigns [style=invis, minlen=2];
+  users -- audit_logs [style=invis, minlen=2];
+  { rank=same; campaign_recipients; r5; campaign_button_taps; }
+}

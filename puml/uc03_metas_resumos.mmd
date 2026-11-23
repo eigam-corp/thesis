@@ -1,0 +1,92 @@
+---
+config:
+  usecase:
+    wrappingWidth: 225
+    minNodeWidth: 0
+    nodeSpacing: 18
+    rankSpacing: 40
+    usecaseFontSize: 31
+    actorFontSize: 32
+  themeCSS: |
+    .marker.usecase .arrowMarkerPath { fill: none !important; stroke: #203825 !important; stroke-width: 2px !important; stroke-linejoin: miter; }
+    marker[id$="pointEnd-margin"] .arrowMarkerPath { stroke-dasharray: 26.93 14 !important; }
+    marker[id$="pointStart-margin"] .arrowMarkerPath { stroke-dasharray: 13.46 14 13.46 0 !important; }
+    .relationship { stroke: #203825 !important; stroke-width: 2.4px !important; }
+    .relationship-include, .relationship-extend { stroke-dasharray: 10 7 !important; }
+    .relationship-note { stroke: #4A5A4D !important; stroke-width: 1.8px !important; stroke-dasharray: 4 5 !important; }
+    .edgeLabel, .edgeLabel p { background-color: #F6F8F1 !important; color: #203825 !important; font-size: 27px !important; font-family: "Open Sans", sans-serif !important; font-weight: 600; }
+    .edgeLabel .label rect { fill: #F6F8F1 !important; }
+    .labelBkg { background-color: #F6F8F1 !important; max-width: none !important; }
+    .usecase-actor-glyph path { stroke: #203825 !important; stroke-width: 3px !important; fill: #DCFB67 !important; vector-effect: non-scaling-stroke; }
+    .usecase-actor-stick { transform-box: fill-box; transform-origin: 50% 0%; transform: scale(2.1); }
+    .usecase-actor .label div { padding-top: 74px !important; }
+    .usecase-actor .nodeLabel, .actor-label { color: #203825 !important; font-weight: 600; }
+    .usecase-actor div { white-space: nowrap !important; max-width: none !important; }
+    .usecase-element ellipse { fill: #EEFBB8 !important; stroke: #203825 !important; stroke-width: 2px !important; }
+    .usecase-element .nodeLabel { color: #203825 !important; }
+    .usecase-ellipse div { white-space: nowrap !important; max-width: none !important; padding: 9px 18px !important; }
+    .usecase-note path { fill: #FFFFFF !important; stroke: #4A5A4D !important; stroke-width: 1.8px !important; }
+    .usecase-note .nodeLabel { color: #203825 !important; font-size: 23px !important; text-align: left; }
+    .usecase-note div { white-space: nowrap !important; max-width: none !important; }
+    .system-boundary rect.boundary-body { fill: #FFFFFF !important; stroke: #203825 !important; stroke-width: 2.6px !important; }
+    .system-boundary-title .nodeLabel { color: #203825 !important; font-weight: 800; font-size: 33px !important; }
+    .system-boundary-title div { white-space: nowrap !important; max-width: none !important; }
+---
+%% UC03 - Metas Financeiras e Resumos Periodicos, em notação UML (diagrama de casos de uso do Mermaid 12).
+%%   Atores = boneco-palito (sistemas externos com «sistema externo» ou «sistema»);
+%%   casos de uso = elipses; «include» e «extend» tracejados, do caso que inclui/estende para o caso base.
+%%   Cores da paleta do EIGAM; fontes grandes para leitura impressa na largura do texto.
+%% Renderização (mermaid-cli 12): mmdc -i uc03_metas_resumos.mmd -o "../images/uml/UC03 - Metas Financeiras e Resumos Periodicos.png" --size 3600 -b "#F6F8F1"
+usecase-beta
+  direction LR
+  actor U(Usuário)
+  actor SYS("`«sistema»
+  Scheduler`")
+
+  systemBoundary S("Metas e Resumos Periódicos")
+    UC18("`Definir
+    meta
+    financeira`")
+    UC19("`Acompanhar
+    progresso
+    de meta`")
+    UC20("`Editar meta
+    financeira`")
+    UC21("`Cancelar ou
+    apagar meta
+    financeira`")
+    UC22("`Receber
+    resumo semanal`")
+    UC23("`Receber
+    resumo mensal`")
+    UC24("`Abrir resumo
+    com valores
+    (PIN)`")
+    UC25("`Receber
+    relatório do
+    período em PDF`")
+    UC26("`Configurar
+    preferências
+    de aviso`")
+    UC27("`Ativar ou
+    desativar tipo
+    de resumo`")
+  end
+
+  U -- UC18
+  U -- UC19
+  U -- UC20
+  U -- UC21
+  U -- UC24
+  U -- UC26
+  U -- UC27
+
+  SYS -- segunda-feira, 9h -- UC22
+  SYS -- dia 1, 9h -- UC23
+
+  UC20 ..> : extend UC18
+  UC21 ..> : extend UC18
+  UC24 ..> : extend UC22
+  UC24 ..> : extend UC23
+  UC24 ..> : include UC25
+  UC27 ..> : extend UC26

@@ -1,0 +1,60 @@
+// DER do PostgreSQL - FINANCE SERVICE (gerado; notação do trabalho de banco de dados: losango = relacionamento,
+// linha dupla = entidade que depende do relacionamento, (mín,máx) junto de cada entidade).
+// Renderização: dot -Tsvg der_finance.dot (Graphviz 14), depois PNG pelo Chrome.
+graph DER {
+  graph [rankdir=LR, splines=ortho, newrank=true, nodesep=0.5, ranksep=0.95, pad=0.2, fontname="Arial", fontsize=13];
+  node [fontname="Arial", fontsize=15, penwidth=1.3, color=black, fontcolor=black];
+  edge [fontname="Arial", fontsize=13, penwidth=1.3, color=black, fontcolor=black, labeldistance=1.9, labelangle=28];
+  subgraph "cluster_ref" {
+    label=<<B>IDENTITY SERVICE</B>>; labeljust=l; style=dashed; color="#4D4D4D"; penwidth=1.2; margin=22;
+    users [shape=box, label=<<B>users</B>>, height=8.28, width=1.6, fixedsize=true];
+  }
+  subgraph "cluster_FINANCE SERVICE" {
+    label=<<B>FINANCE SERVICE</B>>; labeljust=l; style=dashed; color="#4D4D4D"; penwidth=1.2; margin=24;
+    consents [shape=box, label=<<B>consents</B>>, height=0.72, margin="0.36,0.12"];
+    financial_goals [shape=box, label=<<B>financial_goals</B>>, height=1.00, margin="0.36,0.12"];
+    saved_amount_entries [shape=box, label=<<B>saved_amount_<BR/>entries</B>>, height=1.02, margin="0.36,0.12"];
+    financial_embeddings [shape=box, label=<<B>financial_<BR/>embeddings</B>>, height=0.72, margin="0.36,0.12"];
+    user_classification_overrides [shape=box, label=<<B>user_classification_<BR/>overrides</B>>, height=0.72, margin="0.36,0.12"];
+    user_data_versions [shape=box, label=<<B>user_data_<BR/>versions</B>>, height=0.72, margin="0.36,0.12"];
+    budget_alert_states [shape=box, label=<<B>budget_<BR/>alert_states</B>>, height=0.72, margin="0.36,0.12"];
+    signal_states [shape=box, label=<<B>signal_states</B>>, height=0.72, margin="0.36,0.12"];
+    financial_write_attempts [shape=box, label=<<B>financial_<BR/>write_attempts</B>>, height=0.72, margin="0.36,0.12"];
+    provider_connectors [shape=box, label=<<B>provider_<BR/>connectors</B>>, height=0.72, margin="0.36,0.12"];
+    r0 [shape=diamond, label=<<B>CONSENTE</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r1 [shape=diamond, label=<<B>DEFINE</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r2 [shape=diamond, label=<<B>ACUMULA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r3 [shape=diamond, label=<<B>GUARDA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r4 [shape=diamond, label=<<B>ESTORNA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r5 [shape=diamond, label=<<B>INDEXA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r6 [shape=diamond, label=<<B>RECLASSIFICA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r7 [shape=diamond, label=<<B>VERSIONA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r8 [shape=diamond, label=<<B>MONITORA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r9 [shape=diamond, label=<<B>SINALIZA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r10 [shape=diamond, label=<<B>TENTA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+  }
+  users -- r0 [taillabel=<<B>(0,n)</B>>];
+  r0 -- consents [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  users -- r1 [taillabel=<<B>(0,n)</B>>];
+  r1 -- financial_goals [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  financial_goals -- r2 [taillabel=<<B>(0,n)</B>>];
+  r2 -- saved_amount_entries [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  users -- r3 [taillabel=<<B>(0,n)</B>>];
+  r3 -- saved_amount_entries [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  saved_amount_entries -- r4;
+  saved_amount_entries -- r4;
+  users -- r5 [taillabel=<<B>(0,n)</B>>];
+  r5 -- financial_embeddings [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  users -- r6 [taillabel=<<B>(0,n)</B>>];
+  r6 -- user_classification_overrides [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  users -- r7 [taillabel=<<B>(0,1)</B>>];
+  r7 -- user_data_versions [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  users -- r8 [taillabel=<<B>(0,n)</B>>];
+  r8 -- budget_alert_states [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  users -- r9 [taillabel=<<B>(0,n)</B>>];
+  r9 -- signal_states [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  users -- r10 [taillabel=<<B>(0,n)</B>>];
+  r10 -- financial_write_attempts [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  users -- provider_connectors [style=invis, minlen=2];
+  { rank=same; saved_amount_entries; r4; }
+}

@@ -1,0 +1,70 @@
+// DER do PostgreSQL - IDENTITY SERVICE (gerado; notação do trabalho de banco de dados: losango = relacionamento,
+// linha dupla = entidade que depende do relacionamento, (mín,máx) junto de cada entidade).
+// Renderização: dot -Tsvg der_identity.dot (Graphviz 14), depois PNG pelo Chrome.
+graph DER {
+  graph [rankdir=LR, splines=ortho, newrank=true, nodesep=0.5, ranksep=0.95, pad=0.2, fontname="Arial", fontsize=13];
+  node [fontname="Arial", fontsize=15, penwidth=1.3, color=black, fontcolor=black];
+  edge [fontname="Arial", fontsize=13, penwidth=1.3, color=black, fontcolor=black, labeldistance=1.9, labelangle=28];
+  subgraph "cluster_IDENTITY SERVICE" {
+    label=<<B>IDENTITY SERVICE</B>>; labeljust=l; style=dashed; color="#4D4D4D"; penwidth=1.2; margin=24;
+    users [shape=box, label=<<B>users</B>>, height=8.28, width=1.6, fixedsize=true];
+    user_channels [shape=box, label=<<B>user_channels</B>>, height=0.72, margin="0.36,0.12"];
+    data_deletion_requests [shape=box, label=<<B>data_deletion_<BR/>requests</B>>, height=0.72, margin="0.36,0.12"];
+    user_data_exports [shape=box, label=<<B>user_data_<BR/>exports</B>>, height=0.72, margin="0.36,0.12"];
+    operators [shape=box, label=<<B>operators</B>>, height=4.00, margin="0.36,0.12"];
+    operation_parameters [shape=box, label=<<B>operation_<BR/>parameters</B>>, height=0.72, margin="0.36,0.12"];
+    operation_parameter_changes [shape=box, label=<<B>operation_<BR/>parameter_changes</B>>, height=0.72, margin="0.36,0.12"];
+    access_grants [shape=box, label=<<B>access_grants</B>>, height=1.38, margin="0.36,0.12"];
+    access_requests [shape=box, label=<<B>access_requests</B>>, height=0.72, margin="0.36,0.12"];
+    lead_lists [shape=box, label=<<B>lead_lists</B>>, height=0.72, margin="0.36,0.12"];
+    lead_list_members [shape=box, label=<<B>lead_list_<BR/>members</B>>, height=1.00, margin="0.36,0.12"];
+    holder_feedback [shape=box, label=<<B>holder_feedback</B>>, height=0.72, margin="0.36,0.12"];
+    oauth_clients [shape=box, label=<<B>oauth_clients</B>>, height=0.72, margin="0.36,0.12"];
+    assistant_connections [shape=box, label=<<B>assistant_<BR/>connections</B>>, height=1.00, margin="0.36,0.12"];
+    r0 [shape=diamond, label=<<B>VINCULA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r1 [shape=diamond, label=<<B>SOLICITA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r2 [shape=diamond, label=<<B>EXPORTA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r3 [shape=diamond, label=<<B>ATUA COMO</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r4 [shape=diamond, label=<<B>ALTERA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r5 [shape=diamond, label=<<B>AJUSTA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r6 [shape=diamond, label=<<B>CONCEDE</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r7 [shape=diamond, label=<<B>REVOGA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r8 [shape=diamond, label=<<B>LIBERA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r9 [shape=diamond, label=<<B>PEDE</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r10 [shape=diamond, label=<<B>CONTÉM</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r11 [shape=diamond, label=<<B>INTEGRA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r12 [shape=diamond, label=<<B>AVALIA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r13 [shape=diamond, label=<<B>CONECTA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+    r14 [shape=diamond, label=<<B>AUTORIZA</B>>, fontsize=13, height=0.66, margin="0.2,0.07"];
+  }
+  users -- r0 [taillabel=<<B>(0,n)</B>>];
+  r0 -- user_channels [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  users -- r1 [taillabel=<<B>(0,n)</B>>];
+  r1 -- data_deletion_requests [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  users -- r2 [taillabel=<<B>(0,n)</B>>];
+  r2 -- user_data_exports [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  users -- r3 [taillabel=<<B>(0,1)</B>>];
+  r3 -- operators [headlabel=<<B>(0,1)</B>>];
+  operators -- r4 [taillabel=<<B>(0,n)</B>>];
+  r4 -- operation_parameter_changes [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  operators -- r5 [taillabel=<<B>(0,n)</B>>];
+  r5 -- operation_parameters [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  operators -- r6 [taillabel=<<B>(0,n)</B>>];
+  r6 -- access_grants [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  operators -- r7 [taillabel=<<B>(0,n)</B>>];
+  r7 -- access_grants [headlabel=<<B>(0,1)</B>>];
+  users -- r8 [taillabel=<<B>(0,n)</B>>];
+  r8 -- access_grants [headlabel=<<B>(0,1)</B>>];
+  users -- r9 [taillabel=<<B>(0,1)</B>>];
+  r9 -- access_requests [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  lead_list_members -- r10 [color="black:invis:black", taillabel=<<B>(1,1)</B>>];
+  r10 -- lead_lists [headlabel=<<B>(0,n)</B>>];
+  users -- r11 [taillabel=<<B>(0,n)</B>>];
+  r11 -- lead_list_members [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  users -- r12 [taillabel=<<B>(0,n)</B>>];
+  r12 -- holder_feedback [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  users -- r13 [taillabel=<<B>(0,n)</B>>];
+  r13 -- assistant_connections [color="black:invis:black", headlabel=<<B>(1,1)</B>>];
+  assistant_connections -- r14 [color="black:invis:black", taillabel=<<B>(1,1)</B>>];
+  r14 -- oauth_clients [headlabel=<<B>(0,n)</B>>];
+}

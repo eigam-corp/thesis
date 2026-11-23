@@ -8,13 +8,39 @@ Cada tabela e coleção pertence a um único serviço, e nenhum serviço consult
 
 \section{Diagrama entidade relacionamento}
 
-A Figura \ref{fig:der_postgres} apresenta o Diagrama de Entidade Relacionamento do banco relacional, com as 43 tabelas agrupadas pelo serviço que é dono de cada uma e os respectivos relacionamentos. Quase todas as entidades dependem de \texttt{users}, o que reflete uma decisão de privacidade: a exclusão de um titular alcança todos os dados derivados, enquanto o registro de auditoria, que não possui chave estrangeira para \texttt{users}, guarda apenas referências e é mantido por obrigação legal.
+As Figuras \ref{fig:der_identity} a \ref{fig:der_notification} apresentam o Diagrama de Entidade Relacionamento do banco relacional, dividido pelo serviço que é dono de cada tabela, com as 45 tabelas e os respectivos relacionamentos. Cada relacionamento aparece em um losango, com a cardinalidade (mínima, máxima) junto de cada entidade. A linha dupla indica relacionamento forte, em que a entidade depende do relacionamento para existir, e a linha simples indica relacionamento fraco, de participação opcional.
+
+Quase todas as entidades dependem de \texttt{users}, que pertence ao \textit{Identity Service} e aparece nas demais figuras como referência. Essa dependência reflete uma decisão de privacidade: a exclusão de um titular alcança todos os dados derivados, enquanto o registro de auditoria, que não possui chave estrangeira para \texttt{users}, guarda apenas referências e é mantido por obrigação legal.
 
 \begin{figure}[H]
     \centering
-    \caption{DER do sistema por serviço dono}
-    \label{fig:der_postgres}
-    \includegraphics[height=0.85\textheight]{images/der_postgres.png}
+    \caption{DER do \textit{Identity Service}}
+    \label{fig:der_identity}
+    \includegraphics[width=\textwidth]{images/der_identity.png}
+    \authorssource
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \caption{DER do \textit{Finance Service}}
+    \label{fig:der_finance}
+    \includegraphics[width=\textwidth]{images/der_finance.png}
+    \authorssource
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \caption{DER do \textit{Billing Service}}
+    \label{fig:der_billing}
+    \includegraphics[width=\textwidth]{images/der_billing.png}
+    \authorssource
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \caption{DER do \textit{Notification Service} e do \textit{Audit Service}}
+    \label{fig:der_notification}
+    \includegraphics[width=\textwidth]{images/der_notification.png}
     \authorssource
 \end{figure}
 
@@ -28,7 +54,7 @@ Na Figura \ref{fig:mer_postgres} é apresentado o modelo entidade relacionamento
     \centering
     \caption{MER do núcleo do sistema - PostgreSQL}
     \label{fig:mer_postgres}
-    \includegraphics[height=0.85\textheight]{images/mer_postgres.png}
+    \includegraphics[width=\textwidth]{images/mer_postgres.png}
     \authorssource
 \end{figure}
 

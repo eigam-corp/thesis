@@ -1,0 +1,81 @@
+---
+config:
+  usecase:
+    wrappingWidth: 290
+    minNodeWidth: 0
+    nodeSpacing: 16
+    rankSpacing: 34
+    usecaseFontSize: 29
+    actorFontSize: 31
+  themeCSS: |
+    .marker.usecase .arrowMarkerPath { fill: none !important; stroke: #203825 !important; stroke-width: 2px !important; stroke-linejoin: miter; }
+    marker[id$="pointEnd-margin"] .arrowMarkerPath { stroke-dasharray: 26.93 14 !important; }
+    marker[id$="pointStart-margin"] .arrowMarkerPath { stroke-dasharray: 13.46 14 13.46 0 !important; }
+    .relationship { stroke: #203825 !important; stroke-width: 2.4px !important; }
+    .edgeLabel, .edgeLabel p { background-color: #F6F8F1 !important; color: #203825 !important; font-size: 26px !important; font-family: "Open Sans", sans-serif !important; font-weight: 600; }
+    .edgeLabel .label rect { fill: #F6F8F1 !important; }
+    .labelBkg { background-color: #F6F8F1 !important; }
+    .usecase-actor-glyph path { stroke: #203825 !important; stroke-width: 3px !important; fill: #DCFB67 !important; vector-effect: non-scaling-stroke; }
+    .usecase-actor-stick { transform-box: fill-box; transform-origin: 50% 0%; transform: scale(2.1); }
+    .usecase-actor .label div { padding-top: 74px !important; }
+    .usecase-actor .nodeLabel, .actor-label { color: #203825 !important; font-weight: 600; }
+    .usecase-element rect.label-container { fill: #FFFFFF !important; stroke: #203825 !important; stroke-width: 2px !important; }
+    [aria-label*="stereotype subsistema"] rect.label-container { fill: #EEFBB8 !important; }
+    .usecase-element .nodeLabel { color: #203825 !important; }
+    .system-boundary rect.boundary-body, .system-boundary rect.boundary-tab { fill: #FFFFFF !important; stroke: #203825 !important; stroke-width: 2.6px !important; }
+    .system-boundary-title .nodeLabel { color: #203825 !important; font-weight: 800; font-size: 34px !important; }
+---
+%% Fronteira sistêmica do EIGAM, em notação UML (diagrama de casos de uso do Mermaid 12):
+%%   atores = boneco-palito; serviços de terceiros = retângulos «sistema externo»;
+%%   EIGAM = fronteira do sistema; grupos internos = «subsistema».
+%%   Associações navegáveis com ponta aberta (ajuste no themeCSS acima).
+%%   Cores da paleta do EIGAM: #203825 (verde-escuro), #DCFB67 (lima), #EEFBB8 e #F6F8F1.
+%%   Fontes grandes para leitura impressa na largura do texto.
+%% Renderização (mermaid-cli 12): mmdc -i fronteira.mmd -o ../images/fronteira.png --size 3600 -b "#F6F8F1"
+usecase-beta
+  direction TB
+
+  actor EQ("Equipe de operação")
+  actor TI(Titular)
+
+  ASSIST["Assistentes de IA do titular"] <<sistema externo>>
+  BORDA["Serviço de borda"] <<sistema externo>>
+  MSG["APIs oficiais do WhatsApp e do Telegram"] <<sistema externo>>
+
+  systemBoundary EIGAM(EIGAM)
+    ENT["`**Entrada e painéis**
+    API Gateway, painéis e MCP Service`"] <<subsistema>>
+    CONV["`**Conversa e IA**
+    Chat, AI e Identity Service`"] <<subsistema>>
+    FIN["`**Finanças**
+    Finance e Analytics Service`"] <<subsistema>>
+    COM["`**Comunicação**
+    Outbound Worker, Notification, Render, Billing e Audit`"] <<subsistema>>
+    DADOS["`**Dados**
+    broker de eventos, PostgreSQL, MongoDB e Redis`"] <<subsistema>>
+  end
+
+  LLM["Provedor de LLM"] <<sistema externo>>
+  JUIZO["Modelo de juízo tipado"] <<sistema externo>>
+  AGREG["Agregador de Open Finance"] <<sistema externo>>
+  PAG["Provedor de pagamentos"] <<sistema externo>>
+
+  EQ -- navegador --> BORDA
+  TI -- navegador ---> BORDA
+  TI -- usa --> ASSIST
+  ASSIST -- OAuth e MCP --> BORDA
+  TI -- mensagens ---> MSG
+
+  BORDA -- HTTPS --> ENT
+  MSG -- webhooks --> ENT
+  MSG <-- respostas -- COM
+
+  ENT -- DADOS
+  CONV -- DADOS
+  FIN -- DADOS
+  COM -- DADOS
+
+  CONV --- LLM
+  CONV --- JUIZO
+  FIN --- AGREG
+  COM --- PAG

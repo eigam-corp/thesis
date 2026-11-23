@@ -1,0 +1,76 @@
+---
+config:
+  theme: base
+  look: classic
+  fontFamily: "Open Sans, sans-serif"
+  fontSize: 30
+  themeVariables:
+    actorBkg: "#EEFBB8"
+    actorBorder: "#203825"
+    actorTextColor: "#203825"
+    actorLineColor: "#4A5A4D"
+    signalColor: "#203825"
+    signalTextColor: "#203825"
+    activationBkgColor: "#DCFB67"
+    activationBorderColor: "#203825"
+    noteBkgColor: "#FFFFFF"
+    noteBorderColor: "#4A5A4D"
+    noteTextColor: "#203825"
+  sequence:
+    mirrorActors: true
+    diagramMarginY: 30
+    wrap: false
+    width: 165
+    height: 140
+    actorMargin: 12
+    boxMargin: 8
+    messageMargin: 6
+  themeCSS: |
+    .actor-man line, .actor-man circle { stroke: #203825 !important; stroke-width: 3px !important; vector-effect: non-scaling-stroke; }
+    .actor-man circle { fill: #DCFB67 !important; }
+    .actor-man { transform-box: fill-box; transform-origin: 50% 0%; transform: scale(1.6); }
+    .actor-man text.actor { transform-box: fill-box; transform-origin: 50% 50%; transform: translateY(12px) scale(0.75); paint-order: stroke; stroke: #F6F8F1 !important; stroke-width: 12px !important; stroke-linejoin: round; }
+    .actor { stroke-width: 2px !important; }
+    .messageLine0, .messageLine1 { stroke-width: 2.2px !important; }
+    .actor-line { stroke-dasharray: 6 5 !important; }
+---
+%% Processamento de uma mensagem, em notação UML (diagrama de sequência do Mermaid 12).
+%%   ->> chamada síncrona (linha contínua, ponta cheia); -) evento ou mensagem assíncrona (ponta aberta);
+%%   --) retorno (linha tracejada, ponta aberta).
+%%   Cores da paleta do EIGAM; fontes grandes para leitura impressa na largura do texto.
+%%   Os participantes se repetem embaixo (mirrorActors) porque, sem isso, o Mermaid corta as linhas de vida em 2000 px.
+%% Renderização (mermaid-cli 12): mmdc -i sequencia_processamento_mensagem.mmd -o ../images/sequencia/processamento_mensagem.png --size 3600 -b "#F6F8F1"
+sequenceDiagram
+  actor U as Titular
+  participant CH as Mensageiro
+  participant GW as API<br/>Gateway
+  participant KF as Broker<br/>(API Kafka)
+  participant CS as Chat<br/>Service
+  participant ID as Identity<br/>Service
+  participant AI as AI<br/>Service
+  participant FS as Finance<br/>Service
+  participant OW as Outbound<br/>Worker
+
+  U-)CH: "quanto gastei<br/>no mercado<br/>este mês?"
+  CH->>GW: webhook
+  GW->>GW: valida HMAC e deduplica
+  GW-)KF: produz evento<br/>cifrado
+  GW--)CH: 200 OK<br/>(milissegundos)
+  KF-)CS: messages.inbound
+  CS-)KF: indicador<br/>de digitação
+  CS->>CS: comandos da LGPD e regras<br/>determinísticas (regex)
+  CS->>ID: titular e passo<br/>do cadastro
+  ID--)CS: estado<br/>do titular
+  CS->>AI: planejador: lê a frase<br/>(sem CPF, PIN ou e-mail)
+  AI--)CS: plano: consulta financeira<br/>(período, categoria)
+  CS->>CS: valida o plano, vincula o user_id<br/>e verifica o token de privilégio
+  CS->>FS: consulta financeira
+  FS--)CS: fatos (valores em centavos)
+  CS->>AI: redação da resposta<br/>(fatos estruturados)
+  AI->>AI: guardrails de saída
+  AI--)CS: resposta
+  CS->>CS: mascaramento por regex<br/>(sem token: R$ •••••)
+  CS-)KF: messages.outbound<br/>(um evento)
+  KF-)OW: consome
+  OW->>CH: envia uma mensagem
+  CH-)U: resposta com<br/>texto e imagem

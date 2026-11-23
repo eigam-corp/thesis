@@ -1,0 +1,99 @@
+---
+config:
+  usecase:
+    wrappingWidth: 200
+    minNodeWidth: 0
+    nodeSpacing: 18
+    rankSpacing: 40
+    usecaseFontSize: 31
+    actorFontSize: 32
+  themeCSS: |
+    .marker.usecase .arrowMarkerPath { fill: none !important; stroke: #203825 !important; stroke-width: 2px !important; stroke-linejoin: miter; }
+    marker[id$="pointEnd-margin"] .arrowMarkerPath { stroke-dasharray: 26.93 14 !important; }
+    marker[id$="pointStart-margin"] .arrowMarkerPath { stroke-dasharray: 13.46 14 13.46 0 !important; }
+    .relationship { stroke: #203825 !important; stroke-width: 2.4px !important; }
+    .relationship-include, .relationship-extend { stroke-dasharray: 10 7 !important; }
+    .relationship-note { stroke: #4A5A4D !important; stroke-width: 1.8px !important; stroke-dasharray: 4 5 !important; }
+    .edgeLabel, .edgeLabel p { background-color: #F6F8F1 !important; color: #203825 !important; font-size: 27px !important; font-family: "Open Sans", sans-serif !important; font-weight: 600; }
+    .edgeLabel .label rect { fill: #F6F8F1 !important; }
+    .labelBkg { background-color: #F6F8F1 !important; max-width: none !important; }
+    .usecase-actor-glyph path { stroke: #203825 !important; stroke-width: 3px !important; fill: #DCFB67 !important; vector-effect: non-scaling-stroke; }
+    .usecase-actor-stick { transform-box: fill-box; transform-origin: 50% 0%; transform: scale(2.1); }
+    .usecase-actor .label div { padding-top: 74px !important; }
+    .usecase-actor .nodeLabel, .actor-label { color: #203825 !important; font-weight: 600; }
+    .usecase-actor div { white-space: nowrap !important; max-width: none !important; }
+    .usecase-element ellipse { fill: #EEFBB8 !important; stroke: #203825 !important; stroke-width: 2px !important; }
+    .usecase-element .nodeLabel { color: #203825 !important; }
+    .usecase-ellipse div { white-space: nowrap !important; max-width: none !important; padding: 9px 18px !important; }
+    .usecase-note path { fill: #FFFFFF !important; stroke: #4A5A4D !important; stroke-width: 1.8px !important; }
+    .usecase-note .nodeLabel { color: #203825 !important; font-size: 23px !important; text-align: left; }
+    .usecase-note div { white-space: nowrap !important; max-width: none !important; }
+    .system-boundary rect.boundary-body { fill: #FFFFFF !important; stroke: #203825 !important; stroke-width: 2.6px !important; }
+    .system-boundary-title .nodeLabel { color: #203825 !important; font-weight: 800; font-size: 33px !important; }
+    .system-boundary-title div { white-space: nowrap !important; max-width: none !important; }
+---
+%% UC01 - Acesso e Consulta Financeira, em notação UML (diagrama de casos de uso do Mermaid 12).
+%%   Atores = boneco-palito (sistemas externos com «sistema externo» ou «sistema»);
+%%   casos de uso = elipses; «include» e «extend» tracejados, do caso que inclui/estende para o caso base.
+%%   Cores da paleta do EIGAM; fontes grandes para leitura impressa na largura do texto.
+%% Renderização (mermaid-cli 12): mmdc -i uc01_acesso_financeiro.mmd -o "../images/uml/UC01 - Acesso e Consulta Financeira.png" --size 3600 -b "#F6F8F1"
+usecase-beta
+  direction TB
+  actor U(Usuário)
+  actor PL("`«sistema externo»
+  Agregador de Open Finance`")
+  actor AI("`«sistema externo»
+  Provedor de LLM`")
+
+  systemBoundary S("Acesso e Consulta Financeira")
+    UC01("`Realizar
+    cadastro pela
+    conversa`")
+    UC02("`Vincular
+    conta ao
+    Open Finance`")
+    UC03("`Autenticar
+    via PIN de
+    6 dígitos`")
+    UC04("`Consultar
+    saldo
+    e extrato`")
+    UC05("`Consultar
+    histórico de
+    transações`")
+    UC06("`Consultar
+    resumo
+    financeiro`")
+    UC07("`Receber resposta
+    em linguagem
+    natural`")
+    UC08("`Visualizar
+    gráfico de
+    gastos`")
+    UC09("`Obter token
+    de privilégio
+    (8h)`")
+    UC28("`Acessar o
+    painel do
+    titular`")
+  end
+
+  U -- UC01
+  U -- UC02
+  U -- UC03
+  U -- UC04
+  U -- UC05
+  U -- UC06
+  U -- UC28
+
+  UC04 ..> : include UC03
+  UC05 ..> : include UC03
+  UC06 ..> : include UC03
+  UC04 ..> : include UC07
+  UC05 ..> : include UC07
+  UC06 ..> : include UC07
+  UC08 ..> : extend UC06
+  UC03 ..> : include UC09
+
+  UC02 -- PL
+  UC07 -- planeja e redige -- AI
